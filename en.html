@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Crystal Compiler Explained (EN)</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.8.1/github-markdown-light.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/github.min.css">
   <style>
     body { margin: 0; background: #f6f8fa; }
     .container { max-width: 980px; margin: 0 auto; padding: 2rem 1rem; }
@@ -19,6 +20,7 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
   <script>
     mermaid.initialize({ startOnLoad: false, securityLevel: "loose" });
@@ -41,11 +43,20 @@
       }
     }
 
+    function highlightCodeBlocks(container) {
+      var codeBlocks = container.querySelectorAll("pre code");
+      codeBlocks.forEach(function (codeEl) {
+        if (codeEl.classList.contains("language-mermaid")) return;
+        hljs.highlightElement(codeEl);
+      });
+    }
+
     fetch("EN.md")
       .then(function (res) { return res.text(); })
       .then(function (md) {
         var content = document.getElementById("content");
         content.innerHTML = marked.parse(md);
+        highlightCodeBlocks(content);
         renderMermaidBlocks(content);
       })
       .catch(function (err) {
