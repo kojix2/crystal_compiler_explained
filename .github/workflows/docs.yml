@@ -1,0 +1,28 @@
+name: docs
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v6
+      - uses: crystal-lang/install-crystal@v1
+      - name: Downlaod latest crystal
+        run: |
+          wget -O crystal-master.tar.gz https://github.com/crystal-lang/crystal/archive/refs/heads/master.tar.gz
+          tar xvf crystal-master.tar.gz
+      - name: Generate document
+        run: |
+          cd crystal-master
+          make docs DOCS_OPTIONS=src/compiler/crystal.cr
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./crystal-master/docs
