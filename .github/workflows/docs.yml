@@ -6,6 +6,9 @@ on:
       - main
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -13,16 +16,24 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - uses: crystal-lang/install-crystal@v1
-      - name: Downlaod latest crystal
+      - name: Download latest crystal
         run: |
           wget -O crystal-master.tar.gz https://github.com/crystal-lang/crystal/archive/refs/heads/master.tar.gz
           tar xvf crystal-master.tar.gz
-      - name: Generate document
+      - name: Generate compiler docs
         run: |
           cd crystal-master
           make docs DOCS_OPTIONS=src/compiler/crystal.cr
+      - name: Assemble Pages site
+        run: |
+          rm -rf site
+          mkdir -p site/compiler
+          cp README.md site/index.md
+          cp JA.md EN.md site/
+          cp -R crystal-master/docs/. site/compiler/
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./crystal-master/docs
+          publish_dir: ./site
+          enable_jekyll: true

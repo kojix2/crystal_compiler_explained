@@ -6,6 +6,7 @@ This is an explanation of the Crystal compiler written by kojix2 with the help o
 
 - Japanese: [JA.md](JA.md)
 - English: [EN.md](EN.md)
+- Compiler API docs: [compiler/index.html](compiler/index.html)
 
 ## Maintenance Rule (JA/EN)
 
