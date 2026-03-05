@@ -5,7 +5,7 @@ on:
     paths:
       - JA.md
       - EN.md
-      - scripts/check_doc_sync.sh
+      - scripts/check_doc_sync.cr
       - .github/workflows/doc-sync.yml
       - README.md
   push:
@@ -14,7 +14,7 @@ on:
     paths:
       - JA.md
       - EN.md
-      - scripts/check_doc_sync.sh
+      - scripts/check_doc_sync.cr
       - .github/workflows/doc-sync.yml
       - README.md
   workflow_dispatch:
@@ -25,5 +25,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v6
+      - uses: crystal-lang/install-crystal@v1
       - name: Verify JA/EN structure sync
-        run: bash scripts/check_doc_sync.sh JA.md EN.md
+        run: crystal run scripts/check_doc_sync.cr -- JA.md EN.md
