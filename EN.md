@@ -1,10 +1,3 @@
----
-layout: page
-title: How the Crystal Compiler Works
-lang: en
-permalink: /en/
----
-
 # How the Crystal Compiler Works
 
 > **Target audience:** Developers who already understand Crystal’s type system and general compiler theory (lexing, parsing, type inference, code generation), and want to contribute to Crystal compiler internals.  
