@@ -4,17 +4,17 @@ require "file_utils"
 require "ecr"
 
 SCRIPT_DIR = {{ __DIR__ }}
-REPO_ROOT = File.expand_path("..", SCRIPT_DIR)
+REPO_ROOT  = File.expand_path("..", SCRIPT_DIR)
 
-CRYSTAL_REF = ENV["CRYSTAL_REF"]? || "master"
+CRYSTAL_REF         = ENV["CRYSTAL_REF"]? || "master"
 CRYSTAL_ARCHIVE_URL = "https://github.com/crystal-lang/crystal/archive/refs/heads/#{CRYSTAL_REF}.tar.gz"
 
-CRYSTAL_ARCHIVE = File.join(REPO_ROOT, "crystal-master.tar.gz")
-CRYSTAL_SRC_DIR = File.join(REPO_ROOT, "crystal-master")
-SITE_DIR = File.join(REPO_ROOT, "site")
+CRYSTAL_ARCHIVE   = File.join(REPO_ROOT, "crystal-master.tar.gz")
+CRYSTAL_SRC_DIR   = File.join(REPO_ROOT, "crystal-master")
+SITE_DIR          = File.join(REPO_ROOT, "site")
 COMPILER_DOCS_DIR = File.join(CRYSTAL_SRC_DIR, "docs")
 
-DOC_FILES = ["README.md", "JA.md", "EN.md"] of String
+DOC_FILES      = ["README.md", "JA.md", "EN.md"] of String
 REQUIRED_TOOLS = ["wget", "tar", "make", "cp"] of String
 
 def log(message : String)
