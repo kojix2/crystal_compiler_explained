@@ -1,96 +1,91 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Build Crystal compiler docs from latest crystal master.
-rm -rf crystal-master crystal-master.tar.gz
-wget -O crystal-master.tar.gz https://github.com/crystal-lang/crystal/archive/refs/heads/master.tar.gz
-tar xvf crystal-master.tar.gz
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 
-(
-  cd crystal-master
-  make docs DOCS_OPTIONS=src/compiler/crystal.cr
-)
+CRYSTAL_REF="${CRYSTAL_REF:-master}"
+CRYSTAL_ARCHIVE_URL="https://github.com/crystal-lang/crystal/archive/refs/heads/${CRYSTAL_REF}.tar.gz"
 
-# Assemble static Pages output without Jekyll.
-rm -rf site
-mkdir -p site/compiler
-cp README.md JA.md EN.md site/
-cp -R crystal-master/docs/. site/compiler/
-touch site/.nojekyll
+CRYSTAL_ARCHIVE="${REPO_ROOT}/crystal-master.tar.gz"
+CRYSTAL_SRC_DIR="${REPO_ROOT}/crystal-master"
+SITE_DIR="${REPO_ROOT}/site"
+COMPILER_DOCS_DIR="${CRYSTAL_SRC_DIR}/docs"
+TEMPLATES_DIR="${SCRIPT_DIR}/templates"
+
+DOC_FILES=("README.md" "JA.md" "EN.md")
+
+log() {
+  echo "[docs] $*"
+}
+
+require_tools() {
+  local tools=(wget tar make sed cp)
+  for tool in "${tools[@]}"; do
+    command -v "$tool" >/dev/null 2>&1 || {
+      echo "[docs] ERROR: required command not found: $tool" >&2
+      exit 1
+    }
+  done
+}
+
+require_files() {
+  local file
+  for file in "${DOC_FILES[@]}" "${TEMPLATES_DIR}/index.html" "${TEMPLATES_DIR}/doc_page.html"; do
+    [[ -f "${REPO_ROOT}/${file}" || -f "${file}" ]] || {
+      echo "[docs] ERROR: required file not found: ${file}" >&2
+      exit 1
+    }
+  done
+}
+
+download_crystal_source() {
+  log "Downloading Crystal source (${CRYSTAL_REF})"
+  rm -rf "${CRYSTAL_SRC_DIR}" "${CRYSTAL_ARCHIVE}"
+  wget -O "${CRYSTAL_ARCHIVE}" "${CRYSTAL_ARCHIVE_URL}"
+  tar xvf "${CRYSTAL_ARCHIVE}" -C "${REPO_ROOT}"
+}
+
+build_compiler_docs() {
+  log "Generating compiler docs"
+  (
+    cd "${CRYSTAL_SRC_DIR}"
+    make docs DOCS_OPTIONS=src/compiler/crystal.cr
+  )
+}
 
 render_markdown_page() {
   local md_file="$1"
   local title="$2"
   local out_file="$3"
-
-  cat > "$out_file" <<EOF
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>${title}</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.8.1/github-markdown-light.min.css">
-  <style>
-    body { margin: 0; background: #f6f8fa; }
-    .container { max-width: 980px; margin: 0 auto; padding: 2rem 1rem; }
-    .markdown-body { background: #fff; border: 1px solid #d0d7de; border-radius: 8px; padding: 2rem; }
-    .topnav { margin-bottom: 1rem; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <div class="topnav"><a href="index.html">Back to top</a></div>
-    <article id="content" class="markdown-body">Loading...</article>
-  </div>
-
-  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-  <script>
-    fetch("${md_file}")
-      .then(function (res) { return res.text(); })
-      .then(function (md) {
-        document.getElementById("content").innerHTML = marked.parse(md);
-      })
-      .catch(function (err) {
-        document.getElementById("content").textContent = "Failed to load markdown: " + err;
-      });
-  </script>
-</body>
-</html>
-EOF
+  sed \
+    -e "s|__TITLE__|${title}|g" \
+    -e "s|__MD_FILE__|${md_file}|g" \
+    "${TEMPLATES_DIR}/doc_page.html" > "${out_file}"
 }
 
-render_markdown_page "JA.md" "Crystal Compiler Explained (JA)" "site/ja.html"
-render_markdown_page "EN.md" "Crystal Compiler Explained (EN)" "site/en.html"
+assemble_site() {
+  log "Assembling static Pages output"
+  rm -rf "${SITE_DIR}"
+  mkdir -p "${SITE_DIR}/compiler"
 
-cat > site/index.html <<'EOF'
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Crystal Compiler Explained</title>
-  <style>
-    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; line-height: 1.6; margin: 2rem auto; max-width: 860px; padding: 0 1rem; }
-    h1 { margin-bottom: 0.5rem; }
-    ul { padding-left: 1.2rem; }
-  </style>
-</head>
-<body>
-  <h1>Crystal Compiler Explained</h1>
-  <p>
-    This is an explanation of the Crystal compiler written by kojix2 with the help of Claude,
-    ChatGPT, and others. I wrote it to understand how the Crystal compiler works.
-  </p>
+  cp "${REPO_ROOT}/README.md" "${REPO_ROOT}/JA.md" "${REPO_ROOT}/EN.md" "${SITE_DIR}/"
+  cp -R "${COMPILER_DOCS_DIR}/." "${SITE_DIR}/compiler/"
+  cp "${TEMPLATES_DIR}/index.html" "${SITE_DIR}/index.html"
+  touch "${SITE_DIR}/.nojekyll"
 
-  <h2>Documents</h2>
-  <ul>
-    <li><a href="ja.html">Japanese</a></li>
-    <li><a href="en.html">English</a></li>
-    <li><a href="compiler/index.html">Compiler API docs</a></li>
-  </ul>
-</body>
-</html>
-EOF
+  render_markdown_page "JA.md" "Crystal Compiler Explained (JA)" "${SITE_DIR}/ja.html"
+  render_markdown_page "EN.md" "Crystal Compiler Explained (EN)" "${SITE_DIR}/en.html"
+}
 
-echo "[docs] Built static Pages artifact in ./site"
+main() {
+  cd "${REPO_ROOT}"
+  require_tools
+  require_files
+  download_crystal_source
+  build_compiler_docs
+  assemble_site
+  log "Built static Pages artifact in ${SITE_DIR}"
+}
+
+main "$@"
