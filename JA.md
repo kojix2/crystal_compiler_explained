@@ -1,3 +1,10 @@
+---
+layout: page
+title: Crystal コンパイラの仕組み（日本語）
+lang: ja
+permalink: /ja/
+---
+
 # Crystal コンパイラの仕組み
 
 > **対象読者:** Crystal の型システムや一般的なコンパイラ理論（字句解析・構文解析・型推論・コード生成）を把握しており、Crystalコンパイラ本体に貢献したい開発者  

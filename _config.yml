@@ -1,0 +1,12 @@
+title: Crystal Compiler Explained
+description: A guide to Crystal compiler internals
+theme: minima
+
+markdown: kramdown
+kramdown:
+  input: GFM
+
+exclude:
+  - crystal/
+  - .github/
+  - .gitmodules
