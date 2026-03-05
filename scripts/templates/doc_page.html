@@ -19,11 +19,34 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
   <script>
+    mermaid.initialize({ startOnLoad: false, securityLevel: "loose" });
+
+    function renderMermaidBlocks(container) {
+      var mermaidCodeBlocks = container.querySelectorAll("pre code.language-mermaid");
+      mermaidCodeBlocks.forEach(function (codeEl, idx) {
+        var pre = codeEl.closest("pre");
+        if (!pre) return;
+
+        var wrapper = document.createElement("div");
+        wrapper.className = "mermaid";
+        wrapper.id = "mermaid-" + idx;
+        wrapper.textContent = codeEl.textContent;
+        pre.replaceWith(wrapper);
+      });
+
+      if (container.querySelector(".mermaid")) {
+        mermaid.run({ querySelector: ".mermaid" });
+      }
+    }
+
     fetch("__MD_FILE__")
       .then(function (res) { return res.text(); })
       .then(function (md) {
-        document.getElementById("content").innerHTML = marked.parse(md);
+        var content = document.getElementById("content");
+        content.innerHTML = marked.parse(md);
+        renderMermaidBlocks(content);
       })
       .catch(function (err) {
         document.getElementById("content").textContent = "Failed to load markdown: " + err;
