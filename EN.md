@@ -70,7 +70,7 @@ private def parse(program, sources : Array)
 end
 ```
 
-**With the `--progress` flag (or `CRYSTAL_PROGRESS=1` env var), elapsed time for each stage is printed to stderr.** This is useful for performance work and bottleneck analysis.
+**With the `--progress` flag, the compiler prints the current stage and progress to stderr. Combine it with `--stats` to see elapsed time and memory usage for each stage.** This is useful for performance work and bottleneck analysis.
 
 ---
 
@@ -1258,8 +1258,11 @@ bin/crystal spec spec/compiler/semantic/proc_spec.cr
 # specific test case by name filter
 bin/crystal spec spec/compiler/semantic/ -e "proc type"
 
-# show per-stage timings with --progress
-CRYSTAL_PROGRESS=1 bin/crystal build src/compiler/crystal.cr
+# show compiler progress
+bin/crystal build src/compiler/crystal.cr --progress
+
+# show per-stage timings and memory usage
+bin/crystal build src/compiler/crystal.cr --stats
 ```
 
 `assert_type("x = 1")` in `spec_helper.cr` checks inferred expression type. `assert_error("...", "message")` checks compiler error messages. Small focused specs using these helpers are expected in pull requests.

@@ -6,6 +6,8 @@ This is an explanation of the Crystal compiler written by kojix2 with the help o
 
 - Japanese: [JA.md](JA.md)
 - English: [EN.md](EN.md)
+- Quiz (Japanese): [QUIZ_JA.md](QUIZ_JA.md)
+- Quiz Answers (Japanese): [QUIZ_JA_ANSWERS.md](QUIZ_JA_ANSWERS.md)
 - Compiler API docs: [compiler/index.html](compiler/index.html)
 
 ## Maintenance Rule (JA/EN)
