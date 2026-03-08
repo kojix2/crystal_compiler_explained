@@ -14,7 +14,7 @@ CRYSTAL_SRC_DIR   = File.join(REPO_ROOT, "crystal-master")
 SITE_DIR          = File.join(REPO_ROOT, "site")
 COMPILER_DOCS_DIR = File.join(CRYSTAL_SRC_DIR, "docs")
 
-DOC_FILES      = ["README.md", "JA.md", "EN.md"] of String
+DOC_FILES      = ["README.md", "JA.md", "EN.md", "QUIZ_JA.md", "QUIZ_JA_ANSWERS.md"] of String
 REQUIRED_TOOLS = ["wget", "tar", "make", "cp"] of String
 
 def log(message : String)
@@ -93,6 +93,8 @@ def assemble_site
   File.write(File.join(SITE_DIR, "index.html"), render_index_page)
   File.write(File.join(SITE_DIR, "ja.html"), render_doc_page("Crystal Compiler Explained (JA)", "JA.md"))
   File.write(File.join(SITE_DIR, "en.html"), render_doc_page("Crystal Compiler Explained (EN)", "EN.md"))
+  File.write(File.join(SITE_DIR, "quiz_ja.html"), render_doc_page("Crystal Compiler Quiz (JA)", "QUIZ_JA.md"))
+  File.write(File.join(SITE_DIR, "quiz_ja_answers.html"), render_doc_page("Crystal Compiler Quiz Answers (JA)", "QUIZ_JA_ANSWERS.md"))
   File.write(File.join(SITE_DIR, ".nojekyll"), "")
 end
 
