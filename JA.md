@@ -83,7 +83,7 @@ private def parse(program, sources : Array)
 end
 ```
 
-**`--progress` フラグ（`CRYSTAL_PROGRESS=1` 環境変数）を付けると各ステージの経過時間が標準エラー出力に表示される。** パフォーマンス改善やボトルネック特定に有用。
+**`--progress` フラグを付けると現在のコンパイルステージと進捗が標準エラー出力に表示される。`--stats` を併用すると各ステージの経過時間とメモリ使用量も確認できる。** パフォーマンス改善やボトルネック特定に有用。
 
 ---
 
@@ -1732,8 +1732,11 @@ bin/crystal spec spec/compiler/semantic/proc_spec.cr
 # 特定のテストケースだけ（describe/it の名前でフィルタ）
 bin/crystal spec spec/compiler/semantic/ -e "proc type"
 
-# --progress で各ステージ時間を表示
-CRYSTAL_PROGRESS=1 bin/crystal build src/compiler/crystal.cr
+# 進捗表示
+bin/crystal build src/compiler/crystal.cr --progress
+
+# 各ステージ時間とメモリ使用量を表示
+bin/crystal build src/compiler/crystal.cr --stats
 ```
 
 `spec_helper.cr` の `assert_type("x = 1")` は式の型を検証する、`assert_error("...", "message")` はコンパイルエラーのメッセージを検証するヘルパーである。これらを使った小さなスペックを書いて pull request に添付することが期待される。
