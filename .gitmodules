@@ -1,3 +1,6 @@
 [submodule "crystal"]
 	path = crystal
 	url = https://github.com/crystal-lang/crystal
+[submodule "astv.cr"]
+	path = astv.cr
+	url = https://github.com/kojix2/astv.cr
