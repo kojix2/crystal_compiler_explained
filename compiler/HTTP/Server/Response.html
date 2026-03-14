@@ -5812,6 +5812,11 @@
       
     </li>
   
+  <li class=" " data-id="Crystal/OAuth2/ErrorResponse" data-name="oauth2::errorresponse">
+      <a href="../../OAuth2/ErrorResponse.html">ErrorResponse</a>
+      
+    </li>
+  
   <li class=" " data-id="Crystal/OAuth2/Session" data-name="oauth2::session">
       <a href="../../OAuth2/Session.html">Session</a>
       
@@ -6607,11 +6612,6 @@
       
     </li>
   
-  <li class=" " data-id="Crystal/Thread" data-name="thread">
-      <a href="../../Thread.html">Thread</a>
-      
-    </li>
-  
   <li class="parent " data-id="Crystal/Time" data-name="time">
       <a href="../../Time.html">Time</a>
       
@@ -7282,7 +7282,7 @@ This is useful to implement protocol upgrades, such as websockets.</p>
   </h2>
   
     
-      <a href="https://github.com/kojix2/crystal_compiler_explained/blob/62ad04c/src/http/server/response.cr#L18" target="_blank">
+      <a href="https://github.com/kojix2/crystal_compiler_explained/blob/44d276e/src/http/server/response.cr#L18" target="_blank">
         http/server/response.cr
       </a>
     
@@ -7325,9 +7325,23 @@ This is useful to implement protocol upgrades, such as websockets.</p>
       </li>
     
       <li class="entry-summary">
+        <a href="#content_length%3AInt64%7CNil-instance-method" class="signature"><strong>#content_length</strong> : Int64 | Nil</a>
+        
+          <div class="summary"><p>Convenience method to get the <code>Content-Length</code> header.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
         <a href="#content_length%3D%28content_length%3AInt%29%3AString-instance-method" class="signature"><strong>#content_length=</strong>(content_length : Int) : String</a>
         
           <div class="summary"><p>Convenience method to set the <code>Content-Length</code> header.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#content_type%3AString%7CNil-instance-method" class="signature"><strong>#content_type</strong> : String | Nil</a>
+        
+          <div class="summary"><p>Convenience method to get <code>Content-Type</code> header.</p></div>
         
       </li>
     
@@ -8092,7 +8106,7 @@ This method must be implemented if wrapping the response output.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/62ad04c/src/http/server/response.cr#L124" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/44d276e/src/http/server/response.cr#L134" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8113,7 +8127,28 @@ This method must be implemented if wrapping the response output.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/62ad04c/src/http/server/response.cr#L131" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/44d276e/src/http/server/response.cr#L141" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="content_length:Int64|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>content_length</strong> : <a href="../../Int64.html">Int64</a> | <a href="../../Nil.html">Nil</a>
+
+        <a class="method-permalink" href="#content_length%3AInt64%7CNil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Convenience method to get the <code>Content-Length</code> header.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/44d276e/src/http/server/response.cr#L88" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8134,7 +8169,28 @@ This method must be implemented if wrapping the response output.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/62ad04c/src/http/server/response.cr#L77" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/44d276e/src/http/server/response.cr#L82" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="content_type:String|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>content_type</strong> : <a href="../../String.html">String</a> | <a href="../../Nil.html">Nil</a>
+
+        <a class="method-permalink" href="#content_type%3AString%7CNil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Convenience method to get <code>Content-Type</code> header.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/44d276e/src/http/server/response.cr#L77" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8155,7 +8211,7 @@ This method must be implemented if wrapping the response output.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/62ad04c/src/http/server/response.cr#L71" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/44d276e/src/http/server/response.cr#L71" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8176,7 +8232,7 @@ This method must be implemented if wrapping the response output.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/62ad04c/src/http/server/response.cr#L101" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/44d276e/src/http/server/response.cr#L111" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8197,7 +8253,7 @@ This method must be implemented if wrapping the response output.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/62ad04c/src/http/server/response.cr#L118" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/44d276e/src/http/server/response.cr#L128" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8218,7 +8274,7 @@ This method must be implemented if wrapping the response output.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/62ad04c/src/http/server/response.cr#L20" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/44d276e/src/http/server/response.cr#L20" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8240,7 +8296,7 @@ the response body (for example to compress the output).</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/62ad04c/src/http/server/response.cr#L27" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/44d276e/src/http/server/response.cr#L27" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8262,7 +8318,7 @@ the response body (for example to compress the output).</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/62ad04c/src/http/server/response.cr#L27" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/44d276e/src/http/server/response.cr#L27" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8290,7 +8346,7 @@ sent.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/62ad04c/src/http/server/response.cr#L186" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/44d276e/src/http/server/response.cr#L196" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8318,7 +8374,7 @@ sent.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/62ad04c/src/http/server/response.cr#L159" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/44d276e/src/http/server/response.cr#L169" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8346,7 +8402,7 @@ sent.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/62ad04c/src/http/server/response.cr#L170" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/44d276e/src/http/server/response.cr#L180" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8368,7 +8424,7 @@ body. If not set, the default value is 200 (OK).</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/62ad04c/src/http/server/response.cr#L37" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/44d276e/src/http/server/response.cr#L37" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8384,7 +8440,7 @@ body. If not set, the default value is 200 (OK).</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/62ad04c/src/http/server/response.cr#L39" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/44d276e/src/http/server/response.cr#L39" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8405,7 +8461,7 @@ body. If not set, the default value is 200 (OK).</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/62ad04c/src/http/server/response.cr#L83" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/44d276e/src/http/server/response.cr#L93" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8426,7 +8482,7 @@ body. If not set, the default value is 200 (OK).</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/62ad04c/src/http/server/response.cr#L88" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/44d276e/src/http/server/response.cr#L98" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8448,7 +8504,7 @@ body. If not set, the default value is 200 (OK).</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/62ad04c/src/http/server/response.cr#L144" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/44d276e/src/http/server/response.cr#L154" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8469,7 +8525,7 @@ body. If not set, the default value is 200 (OK).</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/62ad04c/src/http/server/response.cr#L136" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/44d276e/src/http/server/response.cr#L146" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8491,7 +8547,7 @@ This is useful to implement protocol upgrades, such as websockets.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/62ad04c/src/http/server/response.cr#L112" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/44d276e/src/http/server/response.cr#L122" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8512,7 +8568,7 @@ This is useful to implement protocol upgrades, such as websockets.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/62ad04c/src/http/server/response.cr#L23" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/44d276e/src/http/server/response.cr#L23" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8533,7 +8589,7 @@ This is useful to implement protocol upgrades, such as websockets.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/62ad04c/src/http/server/response.cr#L94" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/44d276e/src/http/server/response.cr#L104" target="_blank">View source</a>]
         
       </div>
     </div>

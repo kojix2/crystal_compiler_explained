@@ -5812,6 +5812,11 @@
       
     </li>
   
+  <li class=" " data-id="Crystal/OAuth2/ErrorResponse" data-name="oauth2::errorresponse">
+      <a href="../../../OAuth2/ErrorResponse.html">ErrorResponse</a>
+      
+    </li>
+  
   <li class=" " data-id="Crystal/OAuth2/Session" data-name="oauth2::session">
       <a href="../../../OAuth2/Session.html">Session</a>
       
@@ -6607,11 +6612,6 @@
       
     </li>
   
-  <li class=" " data-id="Crystal/Thread" data-name="thread">
-      <a href="../../../Thread.html">Thread</a>
-      
-    </li>
-  
   <li class="parent " data-id="Crystal/Time" data-name="time">
       <a href="../../../Time.html">Time</a>
       
@@ -7263,7 +7263,7 @@
   </h2>
   
     
-      <a href="https://github.com/kojix2/crystal_compiler_explained/blob/62ad04c/src/compiler/crystal/interpreter/interpreter.cr#L8" target="_blank">
+      <a href="https://github.com/kojix2/crystal_compiler_explained/blob/44d276e/src/compiler/crystal/interpreter/interpreter.cr#L8" target="_blank">
         compiler/crystal/interpreter/interpreter.cr
       </a>
     
@@ -7309,12 +7309,75 @@
   <ul class="list-summary">
     
       <li class="entry-summary">
+        <a href="#block_caller_frame_index%3AInt32-instance-method" class="signature"><strong>#block_caller_frame_index</strong> : Int32</a>
+        
+          <div class="summary"><p>The index of the frame that called a block.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
         <a href="#clone-instance-method" class="signature"><strong>#clone</strong></a>
         
       </li>
     
       <li class="entry-summary">
+        <a href="#compiled_block%3ACompiledBlock%7CNil-instance-method" class="signature"><strong>#compiled_block</strong> : CompiledBlock | Nil</a>
+        
+          <div class="summary"><p>The CompiledBlock related to this call frame, if any</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#compiled_def%3ACompiledDef-instance-method" class="signature"><strong>#compiled_def</strong> : CompiledDef</a>
+        
+          <div class="summary"><p>The CompiledDef related to this call frame</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
         <a href="#copy_with%28compiled_def_compiled_def%3D%40compiled_def%2Ccompiled_block_compiled_block%3D%40compiled_block%2Cinstructions_instructions%3D%40instructions%2Cip_ip%3D%40ip%2Cstack_stack%3D%40stack%2Cstack_bottom_stack_bottom%3D%40stack_bottom%2Cblock_caller_frame_index_block_caller_frame_index%3D%40block_caller_frame_index%2Creal_frame_index_real_frame_index%3D%40real_frame_index%2Coverflow_offset_overflow_offset%3D%40overflow_offset%29-instance-method" class="signature"><strong>#copy_with</strong>(compiled_def _compiled_def = @compiled_def, compiled_block _compiled_block = @compiled_block, instructions _instructions = @instructions, ip _ip = @ip, stack _stack = @stack, stack_bottom _stack_bottom = @stack_bottom, block_caller_frame_index _block_caller_frame_index = @block_caller_frame_index, real_frame_index _real_frame_index = @real_frame_index, overflow_offset _overflow_offset = @overflow_offset)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#instructions%3ACompiledInstructions-instance-method" class="signature"><strong>#instructions</strong> : CompiledInstructions</a>
+        
+          <div class="summary"><p>Instructions for this frame</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#ip%3APointer%28UInt8%29-instance-method" class="signature"><strong>#ip</strong> : Pointer(UInt8)</a>
+        
+          <div class="summary"><p>The pointer to the current instruction for this call frame.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#overflow_offset%3AInt32-instance-method" class="signature"><strong>#overflow_offset</strong> : Int32</a>
+        
+          <div class="summary"><p>This is a bit hacky, but...</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#real_frame_index%3AInt32-instance-method" class="signature"><strong>#real_frame_index</strong> : Int32</a>
+        
+          <div class="summary"><p>When a <code>yield</code> happens we copy the frame pointed by <code><a href="../../../Crystal/Repl/Interpreter/CallFrame.html#block_caller_frame_index%3AInt32-instance-method">#block_caller_frame_index</a></code>.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#stack%3APointer%28UInt8%29-instance-method" class="signature"><strong>#stack</strong> : Pointer(UInt8)</a>
+        
+          <div class="summary"><p>What's the frame's stack.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#stack_bottom%3APointer%28UInt8%29-instance-method" class="signature"><strong>#stack_bottom</strong> : Pointer(UInt8)</a>
+        
+          <div class="summary"><p>What's the frame's stack bottom.</p></div>
         
       </li>
     
@@ -7695,7 +7758,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/62ad04c/src/compiler/crystal/interpreter/interpreter.cr#L8" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/44d276e/src/compiler/crystal/interpreter/interpreter.cr#L8" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -7716,6 +7779,30 @@
     Instance Method Detail
   </h2>
   
+    <div class="entry-detail" id="block_caller_frame_index:Int32-instance-method">
+      <div class="signature">
+        
+        def <strong>block_caller_frame_index</strong> : <a href="../../../Int32.html">Int32</a>
+
+        <a class="method-permalink" href="#block_caller_frame_index%3AInt32-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>The index of the frame that called a block.
+This is useful to know because when a <code>yield</code> happens,
+we more or less create a new stack frame that has the same
+local variables as this frame, because the block will need
+to access that frame's variables.
+It's -1 if the value is not present.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
     <div class="entry-detail" id="clone-instance-method">
       <div class="signature">
         
@@ -7727,7 +7814,45 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/62ad04c/src/compiler/crystal/interpreter/interpreter.cr#L8" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/44d276e/src/compiler/crystal/interpreter/interpreter.cr#L8" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="compiled_block:CompiledBlock|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>compiled_block</strong> : <a href="../../../Crystal/Repl/CompiledBlock.html">CompiledBlock</a> | <a href="../../../Nil.html">Nil</a>
+
+        <a class="method-permalink" href="#compiled_block%3ACompiledBlock%7CNil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>The CompiledBlock related to this call frame, if any</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="compiled_def:CompiledDef-instance-method">
+      <div class="signature">
+        
+        def <strong>compiled_def</strong> : <a href="../../../Crystal/Repl/CompiledDef.html">CompiledDef</a>
+
+        <a class="method-permalink" href="#compiled_def%3ACompiledDef-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>The CompiledDef related to this call frame</p>
+        </div>
+      
+      <br/>
+      <div>
         
       </div>
     </div>
@@ -7743,7 +7868,142 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/62ad04c/src/compiler/crystal/interpreter/interpreter.cr#L8" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/44d276e/src/compiler/crystal/interpreter/interpreter.cr#L8" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="instructions:CompiledInstructions-instance-method">
+      <div class="signature">
+        
+        def <strong>instructions</strong> : <a href="../../../Crystal/Repl/CompiledInstructions.html">CompiledInstructions</a>
+
+        <a class="method-permalink" href="#instructions%3ACompiledInstructions-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Instructions for this frame</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="ip:Pointer(UInt8)-instance-method">
+      <div class="signature">
+        
+        def <strong>ip</strong> : <a href="../../../Pointer.html">Pointer</a>(<a href="../../../UInt8.html">UInt8</a>)
+
+        <a class="method-permalink" href="#ip%3APointer%28UInt8%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>The pointer to the current instruction for this call frame.
+This value changes as the program goes, and when a call is made
+this value is useful to know where we need to continue after
+the call returns.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="overflow_offset:Int32-instance-method">
+      <div class="signature">
+        
+        def <strong>overflow_offset</strong> : <a href="../../../Int32.html">Int32</a>
+
+        <a class="method-permalink" href="#overflow_offset%3AInt32-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>This is a bit hacky, but...
+Right now, when we produce an OverflowError we do it directly
+in the instruction that potentially produces the overflow.
+When we do that, the backtrace that is produced in that case
+is incorrect because the backtrace computing logic assumes
+an all call frames are, well, calls. But in this case it could
+be an <code>add_i32</code> instruction which has a different layout.
+To solve this, we have an optional <code><a href="../../../Crystal/Repl/Interpreter/CallFrame.html#overflow_offset%3AInt32-instance-method">#overflow_offset</a></code> that
+we put on a frame to indicate that the caller frame must
+add to get the correct backtrace location.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="real_frame_index:Int32-instance-method">
+      <div class="signature">
+        
+        def <strong>real_frame_index</strong> : <a href="../../../Int32.html">Int32</a>
+
+        <a class="method-permalink" href="#real_frame_index%3AInt32-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>When a <code>yield</code> happens we copy the frame pointed by
+<code><a href="../../../Crystal/Repl/Interpreter/CallFrame.html#block_caller_frame_index%3AInt32-instance-method">#block_caller_frame_index</a></code>. If a <code>return</code> happens inside
+that block we need to return from that frame (the <code>def</code>s one.)
+With <code><a href="../../../Crystal/Repl/Interpreter/CallFrame.html#real_frame_index%3AInt32-instance-method">#real_frame_index</a></code> we know where that frame is actually
+in the call stack (the original, not the copy) and we can
+go back to just before that frame when a <code>return</code> happens.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="stack:Pointer(UInt8)-instance-method">
+      <div class="signature">
+        
+        def <strong>stack</strong> : <a href="../../../Pointer.html">Pointer</a>(<a href="../../../UInt8.html">UInt8</a>)
+
+        <a class="method-permalink" href="#stack%3APointer%28UInt8%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>What's the frame's stack.
+This value changes as the program goes, and when a call is made
+this value is useful to know what values in the stack we need
+to have when the call returns.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="stack_bottom:Pointer(UInt8)-instance-method">
+      <div class="signature">
+        
+        def <strong>stack_bottom</strong> : <a href="../../../Pointer.html">Pointer</a>(<a href="../../../UInt8.html">UInt8</a>)
+
+        <a class="method-permalink" href="#stack_bottom%3APointer%28UInt8%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>What's the frame's stack bottom. After this position come the
+def's local variables.</p>
+        </div>
+      
+      <br/>
+      <div>
         
       </div>
     </div>

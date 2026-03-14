@@ -5812,6 +5812,11 @@
       
     </li>
   
+  <li class=" " data-id="Crystal/OAuth2/ErrorResponse" data-name="oauth2::errorresponse">
+      <a href="../OAuth2/ErrorResponse.html">ErrorResponse</a>
+      
+    </li>
+  
   <li class=" " data-id="Crystal/OAuth2/Session" data-name="oauth2::session">
       <a href="../OAuth2/Session.html">Session</a>
       
@@ -6607,11 +6612,6 @@
       
     </li>
   
-  <li class=" " data-id="Crystal/Thread" data-name="thread">
-      <a href="../Thread.html">Thread</a>
-      
-    </li>
-  
   <li class="parent " data-id="Crystal/Time" data-name="time">
       <a href="../Time.html">Time</a>
       
@@ -7263,7 +7263,7 @@
   </h2>
   
     
-      <a href="https://github.com/kojix2/crystal_compiler_explained/blob/62ad04c/src/oauth/error.cr#L1" target="_blank">
+      <a href="https://github.com/kojix2/crystal_compiler_explained/blob/44d276e/src/oauth/error.cr#L1" target="_blank">
         oauth/error.cr
       </a>
     
@@ -7286,7 +7286,12 @@
   <ul class="list-summary">
     
       <li class="entry-summary">
-        <a href="#new%28response%29-class-method" class="signature"><strong>.new</strong>(response)</a>
+        <a href="#new%28message%3AString%29-class-method" class="signature"><strong>.new</strong>(message : String)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#new%28response%3AHTTP%3A%3AClient%3A%3AResponse%29-class-method" class="signature"><strong>.new</strong>(response : HTTP::Client::Response)</a>
         
       </li>
     
@@ -7730,18 +7735,34 @@
     Constructor Detail
   </h2>
   
-    <div class="entry-detail" id="new(response)-class-method">
+    <div class="entry-detail" id="new(message:String)-class-method">
       <div class="signature">
         
-        def self.<strong>new</strong>(response)
+        def self.<strong>new</strong>(message : <a href="../String.html">String</a>)
 
-        <a class="method-permalink" href="#new%28response%29-class-method">#</a>
+        <a class="method-permalink" href="#new%28message%3AString%29-class-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/62ad04c/src/oauth/error.cr#L2" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/44d276e/src/oauth/error.cr#L2" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="new(response:HTTP::Client::Response)-class-method">
+      <div class="signature">
+        
+        def self.<strong>new</strong>(response : <a href="../HTTP/Client/Response.html">HTTP::Client::Response</a>)
+
+        <a class="method-permalink" href="#new%28response%3AHTTP%3A%3AClient%3A%3AResponse%29-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/44d276e/src/oauth/error.cr#L6" target="_blank">View source</a>]
         
       </div>
     </div>
