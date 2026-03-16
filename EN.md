@@ -32,19 +32,29 @@ flowchart TD
 
 		subgraph PARSE ["① Parse"]
 				P1["Lexer tokenization"]
-				/* Lines 35-39 omitted */
+				P2["Parser syntax analysis"]
+				P3["ASTNode syntax tree"]
+				P4["prelude inserted at top"]
+				P1 --> P2 --> P3
 				P4 -.-> P3
 		end
 
 		subgraph SEM ["② Semantic  ─  Program#semantic  (semantic.cr)"]
 				direction TB
-				/* Lines 44-52 omitted */
+				S1["top level: collect class/def/macro declarations"]
+				S2["new methods: auto-generate initialize → new"]
+				S3["type declarations: freeze @x : T"]
+				S4["abstract def check"]
+				S5["restrictions augmenter"]
+				S6["ivars / cvars initializers"]
+				S7["main: type inference MainVisitor"]
+				S8["cleanup: dead code elimination"]
 				S1 --> S2 --> S3 --> S4 --> S5 --> S6 --> S7 --> S8
 		end
 
 		subgraph CG ["③ Codegen"]
 				C1["Generate LLVM IR (module split by type)"]
-				/* Lines 57-58 omitted */
+				C2["LLVM optimization, parallel .o generation"]
 				C1 --> C2
 		end
 
@@ -184,7 +194,13 @@ end
 classDiagram
 		class ASTNode {
 				<<abstract>>
-				/* Lines 202-209 omitted */
+				+location : Location?
+				+end_location : Location?
+				+type : Type?
+				+dependencies : SmallNodeList
+				+accept(visitor) void
+				+bind_to(node) void
+				+clone() ASTNode
 				+notify_observers() void
 		}
 		class Expressions {
@@ -197,11 +213,55 @@ classDiagram
 		}
 		class Call {
 				+obj : ASTNode?
-				/* Lines 221-223 omitted */
+				+name : String
+				+args : Array~ASTNode~
 				+block : Block?
 		}
 		class Def {
-				/* Lines 226-270 omitted */
+				+name : String
+				+args : Array~Arg~
+				+body : ASTNode
+				+return_type : ASTNode?
+		}
+		class If {
+				+cond : ASTNode
+				+then : ASTNode
+				+else : ASTNode
+		}
+		class Assign {
+				+target : ASTNode
+				+value : ASTNode
+		}
+		class ClassDef {
+				+name : Path
+				+body : ASTNode
+				+superclass : ASTNode?
+		}
+		class BinaryOp {
+				<<abstract>>
+				+left : ASTNode
+				+right : ASTNode
+		}
+		class ControlExpression {
+				<<abstract>>
+				+exp : ASTNode?
+		}
+		class Return
+		class Break
+		class Next
+
+		ASTNode <|-- Expressions
+		ASTNode <|-- Nop
+		ASTNode <|-- Var
+		ASTNode <|-- Call
+		ASTNode <|-- Def
+		ASTNode <|-- If
+		ASTNode <|-- Assign
+		ASTNode <|-- ClassDef
+		ASTNode <|-- BinaryOp
+		ASTNode <|-- ControlExpression
+		ControlExpression <|-- Return
+		ControlExpression <|-- Break
 		ControlExpression <|-- Next
 ```
 
@@ -393,7 +453,69 @@ Type (abstract)
 ```mermaid
 classDiagram
 		class Type {
-				/* Lines 513-576 omitted */
+				<<abstract>>
+				+program : Program
+				+to_s() String
+				+no_return?() Bool
+		}
+		class NamedType {
+				<<abstract>>
+				+name : String
+				+locations : Array~Location~
+		}
+		class ModuleType {
+				<<abstract>>
+				+types : Hash~String, Type~
+				+defs : Hash~String, Array~Def~~
+		}
+		class ClassType {
+				<<abstract>>
+				+superclass : ClassType?
+				+subclasses : Array~Type~
+		}
+		class PrimitiveType {
+				<<abstract>>
+		}
+		class NonGenericClassType
+		class GenericClassType {
+				+type_vars : Array~String~
+		}
+		class NonGenericModuleType
+		class GenericModuleType {
+				+type_vars : Array~String~
+		}
+		class NoReturnType
+		class VoidType
+		class AliasType {
+				+aliased_type : Type
+		}
+		class UnionType {
+				<<abstract>>
+				+union_types : Array~Type~
+		}
+		class MixedUnionType
+		class VirtualType {
+				+base_type : ClassType
+		}
+		class EnumType
+		class LibType
+
+		Type <|-- NamedType
+		Type <|-- UnionType
+		Type <|-- VirtualType
+		NamedType <|-- ModuleType
+		NamedType <|-- ClassType
+		NamedType <|-- NoReturnType
+		NamedType <|-- VoidType
+		NamedType <|-- AliasType
+		ModuleType <|-- NonGenericModuleType
+		ModuleType <|-- GenericModuleType
+		ModuleType <|-- EnumType
+		ModuleType <|-- LibType
+		ClassType <|-- NonGenericClassType
+		ClassType <|-- GenericClassType
+		ClassType <|-- PrimitiveType
+		UnionType <|-- MixedUnionType
 		NonGenericModuleType <|-- Program
 ```
 
@@ -442,7 +564,43 @@ end
 ```mermaid
 classDiagram
 		class Type {
-				/* Lines 639-676 omitted */
+				<<abstract>>
+		}
+		class NamedType {
+				<<abstract>>
+				+name : String
+		}
+		class ModuleType {
+				<<abstract>>
+				+types : Hash~String, Type~
+				+defs : Hash~String, Array~Def~~
+				+macros : Hash~String, Array~Macro~~
+		}
+		class NonGenericModuleType
+		class Program {
+				+symbols : Set~String~
+				+requires : Set~String~
+				+file_modules : Hash~String, FileModule~
+				+unions : Hash~Array~UInt64~, UnionType~
+				+vars : MetaVars
+				+filename : String?
+				+progress_tracker : ProgressTracker
+				+compiler : Compiler?
+				+string_pool : StringPool
+		}
+		class ProgressTracker {
+				+stage(name, block)
+		}
+		class Compiler {
+				+compile(sources)
+		}
+
+		Type <|-- NamedType
+		NamedType <|-- ModuleType
+		ModuleType <|-- NonGenericModuleType
+		NonGenericModuleType <|-- Program
+		Program --> ProgressTracker : progress_tracker
+		Program --> Compiler : compiler
 		Program --> "*" Type : types[]
 ```
 
@@ -1069,7 +1227,8 @@ Output cache layout:
 ```mermaid
 flowchart TD
 		A["Typed ASTNode tree"]
-		/* Lines 1523-1525 omitted */
+		B["CodeGenVisitor#accept(node)"]
+		C{"Node type"}
 		D["visit(Assign)
 store instruction"]
 		E["visit(If)
@@ -1081,7 +1240,7 @@ loop basic blocks"]
 		H["visit(NumberLiteral)
 LLVM::Value constant"]
 		I["inside codegen_call"]
-		/* Lines 1536-1537 omitted */
+		J{"Receiver type"}
 		K["visit_primitive
 primitive instructions
 (add nsw, fadd, etc.)"]
@@ -1093,7 +1252,12 @@ single concrete type"]
 		N["LLVM::Module
 (split by type)"]
 
-		/* Lines 1548-1554 omitted */
+		A --> B --> C
+		C --> D & E & F & G & H
+		F --> I --> J
+		J -->|primitive| K
+		J -->|Union/Virtual| L
+		J -->|single type| M
 		D & E & G & H & K & L & M --> N
 ```
 
