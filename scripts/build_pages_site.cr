@@ -76,7 +76,7 @@ def render_markdown(md_content : String) : String
   error = IO::Memory.new
   status = Process.run(
     "cmark-gfm",
-    ["--unsafe"],
+    ["--unsafe", "--extension", "table"],
     input: IO::Memory.new(md_content),
     output: output,
     error: error
