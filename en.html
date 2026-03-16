@@ -7,19 +7,1090 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.8.1/github-markdown-light.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/github.min.css">
   <style>
-    body { margin: 0; background: #f6f8fa; }
-    .container { max-width: 980px; margin: 0 auto; padding: 2rem 1rem; }
-    .markdown-body { background: #fff; border: 1px solid #d0d7de; border-radius: 8px; padding: 2rem; }
-    .topnav { margin-bottom: 1rem; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    :root {
+      --page-bg: #f3f6fb;
+      --card-bg: #ffffff;
+      --border: #d0d7de;
+      --text: #24292f;
+      --muted: #57606a;
+      --link: #0969da;
+      --code-bg: #f6f8fa;
+      --shadow: 0 8px 30px rgba(31, 35, 40, 0.08);
+    }
+
+    body {
+      margin: 0;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 15% 15%, #e8f1ff 0%, transparent 35%),
+        radial-gradient(circle at 85% 10%, #eef9f2 0%, transparent 30%),
+        var(--page-bg);
+    }
+
+    .container {
+      max-width: 1024px;
+      margin: 0 auto;
+      padding: 2rem 1rem 3rem;
+    }
+
+    .topnav {
+      margin-bottom: 1rem;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    .topnav a {
+      color: var(--link);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .topnav a:hover { text-decoration: underline; }
+
+    .markdown-body {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+      padding: 2rem;
+      line-height: 1.8;
+      font-size: 16px;
+    }
+
+    .markdown-body h1,
+    .markdown-body h2,
+    .markdown-body h3 {
+      line-height: 1.35;
+      scroll-margin-top: 1rem;
+    }
+
+    .markdown-body h1 { margin-top: 0.25rem; }
+    .markdown-body p,
+    .markdown-body ul,
+    .markdown-body ol,
+    .markdown-body blockquote,
+    .markdown-body table,
+    .markdown-body pre {
+      margin-top: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .markdown-body pre {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem;
+      overflow-x: auto;
+    }
+
+    .markdown-body code {
+      font-size: 0.9em;
+      border-radius: 6px;
+      padding: 0.15em 0.35em;
+    }
+
+    .markdown-body table {
+      display: block;
+      width: 100%;
+      overflow-x: auto;
+      border-collapse: collapse;
+    }
+
+    .markdown-body blockquote {
+      border-left: 4px solid var(--border);
+      color: var(--muted);
+      background: #f8fafc;
+      padding: 0.75rem 1rem;
+      border-radius: 0 8px 8px 0;
+    }
+
+    @media (max-width: 768px) {
+      .container { padding: 1rem 0.75rem 2rem; }
+      .markdown-body {
+        border-radius: 10px;
+        padding: 1rem;
+        font-size: 15px;
+      }
+    }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="topnav"><a href="index.html">Back to top</a></div>
-    <article id="content" class="markdown-body">Loading...</article>
+    <article id="content" class="markdown-body"><h1>How the Crystal Compiler Works</h1>
+<blockquote>
+<p><strong>Target audience:</strong> Developers who already understand Crystal’s type system and general compiler theory (lexing, parsing, type inference, code generation), and want to contribute to Crystal compiler internals.<br />
+<strong>Goal:</strong> Be able to read and modify code under <code>src/compiler/crystal/</code> on your own.</p>
+</blockquote>
+<hr />
+<h2>Table of Contents</h2>
+<ol>
+<li><a href="#1-overall-architecture">Overall Architecture</a></li>
+<li><a href="#2-directory-structure-reference">Directory Structure Reference</a></li>
+<li><a href="#3-ast-node-system">AST Node System</a></li>
+<li><a href="#4-type-hierarchy">Type Hierarchy</a></li>
+<li><a href="#5-crystalprogram--the-central-database-of-compilation">Crystal::Program — The Central Database of Compilation</a></li>
+<li><a href="#6-lexing-and-parsing">Lexing and Parsing</a></li>
+<li><a href="#7-the-require-system">The <code>require</code> System</a></li>
+<li><a href="#8-all-semantic-analysis-passes">All Semantic Analysis Passes</a></li>
+<li><a href="#9-type-inference-system-core">Type Inference System (Core)</a></li>
+<li><a href="#10-macro-system">Macro System</a></li>
+<li><a href="#11-llvm-code-generation">LLVM Code Generation</a></li>
+<li><a href="#12-contribution-guide">Contribution Guide</a></li>
+</ol>
+<hr />
+<h2>1. Overall Architecture</h2>
+<p>The Crystal compiler is a self-hosting compiler written in Crystal itself. Compilation is broadly split into three layers: <strong>(1) frontend (parse) → (2) middle-end (semantic analysis) → (3) backend (code generation)</strong>.</p>
+<pre><code class="language-mermaid">flowchart TD
+		SRC[&quot;📄 Source code (.cr)&quot;]
+
+		subgraph PARSE [&quot;① Parse&quot;]
+				P1[&quot;Lexer tokenization&quot;]
+				/* Lines 35-39 omitted */
+				P4 -.-&gt; P3
+		end
+
+		subgraph SEM [&quot;② Semantic  ─  Program#semantic  (semantic.cr)&quot;]
+				direction TB
+				/* Lines 44-52 omitted */
+				S1 --&gt; S2 --&gt; S3 --&gt; S4 --&gt; S5 --&gt; S6 --&gt; S7 --&gt; S8
+		end
+
+		subgraph CG [&quot;③ Codegen&quot;]
+				C1[&quot;Generate LLVM IR (module split by type)&quot;]
+				/* Lines 57-58 omitted */
+				C1 --&gt; C2
+		end
+
+		LINK[&quot;🔗 System linker cc / cl.exe&quot;]
+		BIN[&quot;⚙️ Executable binary&quot;]
+
+		SRC --&gt; PARSE
+		PARSE --&gt; SEM
+		SEM --&gt; CG
+		CG --&gt; LINK --&gt; BIN
+</code></pre>
+<p>The frontend entry point is the <code>Crystal::Compiler</code> class in <code>src/compiler/crystal/compiler.cr</code>. The <code>compile(sources)</code> method invokes parse, semantic analysis, and code generation in sequence.</p>
+<pre><code class="language-crystal"># compiler.cr — implementation of the parse stage
+private def parse(program, sources : Array)
+	@progress_tracker.stage(&quot;Parse&quot;) do
+		nodes = sources.map { |source| parse(program, source).as(ASTNode) }
+		/* Lines 77-81 omitted */
+		program.normalize(nodes)
+	end
+end
+</code></pre>
+<p><strong>With the <code>--progress</code> flag, the compiler prints the current stage and progress to stderr. Combine it with <code>--stats</code> to see elapsed time and memory usage for each stage.</strong> This is useful for performance work and bottleneck analysis.</p>
+<hr />
+<h2>2. Directory Structure Reference</h2>
+<h3><code>src/compiler/crystal/</code> — Compiler core</h3>
+<p>| Path                  | Responsibility                                                                  |
+| --------------------- | ------------------------------------------------------------------------------- |
+| <code>compiler.cr</code>         | <code>Crystal::Compiler</code> class. Orchestrates the full compilation pipeline           |
+| <code>program.cr</code>          | <code>Crystal::Program</code> class. Central DB for types, methods, require cache, etc.    |
+| <code>types.cr</code>            | Entire type system definitions (~3600 lines). Inheritance tree rooted at <code>Type</code> |
+| <code>semantic.cr</code>         | Defines and invokes all semantic passes                                         |
+| <code>crystal_path.cr</code>     | Filesystem path resolution for <code>require</code>                                        |
+| <code>formatter.cr</code>        | <code>crystal format</code> code formatter                                                 |
+| <code>progress_tracker.cr</code> | Compilation stage progress and timing                                           |</p>
+<h3><code>syntax/</code> — Lexing and parsing</h3>
+<p>| File                     | Responsibility                                                |
+| ------------------------ | ------------------------------------------------------------- |
+| <code>syntax/lexer.cr</code>        | Lexer (~2980 lines). Converts source text into <code>Token</code>s       |
+| <code>syntax/token.cr</code>        | Definitions of all token kinds and keywords                   |
+| <code>syntax/parser.cr</code>       | Recursive descent parser (~6500 lines). Inherits from <code>Lexer</code> |
+| <code>syntax/ast.cr</code>          | All AST node classes (~2500 lines)                            |
+| <code>syntax/visitor.cr</code>      | Visitor pattern base class                                    |
+| <code>syntax/transformer.cr</code>  | Transformer base class for tree-to-tree conversion            |
+| <code>syntax/location.cr</code>     | Source position value object (file, line, column)             |
+| <code>syntax/to_s.cr</code>         | Converts AST nodes back into Crystal source text              |
+| <code>syntax/virtual_file.cr</code> | Virtual source file management after macro expansion          |</p>
+<h3><code>semantic/</code> — Semantic analysis</h3>
+<p>| File                                     | Responsibility                                                          |
+| ---------------------------------------- | ----------------------------------------------------------------------- |
+| <code>semantic/top_level_visitor.cr</code>          | Pass 1: declaration handling for class/module/def/macro                 |
+| <code>semantic/main_visitor.cr</code>               | Main pass: core type inference (~3700 lines)                            |
+| <code>semantic/semantic_visitor.cr</code>           | Shared base class for the two visitors above; also handles <code>require</code>    |
+| <code>semantic/bindings.cr</code>                   | Type dependency graph for AST nodes. Uses <code>SmallNodeList</code> observers     |
+| <code>semantic/call.cr</code>                       | <code>Call#recalculate</code> — core call-site type inference                      |
+| <code>semantic/method_lookup.cr</code>              | Overload resolution                                                     |
+| <code>semantic/type_merge.cr</code>                 | Union synthesis algorithm for multiple types                            |
+| <code>semantic/restrictions.cr</code>               | Evaluates type restrictions like <code>def foo(x : Int32)</code>                   |
+| <code>semantic/filters.cr</code>                    | Control-flow narrowing via <code>is_a?</code>, <code>nil?</code>, etc.                        |
+| <code>semantic/cleanup_transformer.cr</code>        | Dead code elimination and AST post-processing                           |
+| <code>semantic/type_declaration_processor.cr</code> | Handles type declarations like <code>@x : Int32</code>                             |
+| <code>semantic/abstract_def_checker.cr</code>       | Verifies implementations of abstract methods                            |
+| <code>semantic/recursive_struct_checker.cr</code>   | Detects recursive structs (required because codegen cannot handle them) |
+| <code>semantic/literal_expander.cr</code>           | Expands literals like <code>[1, 2, 3]</code> into method calls                     |
+| <code>semantic/exhaustiveness_checker.cr</code>     | Exhaustiveness checks for <code>case/in</code>                                     |</p>
+<h3><code>codegen/</code> — LLVM code generation</h3>
+<p>| File                    | Responsibility                                                       |
+| ----------------------- | -------------------------------------------------------------------- |
+| <code>codegen/codegen.cr</code>    | Defines <code>CodeGenVisitor</code> (~2630 lines)                               |
+| <code>codegen/llvm_typer.cr</code> | Crystal type → LLVM type mapping table                               |
+| <code>codegen/llvm_id.cr</code>    | Assigns <code>type_id</code> integers to types                                  |
+| <code>codegen/call.cr</code>       | LLVM IR generation for method calls                                  |
+| <code>codegen/primitives.cr</code> | Converts primitives (integer ops etc.) directly to LLVM instructions |
+| <code>codegen/unions.cr</code>     | Generates tagged-union memory layout for union types                 |
+| <code>codegen/cast.cr</code>       | Generates type cast instructions                                     |
+| <code>codegen/debug.cr</code>      | Generates DWARF debug info                                           |
+| <code>codegen/exception.cr</code>  | LLVM implementation of <code>rescue/ensure</code> (<code>landingpad</code>)                |
+| <code>codegen/target.cr</code>     | Target architecture/OS configuration                                 |
+| <code>codegen/abi/</code>          | ABI implementations: <code>x86_64</code>, <code>aarch64</code>, <code>arm</code>, <code>wasm32</code>, etc.      |</p>
+<h3><code>macros/</code> — Macro system</h3>
+<p>| File                    | Responsibility                                                     |
+| ----------------------- | ------------------------------------------------------------------ |
+| <code>macros/interpreter.cr</code> | <code>MacroInterpreter &lt; Visitor</code> — interpreted execution of macro code |
+| <code>macros/macros.cr</code>      | Core macro expansion logic                                         |
+| <code>macros/methods.cr</code>     | Macro methods (<code>.stringify</code>, <code>.instance_vars</code>, etc.)               |
+| <code>macros/types.cr</code>       | Access to type information from within macros                      |</p>
+<hr />
+<h2>3. AST Node System</h2>
+<h3><code>Crystal::ASTNode</code> — Base class of all nodes</h3>
+<p>Defined in <code>syntax/ast.cr</code>. Every AST node inherits from this abstract class.</p>
+<pre><code class="language-crystal">abstract class ASTNode
+	property location : Location?       # node start position
+	property end_location : Location?   # node end position
+
+	def clone   # deep copy (heavily used in macro expansion)
+		clone = clone_without_location
+		/* Lines 178-181 omitted */
+		clone
+	end
+end
+</code></pre>
+<p>After semantic analysis, <code>semantic/bindings.cr</code> adds the following:</p>
+<pre><code class="language-crystal">class ASTNode
+	getter dependencies : SmallNodeList = SmallNodeList.new  # dependency nodes
+	# @observers is private; access via add_observer/notify_observers
+	@type : Type?  # set after semantic analysis
+end
+</code></pre>
+<h3>ASTNode class diagram</h3>
+<pre><code class="language-mermaid">classDiagram
+		class ASTNode {
+				&lt;&lt;abstract&gt;&gt;
+				/* Lines 202-209 omitted */
+				+notify_observers() void
+		}
+		class Expressions {
+				+expressions : Array~ASTNode~
+				+keyword : Keyword
+		}
+		class Nop
+		class Var {
+				+name : String
+		}
+		class Call {
+				+obj : ASTNode?
+				/* Lines 221-223 omitted */
+				+block : Block?
+		}
+		class Def {
+				/* Lines 226-270 omitted */
+		ControlExpression &lt;|-- Next
+</code></pre>
+<h3>Visitor and Transformer</h3>
+<p><strong><code>Visitor</code></strong> (<code>syntax/visitor.cr</code>) is the read-only tree traversal pattern. Implement <code>visit(node : NodeType)</code> to process nodes. Most semantic passes inherit from <code>Visitor</code>.</p>
+<p><strong><code>Transformer</code></strong> (<code>syntax/transformer.cr</code>) is the pattern that returns transformed nodes. <code>transform(node : NodeType)</code> receives a node and returns its transformed replacement. <code>CleanupTransformer</code>, etc., use this.</p>
+<h3>Dual nature of <code>ASTNode</code></h3>
+<p><code>ASTNode</code> serves both as a <strong>syntax node</strong> and a <strong>typed node</strong>, but those roles are separated in time.</p>
+<pre><code>After parse (untyped state):
+	ASTNode
+	/* Lines 288-290 omitted */
+	└── @dependencies = []     # dependency graph still empty
+
+After semantic analysis (typed state):
+	ASTNode
+	/* Lines 294-297 omitted */
+	└── @observers = [...]      # nodes observing this node's type changes
+</code></pre>
+<h3>Special role of <code>Expressions</code></h3>
+<p><code>Expressions</code> in <code>syntax/ast.cr</code> is the only node representing a Crystal “list of statements” (block), and it underpins most other nodes.</p>
+<pre><code class="language-crystal">class Expressions &lt; ASTNode
+	enum Keyword
+		/* Lines 307-313 omitted */
+	property keyword : Keyword = Keyword::None
+</code></pre>
+<p><strong><code>Expressions.from</code> factory method</strong> is used throughout the compiler:</p>
+<pre><code class="language-crystal"># empty array -&gt; Nop.new (do-nothing node)
+# one element -&gt; return it directly (do NOT wrap in Expressions)
+# two or more elements -&gt; Expressions.new
+def self.from(obj : Array)
+	case obj.size
+	/* Lines 324-327 omitted */
+	end
+end
+</code></pre>
+<p>Why this matters: in ASTs after <code>require</code> expansion, <code>Expressions.from</code> avoids creating unnecessary wrappers for single-file cases. This improves performance and simplifies downstream visitors.</p>
+<h3><code>MainVisitor#visit(node : Expressions)</code> behavior</h3>
+<p>In <code>Expressions</code> visit, <strong>only the last expression carries the resulting type; preceding expressions are evaluated only for side effects</strong>:</p>
+<pre><code class="language-crystal">def visit(node : Expressions)
+	exp_count = node.expressions.size
+	/* Lines 340-352 omitted */
+	false
+end
+</code></pre>
+<p><code>ignoring_type_filters</code> is a mechanism to prevent type-filter side effects (<code>is_a?</code>, etc.) from leaking from intermediate expressions.</p>
+<h3><code>FileNode</code> — File boundary node</h3>
+<p>When <code>require</code> is expanded, <code>FileNode</code>s are inserted into <code>Expressions</code>. <code>FileNode</code> stores filename information, and when visited by <code>MainVisitor</code>, it <strong>switches <code>@vars</code> and <code>@meta_vars</code> to file-local scopes</strong>:</p>
+<pre><code class="language-crystal">def visit(node : FileNode)
+	old_vars = @vars
+	/* Lines 365-377 omitted */
+	false
+end
+</code></pre>
+<p>This prevents top-level variables from one file leaking into others. <code>program.file_module(filename)</code> looks up <code>Program#file_modules</code>, allowing reuse of the same <code>FileModule</code> even when the file is visited multiple times.</p>
+<h3>Major ASTNode subclass categories</h3>
+<p>| Category             | Representative nodes                                             | Characteristic                                                           |
+| -------------------- | ---------------------------------------------------------------- | ------------------------------------------------------------------------ |
+| <strong>Literals</strong>         | <code>NumberLiteral</code>, <code>StringLiteral</code>, <code>BoolLiteral</code>, <code>SymbolLiteral</code> | Type is fixed immediately after parse via <code>set_type</code>                     |
+| <strong>References</strong>       | <code>Var</code>, <code>InstanceVar</code>, <code>ClassVar</code>, <code>Global</code>, <code>Path</code>               | Linked into dependency graph via <code>bind_to</code>                               |
+| <strong>Calls</strong>            | <code>Call</code>                                                           | <code>recalculate</code> repeatedly infers call types via observer mechanism        |
+| <strong>Control flow</strong>     | <code>If</code>, <code>While</code>, <code>Return</code>, <code>Yield</code>, <code>Block</code>                        | Node type is determined by merging child types                           |
+| <strong>Declarations</strong>     | <code>Def</code>, <code>ClassDef</code>, <code>ModuleDef</code>, <code>MacroDef</code>                       | Return no meaningful value (<code>Nil</code> type); mutate <code>Program</code> as side effect |
+| <strong>Type annotations</strong> | <code>TypeDeclaration</code>, <code>UninitializedVar</code>                            | Set <code>freeze_type</code> to lock variable type                                  |
+| <strong>Conversions</strong>      | <code>Cast (as)</code>, <code>IsA (is_a?)</code>, <code>NilableCast (as?)</code>                  | Generate type filters and conversion nodes                               |</p>
+<h3>Basic call contract</h3>
+<p>Protocol defined in <code>syntax/visitor.cr</code>:</p>
+<pre><code class="language-crystal">class Visitor
+	def visit_any(node) = true   # common pre-hook for all nodes (default: continue)
+	def end_visit(node) = nil    # post-hook (default: no-op)
+end
+
+class ASTNode
+	def accept(visitor)
+		/* Lines 409-420 omitted */
+	end
+end
+</code></pre>
+<p>When <code>visit</code> returns <code>false</code>, <strong>child traversal is stopped</strong>. Most semantic <code>visit</code> methods manually <code>accept</code> children and then return <code>false</code>, preventing double traversal by default <code>accept_children</code>.</p>
+<p>Example <code>Expressions#accept_children</code>:</p>
+<pre><code class="language-crystal">class Expressions &lt; ASTNode
+	def accept_children(visitor)
+		/* Lines 431-432 omitted */
+	end
+end
+</code></pre>
+<p>Declaration nodes like <code>Def</code> return <code>false</code> in <code>TopLevelVisitor</code> to stop walking method bodies. Bodies are traversed only in <code>MainVisitor</code>.</p>
+<h3>Cross-cutting logic via <code>visit_any</code></h3>
+<p><code>MainVisitor#visit_any</code>:</p>
+<pre><code class="language-crystal">def visit_any(node)
+	@unreachable = false   # reset unreachable flag when entering any node
+	super
+end
+</code></pre>
+<p><code>@unreachable</code> becomes <code>true</code> after <code>NoReturn</code> expressions (<code>raise</code>, <code>return</code>, etc.) and is used to skip inference of subsequent expressions. Resetting it in <code>visit_any</code> ensures fresh state at each node entry.</p>
+<h3>Transformer traversal</h3>
+<p><code>Transformer</code> has a traversal mechanism independent from <code>Visitor</code>. <code>ASTNode#transform(transformer)</code> transforms and returns a new node:</p>
+<pre><code class="language-crystal">class ASTNode
+	def transform(transformer)
+		/* Lines 458-465 omitted */
+	end
+end
+</code></pre>
+<p>Example in <code>CleanupTransformer</code>: if an <code>If</code> node is proven to always execute only its <code>then</code> branch (for example, because <code>else</code> is <code>NoReturn</code>), it returns the <code>then</code> content to replace the <code>If</code> node.</p>
+<hr />
+<h2>4. Type Hierarchy</h2>
+<p><code>types.cr</code> (~3600 lines) implements the entire type system. A condensed inheritance tree:</p>
+<pre><code>Type (abstract)
+├── NoReturnType            # type of expressions that never return a value (raise, exit, etc.)
+├── VoidType                # C-like void
+├── NilType                 # type of nil
+├── BoolType
+├── IntegerType
+│   ├── Int8Type, Int16Type, Int32Type, Int64Type, Int128Type
+│   └── UInt8Type, UInt16Type, UInt32Type, UInt64Type, UInt128Type
+├── FloatType
+│   ├── Float32Type
+│   └── Float64Type
+├── NamedType               # base for named types
+│   ├── ModuleType
+│   │   ├── NonGenericModuleType   ← Program inherits from this
+│   │   └── GenericModuleType      (e.g. Comparable(T))
+│   ├── ClassType
+│   │   ├── NonGenericClassType    (e.g. String, IO)
+│   │   └── GenericClassType       (e.g. Array(T), Hash(K,V))
+│   ├── StructType
+│   │   ├── NonGenericStructType
+│   │   └── GenericStructType      (e.g. Tuple(T*))
+│   ├── EnumType
+│   ├── LibType                    # `lib Foo` block
+│   └── AliasType                  # `alias Foo = Bar`
+├── UnionType               # A | B. Cached in Program#unions
+├── PointerInstanceType     # instance-side type for Pointer(T)
+├── ProcInstanceType        # instance-side type for Proc(A, B, R)
+└── VirtualType             # virtual dispatch type for abstract classes
+</code></pre>
+<h3>Type class diagram</h3>
+<pre><code class="language-mermaid">classDiagram
+		class Type {
+				/* Lines 513-576 omitted */
+		NonGenericModuleType &lt;|-- Program
+</code></pre>
+<p><strong><code>VirtualType</code></strong> is especially important. If <code>abstract class Animal</code> has subclasses <code>Dog</code> and <code>Cat</code>, a variable typed as <code>Animal</code> is represented as <code>VirtualType(Animal)</code>. In codegen, it is lowered into a tagged union (similar to regular union representation) to enable virtual dispatch.</p>
+<blockquote>
+<p><strong>📊 Cross-language comparison: Union and Nil safety</strong></p>
+<p><strong>Union implementation:</strong></p>
+<p>| Language | Model | Runtime representation | Safety |
+|---|---|---|---|
+| <strong>Crystal</strong> | Flat union (<code>A \| B \| C</code>, singleton per same composition) | <code>{type_id: i32, data: union}</code> tagged union | ◎ Full case analysis at compile time |
+| Rust | Algebraic data type (<code>enum</code>, named variants) | Tagged union (size aligned to max variant) | ◎ Exhaustive <code>match</code> required |
+| TypeScript | Structural union (<code>A \| B</code>) | No runtime tag (duck typing) | △ Relies on type guards |
+| Haskell | ADT (<code>data Either a b = Left a \| Right b</code>) | Heap pointer with tag | ◎ Exhaustive cases required |
+| C | <code>union</code> (untagged) | Raw shared memory | ✗ Manual management, unsafe |</p>
+<p><strong>Nil safety implementation:</strong></p>
+<p>| Language | Model | Syntax | Nature of nil |
+|---|---|---|---|
+| <strong>Crystal</strong> | <code>Nil</code> is just a type (<code>String \| Nil</code>) | <code>String?</code> is syntax sugar | Unified with union types |
+| Rust | <code>Option&lt;T&gt;</code> (<code>Some(T) \| None</code>) | <code>Option&lt;String&gt;</code> | Special case of ADT |
+| Swift | <code>Optional&lt;T&gt;</code> | <code>String?</code> | Special case of ADT |
+| Kotlin | Nullable type (<code>String?</code>) | <code>String?</code> | Built into type system as separate axis |
+| Java (&lt;=10) | <code>null</code> exists on all reference types | none | Outside type system (unsafe) |</p>
+<p>Crystal’s biggest distinction is that <strong>nil is not special-cased at all</strong>. <code>String?</code> is only syntax sugar for <code>String | Nil</code>, and <code>Nil</code> is an ordinary <code>NilType</code> class. Since nil safety is provided by the same union machinery, no wrapper like <code>Option&lt;T&gt;</code> is needed.</p>
+</blockquote>
+<hr />
+<h2>5. <code>Crystal::Program</code> — The Central Database of Compilation</h2>
+<p><code>Crystal::Program</code> in <code>program.cr</code> inherits from <code>NonGenericModuleType</code> and stores all global state related to the compilation as a whole.</p>
+<pre><code class="language-crystal">class Program &lt; NonGenericModuleType
+	# all symbols appearing in the program (:foo, :bar, etc.)
+	/* Lines 614-630 omitted */
+	getter splat_expansions : Hash(Def, Array(Type))
+end
+</code></pre>
+<h3>Program class diagram</h3>
+<pre><code class="language-mermaid">classDiagram
+		class Type {
+				/* Lines 639-676 omitted */
+		Program --&gt; &quot;*&quot; Type : types[]
+</code></pre>
+<p>Because <code>Program</code> is also the top-level module type, built-in types like <code>Int32</code> and <code>String</code> are stored as <code>NamedType</code>s under <code>Program</code>. You can look up types via <code>program.types[&quot;String&quot;]</code>.</p>
+<hr />
+<h2>6. Lexing and Parsing</h2>
+<h3>Lexer</h3>
+<p><code>Crystal::Lexer</code> in <code>syntax/lexer.cr</code> scans source text with <code>Char::Reader</code> in Unicode units and produces <code>Token</code> objects. <strong>It is a pull model: the parser calls <code>next_token</code> on demand</strong>, so token streams are not generated all at once.</p>
+<p>Important state flags:</p>
+<p>| Flag                      | Meaning                                                |
+| ------------------------- | ------------------------------------------------------ |
+| <code>slash_is_regex</code>          | Parse <code>/</code> as regex literal start instead of division   |
+| <code>doc_enabled</code>             | Store doc comments beginning with <code>#</code> into <code>Token#doc</code> |
+| <code>wants_def_or_macro_name</code> | After <code>def</code>/<code>macro</code>, accept reserved words as names    |</p>
+<h3>Parser (recursive descent)</h3>
+<p><code>Crystal::Parser</code> in <code>syntax/parser.cr</code> directly inherits from <code>Lexer</code> and consumes tokens through method calls in a classic recursive-descent style (~6500 lines).</p>
+<pre><code class="language-crystal">class Parser &lt; Lexer
+	enum ParseMode
+		/* Lines 704-708 omitted */
+	end
+</code></pre>
+<p><strong>Variable scope management is the core for identifier/call disambiguation.</strong> <code>@var_scopes : Array(Set(String))</code> stores variable-name sets as a stack. When an identifier is read, if its name exists in the current scope set, it is parsed as a variable reference; otherwise as a zero-arg method call.</p>
+<pre><code>foo   # if &quot;foo&quot; exists in @var_scopes -&gt; Var.new(&quot;foo&quot;)
+foo   # if &quot;foo&quot; does not exist in @var_scopes -&gt; Call.new(nil, &quot;foo&quot;, [])
+</code></pre>
+<p>Entry flow is <code>parse</code> → <code>parse_expressions</code> → <code>parse_XXX</code> methods. Output is an <code>ASTNode</code> tree.</p>
+<blockquote>
+<p><strong>📊 Cross-language comparison: Lexer/Parser implementation style</strong></p>
+<p>| Language | Lexer | Parser | Notes |
+|---|---|---|---|
+| <strong>Crystal</strong> | Handwritten DFA (<code>case current_char</code>) | Handwritten recursive descent | Context-sensitive decisions via <code>@var_scopes</code> stack |
+| Rust | Handwritten DFA | Handwritten recursive descent | Resolves contextual <code>&lt;</code> ambiguity by surrounding context |
+| Go | Handwritten DFA | Handwritten recursive descent | Minimal context dependence due to simple grammar |
+| Clang | Handwritten DFA | Handwritten recursive descent | Handles C/C++ context-dependent syntax via scope analysis |
+| Ruby (&lt;=3.1) | flex (lexer generator) | Yacc/Bison (LR(1)) | Declarative grammar but harder error messages |
+| Ruby (3.2+) | Handwritten | LRAMA (LR, custom) | Migrated from Yacc to custom LR generator |
+| Python (3.9+) | Handwritten | PEG/Packrat (pegen) | Uses memoization for backtracking |
+| GHC (Haskell) | Alex (flex-like) | Happy (LALR) | Symbol-heavy ambiguity managed at grammar level |</p>
+<p>Crystal’s core reason for choosing handwritten recursive descent is <strong>context sensitivity</strong>. Whether <code>foo</code> is a variable or method call requires <code>@var_scopes</code>. Whether <code>{</code> starts a block or hash literal depends on call context. These are difficult to express naturally in declarative LR/PEG grammars, while handwritten code can directly control them through <code>ParseMode</code> and flags like <code>@stop_on_do</code>.</p>
+</blockquote>
+<hr />
+<h2>7. The <code>require</code> System</h2>
+<h3>File lookup: <code>CrystalPath</code></h3>
+<p><code>Crystal::CrystalPath</code> in <code>crystal_path.cr</code> resolves <code>require &quot;foo&quot;</code>.</p>
+<p>Search path priority:</p>
+<ol>
+<li><strong><code>CRYSTAL_PATH</code> environment variable</strong> — <code>:</code>-separated directory list</li>
+<li><strong><code>Crystal::Config.path</code></strong> — path embedded at compiler build time</li>
+<li><strong><code>lib/</code></strong> — libraries installed by shards</li>
+</ol>
+<p><strong><code>$ORIGIN</code> expansion:</strong> For install portability, a special indirection <code>$ORIGIN</code> is used to reference stdlib relative to the compiler binary location.</p>
+<p><code>require &quot;./foo&quot;</code> resolves relative to current file. <code>require &quot;foo&quot;</code> uses path search.</p>
+<h3>Duplicate-prevention for <code>require</code></h3>
+<p>Handled by <code>visit(node : Require)</code> in <code>semantic/semantic_visitor.cr</code>:</p>
+<pre><code class="language-crystal">def visit(node : Require)
+	filenames = @program.find_in_path(node.string, relative_to_filename)
+/* Lines 760-768 omitted */
+	end
+end
+</code></pre>
+<p><code>Program#requires</code> is a <code>Set(String)</code> of absolute paths, so requiring the same file multiple times still processes it only once.</p>
+<h3>Prelude bootstrap</h3>
+<p><code>Compiler#parse</code> inserts <code>Require.new(&quot;prelude&quot;)</code> at the beginning of all source inputs. <code>prelude</code> points to <code>src/prelude.cr</code>, which then recursively requires <code>object.cr</code>, <code>value.cr</code>, <code>int.cr</code>, <code>string.cr</code>, <code>array.cr</code>, etc., defining all built-in Crystal types.</p>
+<hr />
+<h2>8. All Semantic Analysis Passes</h2>
+<p><code>Program#semantic</code> in <code>semantic.cr</code> runs all passes in sequence. Each stage is wrapped with <code>@progress_tracker.stage(&quot;Semantic (xxx)&quot;) { ... }</code>.</p>
+<pre><code class="language-crystal">def semantic(node : ASTNode, cleanup = true, ...) : ASTNode
+	node, processor = top_level_semantic(node)         # passes 1–5
+/* Lines 787-807 omitted */
+	result
+end
+</code></pre>
+<p>Early passes invoked from <code>top_level_semantic</code>:</p>
+<pre><code class="language-crystal">def top_level_semantic(node, ...)
+	# pass 1: TopLevelVisitor — register class/def/macro/alias/include declarations
+	/* Lines 816-838 omitted */
+	end
+end
+</code></pre>
+<h3>Responsibility of each pass</h3>
+<p>| Pass                   | Class                            | Summary                                                                                 |
+| ---------------------- | -------------------------------- | --------------------------------------------------------------------------------------- |
+| top level              | <code>TopLevelVisitor</code>                | Processes only declarations of class/module/def/macro; does not instantiate types       |
+| new                    | <code>define_new_methods</code>             | Auto-generates <code>self.new(...)</code> for each <code>initialize</code> overload                           |
+| type declarations      | <code>TypeDeclarationProcessor</code>       | Collects explicit type declarations (<code>@x : Int32</code>) and sets freeze type (<code>freeze_type</code>) |
+| abstract def check     | <code>AbstractDefChecker</code>             | Verifies every concrete class implements abstract methods                               |
+| restrictions augmenter | <code>RestrictionsAugmenter</code>          | Adds implicit type restrictions to overload candidates for faster dispatch              |
+| ivars initializers     | <code>InstanceVarsInitializerVisitor</code> | Associates instance var initializers (<code>@x = 1</code>) with class type info                    |
+| cvars initializers     | <code>ClassVarsInitializerVisitor</code>    | Resolves global initialization order for class vars (<code>@@x = 1</code>)                         |
+| main                   | <code>MainVisitor</code>                    | <strong>Core type inference</strong>; types all expressions and instantiates methods                 |
+| cleanup                | <code>CleanupTransformer</code>             | Removes branches reduced to <code>NoReturn</code>, expands single-type unions                      |
+| recursive struct       | <code>RecursiveStructChecker</code>         | Detects recursive structs with infinite size                                            |</p>
+<h3>Full pipeline chain</h3>
+<pre><code>Crystal::Compiler#compile
+│
+├─ parse(sources)
+│   └─ Parser#parse → ASTNode
+│       └─ Lexer#next_token (pull model)
+│
+└─ Program#semantic(node)
+		│
+		/* Lines 870-917 omitted */
+		└─ RecursiveStructChecker#run                [pass 10]
+</code></pre>
+<h3>Recursive parsing during <code>require</code></h3>
+<p>When a <code>require</code> node is reached, <strong><code>SemanticVisitor</code> (base of <code>TopLevelVisitor</code> and <code>MainVisitor</code>) immediately reads/parses/traverses that file</strong>. This is not lazy; it is immediate expansion.</p>
+<p><code>semantic/semantic_visitor.cr</code>:</p>
+<pre><code class="language-crystal">def visit(node : Require)
+	# ... skip if already expanded
+	/* Lines 929-948 omitted */
+	false
+end
+
+private def require_file(node : Require, filename : String)
+	parser = @program.new_parser(File.read(filename))  # &lt;- create Lexer + Parser
+	/* Lines 953-961 omitted */
+	FileNode.new(parsed_nodes, filename)  # &lt;- wrap and return as FileNode
+end
+</code></pre>
+<p>Because parse + traverse happens inside the current visitor stack frame, <code>require</code> behaves effectively as inline expansion. On error, nested messages such as “while requiring ...” are shown.</p>
+<h3>All places where <code>MainVisitor</code> creates another <code>MainVisitor</code></h3>
+<p>| Location             | Constructor call                                                     | Purpose                                                                     |
+| -------------------- | -------------------------------------------------------------------- | --------------------------------------------------------------------------- |
+| Method instantiation | <code>MainVisitor.new(program, vars, typed_def)</code>                          | Type inference for method body; <code>typed_def</code> tracks current method           |
+| Block                | <code>MainVisitor.new(program, before_block_vars, @typed_def, meta_vars)</code> | Block-local scope so block params don't overwrite outer vars                |
+| Constant             | <code>MainVisitor.new(@program, meta_vars, const_def)</code>                    | Type inference for const initializer; managed with <code>inside_constant = true</code> |
+| Closure              | <code>MainVisitor.new(program, fun_vars, node.def, meta_vars)</code>            | Body of function literals (<code>-&gt; { }</code>, etc.)                                  |
+| Interpreter          | <code>MainVisitor.new(from_main_visitor: @main_visitor)</code>                  | REPL session continuation; inherits <code>vars</code> / <code>meta_vars</code>                    |</p>
+<p>Each new <code>MainVisitor</code> has its own <code>vars</code> map, but shares the same <code>Program</code>. Therefore, observers attached by different visitors still propagate through the same graph via <code>notify_observers</code>.</p>
+<h3>Data written by <code>TopLevelVisitor</code></h3>
+<p>Main writes to <code>Program</code> (and each <code>NamedType</code>):</p>
+<pre><code class="language-crystal"># ① create class/struct/module
+type = NonGenericClassType.new(@program, scope, name, superclass, false)
+scope.types[name] = type                   # register in Program#types
+
+# ② register method definition
+def visit(node : Def)
+	node.owner = @current_type
+	/* Lines 993-996 omitted */
+	false   # &lt;- do not enter body
+end
+
+# ③ register macro
+def visit(node : MacroDef)
+	@current_type.add_macro(node)
+	/* Lines 1002-1003 omitted */
+	false
+end
+
+# ④ process include/extend
+def visit(node : Include)
+	included_module = lookup_type(node.name)
+	/* Lines 1009-1010 omitted */
+	# added to @current_type.parents
+end
+</code></pre>
+<p><code>add_def</code> overload management (<code>types.cr</code>):</p>
+<pre><code class="language-crystal">def add_def(a_def)
+	a_def.owner = self
+	/* Lines 1019-1034 omitted */
+	list &lt;&lt; item   # least strict -&gt; append at tail
+end
+</code></pre>
+<p><code>defs</code> is <code>Hash(String, Array(DefWithMetadata))</code>, an overload list indexed by method name. <code>DefWithMetadata</code> wraps a <code>Def</code> node plus restriction metadata (strictness of arg constraints).</p>
+<h3>Data written by <code>TypeDeclarationProcessor</code></h3>
+<pre><code class="language-crystal"># process @x : Int32 -&gt; set freeze_type on ivar
+ivar = type.lookup_instance_var(name)
+ivar.freeze_type = declared_type    # assignment of other types becomes error
+
+# @@x : Int32 -&gt; class var
+class_var = type.lookup_class_var(name)
+class_var.freeze_type = declared_type
+</code></pre>
+<p>When <code>freeze_type</code> is set, <code>ASTNode#set_type</code> enforces the constraint and raises <code>FrozenTypeException</code> on mismatch.</p>
+<h3>Data written by <code>MainVisitor</code></h3>
+<p><code>MainVisitor</code> types every <code>ASTNode</code>, but writes to <code>Program</code> itself mostly at these points:</p>
+<p>| Destination                          | Code                                         | Timing                        |
+| ------------------------------------ | -------------------------------------------- | ----------------------------- |
+| <code>Node#type</code>                          | <code>node.set_type(t)</code> / <code>node.bind_to(other)</code>   | During each node visit        |
+| <code>Def#vars</code> (<code>typed_def.vars</code>)        | <code>meta_vars = typed_def.vars = MetaVars.new</code>  | During method instantiation   |
+| <code>Program#vars</code>                       | <code>@meta_vars = @program.vars</code> (for top-level) | On initialization             |
+| <code>FileModule#vars</code>                    | <code>@meta_vars = file_module.vars</code>              | During <code>FileNode</code> visit       |
+| <code>Program#const_initializers</code>         | <code>program.const_initializers &lt;&lt; type</code>         | During const visits           |
+| <code>DefInstanceContainer#def_instances</code> | <code>type.add_def_instance(key, typed_def)</code>      | Cache on method instantiation |
+| Symbol table                         | <code>@program.symbols &lt;&lt; symbol_name</code>            | During <code>:foo</code> literal visit   |</p>
+<h3><code>DefInstanceContainer</code> — method-instantiation cache</h3>
+<p>To avoid repeatedly inferring the same method for the same argument type combination, <code>DefInstanceContainer</code> in <code>types.cr</code> provides a cache:</p>
+<pre><code class="language-crystal"># cache key: (original Def object id, arg type array, block type, named arg types)
+record DefInstanceKey,
+	def_object_id : UInt64,
+	/* Lines 1076-1078 omitted */
+	named_args : Array(NamedArgumentType)?
+
+module DefInstanceContainer
+	getter(def_instances) { {} of DefInstanceKey =&gt; Def }
+/* Lines 1082-1089 omitted */
+	end
+end
+</code></pre>
+<p>A typed <code>Def</code> is a <strong>clone of the original <code>Def</code> node</strong> with type info added (and generic params substituted with concrete types when needed). Same signature → same typed <code>Def</code> reused, so even 1000 calls to <code>main</code> infer only once.</p>
+<h3><code>SemanticVisitor#current_type</code> — type context stack</h3>
+<p><code>SemanticVisitor</code> has <code>@current_type : ModuleType</code> to track current class/module context during traversal:</p>
+<pre><code class="language-crystal">abstract class SemanticVisitor &lt; Visitor
+	property current_type : ModuleType  # initial value is Program itself
+/* Lines 1102-1108 omitted */
+	end
+end
+</code></pre>
+<p><code>visit(ClassDef)</code> enters via <code>pushing_type(node.resolved_type)</code>, so inner <code>def</code>/<code>include</code> declarations are registered against the correct class as <code>@current_type</code>.</p>
+<hr />
+<h2>9. Type Inference System (Core)</h2>
+<h3>Dependency graph and type propagation</h3>
+<p>Crystal’s inference works like <strong>Andersen-style data-flow propagation</strong> over a dependency graph.</p>
+<p>Each <code>ASTNode</code> is extended in <code>semantic/bindings.cr</code> and becomes a node in the dependency graph:</p>
+<pre><code class="language-crystal">struct SmallNodeList
+	# stores first two elements inline; additional ones in @tail Array
+	/* Lines 1127-1132 omitted */
+	...
+end
+
+class ASTNode
+	getter dependencies : SmallNodeList  # nodes this node depends on
+	/* Lines 1137-1138 omitted */
+	@type : Type?
+end
+</code></pre>
+<p>Propagation mechanism:</p>
+<ol>
+<li><strong><code>bind_to(node)</code></strong> — sets both <code>self.dependencies &lt;&lt; node</code> and <code>node.observers &lt;&lt; self</code></li>
+<li><strong><code>type=</code></strong> — when <code>@type</code> changes, calls <code>notify_observers</code></li>
+<li><strong><code>notify_observers</code></strong> — recursively calls each observer’s <code>update_type</code>, cascading changes</li>
+</ol>
+<pre><code class="language-crystal">def type=(type)
+	return if @type.same?(type) || (!type &amp;&amp; !@type)
+	/* Lines 1151-1153 omitted */
+	@type
+end
+
+def bind_to(node : ASTNode) : Nil
+	bind(node) do
+		/* Lines 1158-1160 omitted */
+	end
+end
+</code></pre>
+<h3>Dual tracking: <code>vars</code> and <code>meta_vars</code></h3>
+<p><code>MainVisitor</code> tracks variable types in <strong>two dictionaries</strong>:</p>
+<pre><code class="language-crystal">class MainVisitor &lt; SemanticVisitor
+	# vars: variable type at current execution point (single/concrete)
+	/* Lines 1171-1176 omitted */
+	getter meta_vars : MetaVars
+end
+</code></pre>
+<p><code>vars</code> is snapshotted across control flow (<code>if</code>/<code>while</code>/<code>rescue</code>, etc.) and merged after branching. <code>meta_vars</code> accumulates across the entire method and becomes final local declaration types.</p>
+<p><strong>Control-flow narrowing (type narrowing)</strong><br />
+Implemented in <code>semantic/filters.cr</code>. In <code>if x.is_a?(Int32)</code>, <code>x</code> is narrowed to <code>Int32</code> in then-branch and to “original minus Int32” in else-branch. This is done by storing <code>TypeFilter</code> in <code>vars[name].filter</code>, then applying it in <code>MainVisitor#visit(Var)</code>.</p>
+<h3><code>Call#recalculate</code> — core of call-site inference</h3>
+<p>In <code>semantic/call.cr</code>, <code>recalculate</code> is rerun whenever callee type changes. It is automatically triggered by observer propagation in the dependency graph.</p>
+<pre><code class="language-crystal">def recalculate
+	obj = @obj
+	/* Lines 1192-1210 omitted */
+	# -&gt; bind_to return value node to establish type propagation
+end
+</code></pre>
+<h3><code>type_merge</code> — union synthesis</h3>
+<p><code>semantic/type_merge.cr</code> merges multiple types into unions. Two-type merge is optimized because it is the most frequent case:</p>
+<pre><code class="language-crystal">def type_merge(first : Type?, second : Type?) : Type?
+	return first if first == second   # same type -&gt; return either
+	/* Lines 1221-1227 omitted */
+	combined_union_of compact_types({first, second})
+end
+
+def compact_types(objects, &amp;) : Array(Type)
+	all_types = Array(Type).new(objects.size)
+	/* Lines 1232-1235 omitted */
+	all_types
+end
+</code></pre>
+<p><code>add_type</code> recursively flattens <code>UnionType</code>, so <code>(A | B) | C</code> normalizes to <code>A | B | C</code>. <code>Program#unions</code> caches unions so identical compositions are represented by a single object.</p>
+<blockquote>
+<p><strong>📊 Cross-language comparison: type inference strategy</strong></p>
+<p>| Language | Strategy | Annotation at function boundary | Global inference |
+|---|---|---|---|
+| <strong>Crystal</strong> | Data-flow propagation (observer pattern) | Unnecessary (return types inferred too) | ◎ Yes |
+| Haskell / ML | Hindley–Milner (constraint unification) | Unnecessary | ◎ Yes |
+| Rust | Bidirectional local inference | Required (function signatures explicit) | △ Mostly intra-function |
+| TypeScript | Bidirectional + structural typing | Optional (falls back to <code>any</code>) | △ Limited |
+| Go | Declaration-time only (<code>:=</code>) | Required | ✗ Almost none |
+| Java / C# | Local vars only (<code>var</code>/local) | Required | ✗ None |</p>
+<p>Crystal does not use an HM-style global constraint solver; instead, it uses <strong>observer-based propagation over AST dependency graph nodes</strong>. If return type of <code>foo()</code> changes later, type of <code>x</code> in <code>x = foo()</code> is automatically recalculated.</p>
+</blockquote>
+<hr />
+<h2>10. Macro System</h2>
+<h3>Concept</h3>
+<p>Crystal macros are expanded <strong>at AST level</strong> during compilation. They are not runtime metaprogramming. Macro calls are detected by <code>TopLevelVisitor</code> or <code>MainVisitor</code>, then evaluated by <code>MacroInterpreter</code>.</p>
+<h3>Behavior of <code>MacroInterpreter</code></h3>
+<p><code>MacroInterpreter &lt; Visitor</code> in <code>macros/interpreter.cr</code> is a VM that interprets macro AST. It does not compile to machine code; instead, it visits AST directly and writes output text into <code>@str : IO::Memory</code>.</p>
+<p>Expansion flow:</p>
+<pre><code>① TopLevelVisitor detects macro call `Call`
+② Create MacroInterpreter.new(macro_def, call_args)
+	 - bind arguments into @vars : Hash(String, ASTNode)
+③ Evaluate macro_def.body via visitor.visit()
+	 - {{ var }}  -&gt; fetch from @vars and .to_s
+	 /* Lines 1274-1275 omitted */
+	 - {% for x in items %} -&gt; expand loop over items
+④ Re-parse @str contents as Crystal source -&gt; get ASTNode
+⑤ Insert resulting ASTNode at original macro call site
+⑥ Record expanded source in VirtualFile (for error line mapping)
+</code></pre>
+<h3>Macro methods (introspection)</h3>
+<p><code>macros/methods.cr</code> implements special methods callable inside macros:</p>
+<p>| Macro method              | Return value                  | Notes                                |
+| ------------------------- | ----------------------------- | ------------------------------------ |
+| <code>@type.instance_vars</code>     | <code>ArrayLiteral</code>                | names/types of all instance vars     |
+| <code>@type.methods</code>           | <code>ArrayLiteral</code>                | all method definitions               |
+| <code>@type.subclasses</code>        | <code>ArrayLiteral</code>                | direct subclasses                    |
+| <code>@type.ancestors</code>         | <code>ArrayLiteral</code>                | ancestor types                       |
+| <code>@type.has_method?(:foo)</code> | <code>BoolLiteral</code>                 | method existence check               |
+| <code>system(&quot;cmd&quot;)</code>           | <code>StringLiteral</code>               | run shell command at compile time    |
+| <code>run(&quot;path.cr&quot;, args)</code>    | <code>StringLiteral</code>               | compile+run external Crystal program |
+| <code>env(&quot;VAR&quot;)</code>              | <code>StringLiteral or NilLiteral</code> | read environment variable            |</p>
+<p><code>@type</code> is the type at macro expansion site context. Inside instance methods, it refers to receiver type; inside class methods, class type.</p>
+<blockquote>
+<p><strong>📊 Cross-language comparison: macro systems</strong></p>
+<p>| Language | Model | Execution timing | Input/Output |
+|---|---|---|---|
+| <strong>Crystal</strong> | AST macro (interpreted by <code>MacroInterpreter</code>) | Semantic phase (type info accessible) | Crystal source string → reparse |
+| Rust | <code>macro_rules!</code> + proc macro | After parse, before typing (proc macro is pre-type) | TokenStream → TokenStream |
+| C | Text substitution preprocessor | Before parse | Text → Text (no type info) |
+| Lisp / Clojure | Homoiconic macro (code=data) | After read, before eval | S-expression → S-expression |
+| Nim | Typed AST macros | Semantic phase | Typed AST → Typed AST |
+| Haskell | Template Haskell | After type checking | AST construction in Q monad |</p>
+<p>Crystal’s standout point is <strong>type-info access plus string-based output</strong>. You can inspect semantic info via <code>@type.instance_vars</code>, <code>@type.methods</code>, <code>@type.subclasses</code> while generating code. Output is Crystal <strong>source text</strong>, reparsed and re-analyzed, unlike systems that directly construct AST/token structures.</p>
+</blockquote>
+<hr />
+<h2>11. LLVM Code Generation</h2>
+<h3><code>CodeGenVisitor</code></h3>
+<p><code>CodeGenVisitor</code> in <code>codegen/codegen.cr</code> inherits from <code>Visitor</code> and transforms typed AST into LLVM IR.</p>
+<p>Runtime functions expected by compiler (implemented in <code>libcrystal</code>):</p>
+<pre><code class="language-crystal">MAIN_NAME              = &quot;__crystal_main&quot;        # generated entry point
+RAISE_NAME             = &quot;__crystal_raise&quot;       # throw exception
+RAISE_OVERFLOW_NAME    = &quot;__crystal_raise_overflow&quot;
+RAISE_CAST_FAILED_NAME = &quot;__crystal_raise_cast_failed&quot;  # as! failure
+MALLOC_NAME            = &quot;__crystal_malloc64&quot;    # GC heap allocation
+MALLOC_ATOMIC_NAME     = &quot;__crystal_malloc_atomic64&quot;     # for non-pointer data
+REALLOC_NAME           = &quot;__crystal_realloc64&quot;
+ONCE_INIT              = &quot;__crystal_once_init&quot;   # class var once-initialization
+</code></pre>
+<h3>Multi-module compilation</h3>
+<p>By default, Crystal generates separate <code>LLVM::Module</code>s per type and compiles in parallel (up to 8 threads). With <code>--release</code> or <code>--single-module</code>, all code is merged into one <code>LLVM::Module</code> to benefit from LTO.</p>
+<h3><code>LLVMTyper</code> — Crystal type → LLVM type mapping</h3>
+<p><code>LLVMTyper</code> in <code>codegen/llvm_typer.cr</code> performs type lowering.</p>
+<p><strong><code>String</code> layout:</strong></p>
+<pre><code class="language-crystal">def llvm_string_type(bytesize)
+	@llvm_context.struct [
+		/* Lines 1345-1349 omitted */
+	]
+end
+</code></pre>
+<p><strong><code>Proc</code> layout:</strong> two-element tuple of closure data and function pointer</p>
+<pre><code class="language-crystal">def proc_type
+	@llvm_context.struct [
+		/* Lines 1358-1360 omitted */
+	], &quot;-&gt;&quot;
+end
+</code></pre>
+<p><strong><code>Nil</code> layout:</strong> empty struct (zero bytes)</p>
+<pre><code class="language-crystal">def nil_type
+	@llvm_context.struct([] of LLVM::Type, &quot;Nil&quot;)
+end
+</code></pre>
+<p><strong>Handling recursive types:</strong> <code>@wants_size_cache</code> and <code>@wants_size_struct_cache</code> prevent infinite recursion during size computation. For example, while sizing struct <code>Foo</code> containing <code>Pointer(Int32 | Foo)</code>, pointer size is approximated as machine word size during union sizing.</p>
+<h3>Union memory layout</h3>
+<p>Implemented in <code>codegen/unions.cr</code> as tagged union:</p>
+<pre><code>{ i32 type_id, [N x i8] data }
+</code></pre>
+<ul>
+<li><code>type_id</code>: integer tag indicating which concrete type is stored (<code>LLVMTyper#type_id</code> assigns per type)</li>
+<li><code>data</code>: byte storage sized to max of all member types</li>
+</ul>
+<p>Dispatch reads <code>type_id</code>, branches, bitcasts to concrete type, then loads. <code>VirtualType</code> uses the same representation.</p>
+<h3>Primitive operations</h3>
+<p><code>codegen/primitives.cr</code> directly lowers integer/floating-point ops and pointer ops into LLVM instructions. For example, <code>Int32#+</code> becomes LLVM <code>add nsw i32</code> (<code>nsw</code> allows UB on signed overflow to help optimization).</p>
+<h3>ABI implementations</h3>
+<p><code>codegen/abi/</code> contains C calling convention logic for each target. With Crystal <code>lib</code> interop, argument and return register placement differs per architecture; this is handled by ABI layer.</p>
+<p>| File               | Target                                  |
+| ------------------ | --------------------------------------- |
+| <code>abi/x86_64.cr</code>    | Linux/macOS x86-64 (System V AMD64 ABI) |
+| <code>abi/x86_win64.cr</code> | Windows x86-64 (Microsoft x64 ABI)      |
+| <code>abi/aarch64.cr</code>   | ARM64 (AARCH64 Procedure Call Standard) |
+| <code>abi/arm.cr</code>       | ARM 32-bit                              |
+| <code>abi/wasm32.cr</code>    | WebAssembly 32-bit                      |
+| <code>abi/avr.cr</code>       | AVR microcontrollers                    |</p>
+<h3>Splitting unit</h3>
+<p>Default mode (without <code>--single-module</code>) splits <strong>by type</strong> into LLVM modules. <code>CodeGenVisitor#type_module(type)</code> controls mapping:</p>
+<pre><code class="language-crystal">def type_module(type)
+	return @main_module_info if @single_module   # all-in-one with --single-module
+/* Lines 1413-1431 omitted */
+	end
+end
+</code></pre>
+<p><strong><code>@modules : Hash(String, ModuleInfo)</code></strong> stores all modules keyed by type name string (empty string key = main module).</p>
+<p><strong><code>@types_to_modules : Hash(Type, ModuleInfo)</code></strong> caches type-object to module mapping, ensuring repeated <code>type_module</code> calls for the same type return the same <code>ModuleInfo</code>.</p>
+<h3><code>ModuleInfo</code> contents</h3>
+<pre><code class="language-crystal">record ModuleInfo,
+	mod : LLVM::Module,           # LLVM module body
+	/* Lines 1444-1445 omitted */
+	builder : CrystalLLVMBuilder  # LLVM IR builder
+</code></pre>
+<p>Each module has its <strong>own <code>LLVM::Context</code></strong>. This is crucial for parallel safety because LLVM contexts are not thread-safe.</p>
+<h3>Parallel compile and bitcode relay</h3>
+<pre><code>On main thread:
+	each type -&gt; CodeGenVisitor.visit() -&gt; LLVM::Module (in memory)
+
+In parallel (n_threads workers / processes):
+	each CompilationUnit:
+</code></pre>
+<p><strong>LLVM IR generation is single-threaded</strong> (shared global LLVM context), while <strong>optimization and object emission are parallelized</strong>.</p>
+<p>Implementation differs between <code>--preview_mt</code> (thread model) and normal (fork model):</p>
+<pre><code class="language-crystal">private def parallel_codegen(units, n_threads)
+	{% if flag?(:preview_mt) %}
+		/* Lines 1471-1478 omitted */
+	{% end %}
+end
+</code></pre>
+<p>In <code>fork_codegen</code>, child processes run in isolated address spaces, avoiding LLVM context conflicts. In <code>mt_codegen</code>, <code>unit.generate_bitcode</code> runs single-threaded (shared context), then units are sent via channel and each worker runs <code>unit.compile(isolate_context: true)</code> after reparse into isolated context.</p>
+<h3>File cache and incremental compile</h3>
+<p>Compilation outputs are cached under <code>CacheDir.instance.directory_for(sources)</code>. Each <code>CompilationUnit</code> caches both <code>.bc</code> (bitcode) and <code>.o</code> files, and <strong>reuses <code>.o</code> for unchanged type modules</strong>:</p>
+<pre><code>Output cache layout:
+~/.cache/crystal/&lt;hash&gt;/
+├── String.bc                 # bitcode for String type
+├── String.o                  # object file for String type
+├── Array(Int32).bc
+├── Array(Int32).o
+├── (main).bc                 # top-level code
+├── (main).o
+└── bc_flags                  # compiler-flag cache key
+</code></pre>
+<p><code>bc_flags_changed?</code> detects compiler flag changes (target, opt level, etc.) and triggers full rebuild if changed. Even with same flags, if <code>.bc</code> hash differs, only affected modules are recompiled.</p>
+<blockquote>
+<p><strong>📊 Cross-language comparison: parallelization unit</strong></p>
+<p>| Language | Parallelization unit | Invalidation scope when unit changes | Cache granularity |
+|---|---|---|---|
+| <strong>Crystal</strong> | <strong>Type</strong> (<code>String</code>, <code>Array(Int32)</code>, etc.) | Only <code>.o</code> files with methods on that type | Per-type <code>.bc</code> / <code>.o</code> |
+| Rust | Crate (<code>Cargo.toml</code> unit) | Entire crate recompiles | Per-crate <code>.rlib</code> |
+| Go | Package (directory unit) | Entire package recompiles | Per-package <code>.a</code> |
+| C / C++ | Translation unit (<code>.c</code> / <code>.cpp</code>) | That file only (headers can propagate broadly) | Object file |
+| Swift | Module + file | Module-wide (under WMO) | Per-module |
+| Java / Kotlin | Class file (<code>.class</code>) | Dependency chain may propagate | <code>.class</code> file |</p>
+<p>Crystal’s <strong>type-level</strong> unit is unique among mainstream languages. Adding a method on <code>String</code> does not require recompiling <code>Array(Int32).o</code> if unchanged.</p>
+</blockquote>
+<h3>End-to-end transform flow in <code>CodeGenVisitor</code></h3>
+<p><code>CodeGenVisitor</code> in <code>codegen/codegen.cr</code> converts <strong>typed AST</strong> to LLVM IR. Since semantic analysis already fixed all node types, codegen mostly reads type metadata.</p>
+<pre><code class="language-mermaid">flowchart TD
+		A[&quot;Typed ASTNode tree&quot;]
+		/* Lines 1523-1525 omitted */
+		D[&quot;visit(Assign)
+store instruction&quot;]
+		E[&quot;visit(If)
+br + phi&quot;]
+		F[&quot;visit(Call)
+codegen_call&quot;]
+		G[&quot;visit(While)
+loop basic blocks&quot;]
+		H[&quot;visit(NumberLiteral)
+LLVM::Value constant&quot;]
+		I[&quot;inside codegen_call&quot;]
+		/* Lines 1536-1537 omitted */
+		K[&quot;visit_primitive
+primitive instructions
+(add nsw, fadd, etc.)&quot;]
+		L[&quot;codegen_dispatch
+type_id switch
+virtual dispatch&quot;]
+		M[&quot;normal call instruction
+single concrete type&quot;]
+		N[&quot;LLVM::Module
+(split by type)&quot;]
+
+		/* Lines 1548-1554 omitted */
+		D &amp; E &amp; G &amp; H &amp; K &amp; L &amp; M --&gt; N
+</code></pre>
+<p>For each visited node, the resulting value is set into <code>@last : LLVM::Value</code>; parent generation reads from <code>@last</code>.</p>
+<h3>LLVM IR examples for major nodes</h3>
+<h4><code>Assign</code> → <code>store</code></h4>
+<pre><code class="language-crystal"># Crystal: x = 42
+# ↓
+def visit(node : Assign)
+	target, value = node.target, node.value
+	/* Lines 1568-1571 omitted */
+	store val, ptr                       # LLVM store
+end
+</code></pre>
+<p>Generated IR:</p>
+<pre><code class="language-llvm">%x = alloca i32
+store i32 42, i32* %x
+</code></pre>
+<h4><code>If</code> → <code>br</code> + <code>phi</code></h4>
+<pre><code class="language-crystal"># Crystal: y = x &gt; 0 ? x : -x
+# ↓
+def visit(node : If)
+	node.cond.accept self
+	/* Lines 1588-1606 omitted */
+	@last = phi(llvm_type(node.type), {then_val =&gt; then_block, else_val =&gt; else_block})
+end
+</code></pre>
+<h4><code>While</code> → loop basic blocks</h4>
+<pre><code class="language-llvm">; Crystal: while i &lt; 10; i += 1; end
+entry:
+	br label %while_cond
+
+while_cond:
+	%cmp = icmp slt i32 %i, 10
+	br i1 %cmp, label %while_body, label %while_exit
+
+while_body:
+	; body for i += 1
+	br label %while_cond
+
+while_exit:
+	; following code
+</code></pre>
+<p><code>While</code> creates <code>while_cond</code>, <code>while_body</code>, and <code>while_exit</code>, connected by <code>cond_br</code>/<code>br</code>.</p>
+<h3>Virtual dispatch generation (<code>VirtualType</code> / <code>Union</code>)</h3>
+<p>Handled by <code>codegen_dispatch</code> in <code>codegen/call.cr</code>. When receiver is <code>VirtualType</code> or <code>UnionType</code>, it emits LLVM <code>switch</code> over <code>type_id</code>:</p>
+<pre><code>; call meow on Animal (VirtualType)
+%type_id = getelementptr %Animal, %Animal* %recv, i32 0, i32 0
+%tid = load i32, i32* %type_id
+switch i32 %tid, label %dispatch_fail [
+	i32 1, label %call_Dog_meow
+	i32 2, label %call_Cat_meow
+]
+
+call_Dog_meow:
+	call void @&quot;*Dog#meow&lt;Dog&gt;&quot;(%Dog* %recv_cast)
+	br label %join
+call_Cat_meow:
+	call void @&quot;*Cat#meow&lt;Cat&gt;&quot;(%Cat* %recv_cast)
+	br label %join
+</code></pre>
+<p>If type is concrete (or only one overload match), switch is skipped and a direct <code>call</code> is emitted.</p>
+<h3>Closures and Proc literals</h3>
+<p>Proc literals (<code>-&gt; { }</code>, method refs) are handled in <code>visit(node : ProcLiteral)</code> of <code>codegen/codegen.cr</code>.</p>
+<p><strong>Memory layout:</strong> Proc is two-word struct <code>{void* closure_data, void* func_ptr}</code> (<code>LLVMTyper#proc_type</code>).</p>
+<pre><code>┌───────────────────┬──────────────────┐
+│ closure_data ptr  │  func_ptr        │
+│ (8 bytes)         │  (8 bytes)       │
+└───────────────────┴──────────────────┘
+</code></pre>
+<p><strong>Closure data heap allocation:</strong> if captures exist, codegen allocates closure struct with <code>__crystal_malloc64</code> and copies captured values:</p>
+<pre><code class="language-llvm">; closure generation for -&gt; { puts x } (captures x)
+%closure = call i8* @__crystal_malloc64(i64 8)      ; space for x
+%x_slot  = getelementptr i8, i8* %closure, i64 0    ; x field in closure
+store i64 %x_val, i64* %x_slot                      ; copy current value
+
+%proc.0 = insertvalue { i8*, i8* } undef, i8* %closure, 0
+%proc.1 = insertvalue { i8*, i8* } %proc.0, i8* @&quot;~closure_0&quot;, 1
+; -&gt; { closure_data=..., func_ptr=@~closure_0 }
+</code></pre>
+<p><strong>Closure call:</strong> on <code>proc.call(args)</code>, extract function pointer and pass closure data as implicit first argument:</p>
+<pre><code class="language-llvm">%fp  = extractvalue { i8*, i8* } %proc, 1    ; function pointer
+%env = extractvalue { i8*, i8* } %proc, 0    ; closure data
+call i32 %fp(i8* %env, ...)                   ; insert env as first arg
+</code></pre>
+<p>For capture-free procs, <code>closure_data</code> is just <code>null</code>; layout stays the same.</p>
+<hr />
+<h2>12. Contribution Guide</h2>
+<h3>Quick file map by task</h3>
+<p>| What you want to do                 | Main files to edit                                                                              |
+| ----------------------------------- | ----------------------------------------------------------------------------------------------- |
+| Add a new keyword                   | <code>syntax/token.cr</code> → <code>syntax/lexer.cr</code> → <code>syntax/parser.cr</code>                                      |
+| Add new syntax/AST node             | <code>syntax/ast.cr</code> (node def) → <code>syntax/visitor.cr</code> (add visit method) → implement in each visitor |
+| Change type-check rule              | <code>semantic/main_visitor.cr</code> (<code>visit(NodeType)</code> methods)                                          |
+| Change overload resolution          | <code>semantic/method_lookup.cr</code>, <code>semantic/restrictions.cr</code>                                         |
+| Add new builtin primitive op        | <code>codegen/primitives.cr</code> (<code>visit_primitive</code>)                                                     |
+| Add macro method                    | <code>macros/methods.cr</code>                                                                             |
+| Add compiler option                 | <code>compiler.cr</code> (property) → <code>command/compile.cr</code> (OptionParser)                                  |
+| Change type internal representation | update both <code>types.cr</code> and <code>codegen/llvm_typer.cr</code>                                              |
+| Add architecture support            | new file under <code>codegen/abi/</code> → register in <code>codegen/target.cr</code>                                 |
+| Improve error message               | locate raise site with grep and edit in-place                                                   |</p>
+<h3>Spec layout and execution</h3>
+<p>Tests under <code>spec/compiler/</code> mirror <code>src/compiler/crystal/</code> structure:</p>
+<pre><code>spec/compiler/
+├── spec_helper.cr       # shared helpers (assert_type, assert_error, etc.)
+├── lexer/               # tokenization unit tests
+├── parser/              # AST structure checks
+├── semantic/            # type inference and type error checks
+├── codegen/             # runtime result checks of generated code
+├── macro/               # macro expansion checks
+├── normalize/           # AST normalization tests
+└── formatter/           # formatter tests
+</code></pre>
+<p><strong>Commands:</strong></p>
+<pre><code class="language-sh"># all compiler specs (slow)
+make spec/compiler
+
+# specific file only
+bin/crystal spec spec/compiler/semantic/proc_spec.cr
+
+# specific test case by name filter
+bin/crystal spec spec/compiler/semantic/ -e &quot;proc type&quot;
+
+# show compiler progress
+bin/crystal build src/compiler/crystal.cr --progress
+
+# show per-stage timings and memory usage
+bin/crystal build src/compiler/crystal.cr --stats
+</code></pre>
+<p><code>assert_type(&quot;x = 1&quot;)</code> in <code>spec_helper.cr</code> checks inferred expression type. <code>assert_error(&quot;...&quot;, &quot;message&quot;)</code> checks compiler error messages. Small focused specs using these helpers are expected in pull requests.</p>
+<h3>Debugging tips</h3>
+<ul>
+<li><strong><code>--no-codegen</code></strong> — skip codegen and run only type checking; fast for semantic debugging</li>
+<li><strong><code>--debug</code></strong> — build with debug symbols; use <code>gdb</code>/<code>lldb</code> <code>bt</code> for readable stack traces</li>
+<li><strong><code>--dump-ll</code></strong> — save generated LLVM IR as <code>.ll</code> files in cache directory for inspection</li>
+<li><strong><code>node.to_s</code></strong> / <strong><code>node.inspect</code></strong> — dump AST nodes in human-readable form during semantic debugging</li>
+</ul>
+<hr />
+<h2>Summary</h2>
+<p>The Crystal compiler is powered by tightly integrated layers:</p>
+<ol>
+<li><strong>Lexer/Parser</strong> — a 6500-line handwritten recursive-descent parser resolving ambiguity with variable-scope stack and <code>ParseMode</code>.</li>
+<li><strong>Program</strong> — shared object centralizing types, methods, require cache, etc.</li>
+<li><strong>Semantic (multi-stage)</strong> — declaration collection → type declaration processing → type inference → cleanup. Inference propagates through dependency graph with observer pattern.</li>
+<li><strong>MacroInterpreter</strong> — VM that directly interprets AST for compile-time code generation.</li>
+<li><strong>CodeGenVisitor + LLVMTyper</strong> — converts typed AST to LLVM IR. Unions use tagged representation <code>{type_id, data}</code>; procs use closure-pointer pairs.</li>
+<li><strong>accept/visit protocol</strong> — foundation of all visitors/transformers. Returning <code>false</code> from <code>visit</code> controls child traversal; <code>require</code> is immediate inline parse+walk in current semantic stack frame.</li>
+<li><strong>Type-data mutation flow</strong> — <code>TopLevelVisitor</code> builds <code>Program#types</code>, <code>Type#defs</code>, <code>Type#macros</code>; <code>MainVisitor</code> fills each <code>ASTNode#type</code> and <code>Def#vars</code> to form complete typed AST needed by codegen.</li>
+<li><strong>Parallel compilation</strong> — type-level LLVM module splitting plus <code>.o</code> cache enables true incremental recompilation of only changed types.</li>
+</ol>
+</article>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/crystal.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
@@ -52,17 +1123,11 @@
       });
     }
 
-    fetch("EN.md")
-      .then(function (res) { return res.text(); })
-      .then(function (md) {
-        var content = document.getElementById("content");
-        content.innerHTML = marked.parse(md);
-        highlightCodeBlocks(content);
-        renderMermaidBlocks(content);
-      })
-      .catch(function (err) {
-        document.getElementById("content").textContent = "Failed to load markdown: " + err;
-      });
+    document.addEventListener("DOMContentLoaded", function () {
+      var content = document.getElementById("content");
+      highlightCodeBlocks(content);
+      renderMermaidBlocks(content);
+    });
   </script>
 </body>
 </html>

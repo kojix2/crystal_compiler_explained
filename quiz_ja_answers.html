@@ -7,19 +7,284 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.8.1/github-markdown-light.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/github.min.css">
   <style>
-    body { margin: 0; background: #f6f8fa; }
-    .container { max-width: 980px; margin: 0 auto; padding: 2rem 1rem; }
-    .markdown-body { background: #fff; border: 1px solid #d0d7de; border-radius: 8px; padding: 2rem; }
-    .topnav { margin-bottom: 1rem; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    :root {
+      --page-bg: #f3f6fb;
+      --card-bg: #ffffff;
+      --border: #d0d7de;
+      --text: #24292f;
+      --muted: #57606a;
+      --link: #0969da;
+      --code-bg: #f6f8fa;
+      --shadow: 0 8px 30px rgba(31, 35, 40, 0.08);
+    }
+
+    body {
+      margin: 0;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 15% 15%, #e8f1ff 0%, transparent 35%),
+        radial-gradient(circle at 85% 10%, #eef9f2 0%, transparent 30%),
+        var(--page-bg);
+    }
+
+    .container {
+      max-width: 1024px;
+      margin: 0 auto;
+      padding: 2rem 1rem 3rem;
+    }
+
+    .topnav {
+      margin-bottom: 1rem;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    .topnav a {
+      color: var(--link);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .topnav a:hover { text-decoration: underline; }
+
+    .markdown-body {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+      padding: 2rem;
+      line-height: 1.8;
+      font-size: 16px;
+    }
+
+    .markdown-body h1,
+    .markdown-body h2,
+    .markdown-body h3 {
+      line-height: 1.35;
+      scroll-margin-top: 1rem;
+    }
+
+    .markdown-body h1 { margin-top: 0.25rem; }
+    .markdown-body p,
+    .markdown-body ul,
+    .markdown-body ol,
+    .markdown-body blockquote,
+    .markdown-body table,
+    .markdown-body pre {
+      margin-top: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .markdown-body pre {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem;
+      overflow-x: auto;
+    }
+
+    .markdown-body code {
+      font-size: 0.9em;
+      border-radius: 6px;
+      padding: 0.15em 0.35em;
+    }
+
+    .markdown-body table {
+      display: block;
+      width: 100%;
+      overflow-x: auto;
+      border-collapse: collapse;
+    }
+
+    .markdown-body blockquote {
+      border-left: 4px solid var(--border);
+      color: var(--muted);
+      background: #f8fafc;
+      padding: 0.75rem 1rem;
+      border-radius: 0 8px 8px 0;
+    }
+
+    @media (max-width: 768px) {
+      .container { padding: 1rem 0.75rem 2rem; }
+      .markdown-body {
+        border-radius: 10px;
+        padding: 1rem;
+        font-size: 15px;
+      }
+    }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="topnav"><a href="index.html">Back to top</a></div>
-    <article id="content" class="markdown-body">Loading...</article>
+    <article id="content" class="markdown-body"><h1>Crystalコンパイラ テスト問題集 解説付き解答</h1>
+<h2>1. 全体アーキテクチャ</h2>
+<h3>Q1. 三層の構成を説明せよ</h3>
+<p>Crystalのコンパイルは <strong>パース → 意味解析 → コード生成</strong> の三層で構成されている。単なる処理の順序ではなく、「どのレベルの抽象を扱うか」という関心の分離でもある。</p>
+<p>フロントエンドはソース文字列だけを相手にする。<code>Lexer</code> がそれをトークン列に変換し、<code>Parser</code> が構文規則に従ってASTを組み立てる。この段階では「型」の字は影も形もない。</p>
+<p>意味解析層（ミドルエンド）に入って初めて、「このノードは何の型か」という問いが意味を持ち始める。<code>Program#semantic</code> が複数のパスを順に走らせ、宣言を収集し、型を推論し、整合性を検証していく。バックエンドはその先で、型が確定したASTをLLVMのIRへと翻訳する。あとはシステムリンカが引き継いで実行バイナリを生成するだけだ。</p>
+<p>もう一つ押さえておきたいのは、このコンパイラ本体がCrystal自身で書かれているという事実だ。Crystalは自分自身を実装言語とする「セルフホスティング」のコンパイラである。</p>
+<hr />
+<h3>Q2. <code>require &quot;prelude&quot;</code> はどう扱われるか</h3>
+<p><code>compiler.cr</code> の <code>parse</code> メソッドを見ると、答えは簡潔だ。</p>
+<pre><code class="language-crystal">nodes = Expressions.new([Require.new(prelude).at(location), nodes] of ASTNode)
+</code></pre>
+<p>各ソースファイルをASTに変換した後、その先頭に <code>Require.new(prelude)</code> を差し込んでから <code>program.normalize</code> へ渡している。つまり <code>require &quot;prelude&quot;</code> はユーザーが書かなくても、コンパイラが自動で先頭に挿入してくれる。</p>
+<p><code>Object</code>、<code>String</code>、<code>puts</code> といった、何も書かなくても使える機能はすべてこの自動挿入を入口として定義されている。魔法があるわけではなく、メカニズムは配列の先頭に要素を一つ加えるだけの話だ。</p>
+<hr />
+<h3>Q3. <code>--progress</code> フラグで得られる情報</h3>
+<p><code>ProgressTracker</code> のソースを開くと、まず <code>STAGES = 14</code> という定数が目に入る。コンパイルは14もの段階に分かれているのだ。<code>Parse</code> から始まり、<code>Semantic (top level)</code>、<code>Semantic (new)</code>、<code>Semantic (type declarations)</code>、<code>Semantic (abstract def check)</code> と続き、最後は <code>Codegen (crystal)</code>、<code>Codegen (bc+obj)</code>、<code>Codegen (linking)</code> で締めくくられる。<code>--progress</code> を有効にするとこれらが <code>[3/14] Semantic (main)</code> のような形で随時表示される。</p>
+<p>ただし <code>--progress</code> が担うのは「今どのステージにいるか」を示すことだけだ。各ステージにどれだけ時間が掛かったか、メモリはどう動いたかを知りたければ <code>--stats</code> を合わせて使う。「なぜこんなにビルドが遅いのか」を調べるときは、まず <code>--progress</code> でどのステージに詰まっているかを絞り込み、そこを <code>--stats</code> でさらに掘り下げる——という二段構えが有効だ。</p>
+<hr />
+<h2>2. ディレクトリ構造</h2>
+<h3>Q4. 各ファイルの責務</h3>
+<p><strong><code>program.cr</code></strong> は「コンパイル1回分の状態」をすべて収める箱だと思えばよい。<code>initialize</code> メソッドを展開すると、<code>Object</code>、<code>Reference</code>、<code>Value</code>、<code>Int32</code>、<code>String</code>、<code>Array</code>……と組み込み型を手作業で次々に登録していく処理が200行以上続く。<code>Program</code> クラス自身が <code>NonGenericModuleType</code> を継承しているところも見どころで、コンパイルの状態を管理しながら同時にトップレベルの名前空間としても機能するという、一石二鳥の設計になっている。</p>
+<p><strong><code>semantic/main_visitor.cr</code></strong> は型推論の中核を担うファイルで、行数は3700行を超える。<code>MainVisitor &lt; SemanticVisitor</code> として、メソッド呼び出しを解決し、変数の型を追跡し、ブロックを処理する。「<code>@vars</code> が瞬間の型を保持し、<code>@meta_vars</code> が累積の型を保持する」というコメントが実装の思想をよく表しており、フロー依存の型推論がどのように管理されているかが見えてくる。</p>
+<p><strong><code>codegen/llvm_typer.cr</code></strong> はCrystalの型とLLVMの型を結びつける翻訳レイヤーだ。<code>Int32</code> なら <code>llvm_context.int(32)</code>、<code>Bool</code> なら <code>int1</code>、クラスならポインタ、structならvalue型という対応関係を保持する。一見シンプルに見えるが、Union型のような「中身が不定」な型や、再帰的な構造体のサイズを確定させる処理になると、途端に複雑さが増す。</p>
+<hr />
+<h3>Q5. <code>syntax/</code> と <code>semantic/</code> の違い</h3>
+<p><code>syntax/</code> が知っているのはソーステキストだけだ。入力は文字列、出力は型のついていないASTノード群で、「型」という言葉はここには存在しない。</p>
+<p><code>semantic/</code> に入ると様相が一変する。ASTノードに <code>@type : Type?</code> が付与され、依存グラフが張られ、型が伝播していく。意味解析が終わって初めて、すべてのノードが意味のある型を手に入れ、コード生成に渡せる状態になる。</p>
+<p>この分離があるから、パーサーは型を一切気にせず書け、意味解析器はトークンを一切気にせず書ける。互いの関心を徹底的に切り離していることが、それぞれのコードを読みやすく保っている。</p>
+<hr />
+<h2>3. ASTノード体系</h2>
+<h3>Q6. <code>location</code> / <code>end_location</code> の役割</h3>
+<p><code>location</code> と <code>end_location</code> は、ASTノードが「ソースコードのどこから生まれたか」を記録するだけの値オブジェクトだ。それだけといえばそれだけなのだが、これがなければCrystalの丁寧なエラーメッセージは成り立たない。</p>
+<pre><code>Error: undefined method 'foobar' for Int32 (line 42, column 3)
+</code></pre>
+<p>こういったメッセージを出すには、ASTノードの生成時にソース位置を記録しておき、意味解析でエラーを検出した際にそれを参照する必要がある。クローン時にも位置情報がコピーされるため、マクロ展開で生成されたノードであっても「元のソースのどこから来たか」を遡ることができる。</p>
+<hr />
+<h3>Q7. <code>dependencies</code> / <code>observers</code> が必要な理由</h3>
+<p>Crystalの型推論はワンパスではない。型が一つ確定するたびに、それに依存するノードへ通知が波及していく。この「反応性」を支えるのが <code>dependencies</code> と <code>@observers</code> の仕組みだ。各 <code>ASTNode</code> は自分が依存しているノード群（<code>dependencies</code>）と、自分の型変化を待っているノード群（<code>@observers</code>）の二方向リンクを持ち、型が変化したとき通知が連鎖していく。</p>
+<p>実装を見ると、<code>SmallNodeList</code> という構造体が使われている。最初の2要素をインラインに保持することで、平均的なノードでは <code>Array</code> のヒープアロケーションを回避している。「平均的なノードの依存数は2未満」という計測結果に基づいた、地道な最適化だ。</p>
+<hr />
+<h3>Q8. <code>Visitor</code> と <code>Transformer</code> の違い</h3>
+<p><code>Visitor</code> の <code>visit</code> メソッドは <code>true</code> か <code>false</code> を返すだけで、ASTの構造には手を触れない。木を歩きながら情報を集めたり副作用を伴う処理を走らせたりするのが役割だ。</p>
+<p><code>Transformer</code> の <code>transform</code> メソッドは <code>ASTNode</code> を返す。受け取ったノードを別のノードに差し替えられるため、ASTの形そのものを書き換えられる。<code>CleanupTransformer</code> はこちらを使って不要な分岐を切り落とし、後段のコード生成が安全に動ける状態を整える。</p>
+<p>「読むだけなら Visitor、書き換えるなら Transformer」——これだけ覚えておけば、使い分けに迷うことはない。</p>
+<hr />
+<h2>4. 型ヒエラルキー</h2>
+<h3>Q9. <code>Type</code> 中心設計が重要な場面を2つ</h3>
+<p>一つ目はメソッドのディスパッチだ。Crystalはオーバーロードをサポートしており、呼び出し時に引数の型に応じて最適な <code>def</code> を選ぶ。「AはBのサブタイプか」「AはBを実装しているか」という判定はすべて <code>Type</code> オブジェクトを介して行われる。<code>Type</code> という共通の語彙があるから、パーサーはおろかコード生成器さえも型の詳細を知らなくてよい。</p>
+<p>二つ目はUnion型の合成だ。<code>type_merge</code> は複数の型を受け取り、最小の共通型を生成する。<code>Int32</code> と <code>Int32</code> なら <code>Int32</code>、<code>Int32</code> と <code>String</code> なら <code>Int32 | String</code>、どちらかが <code>NoReturn</code> なら残る一方をそのまま返す——この細かいルールが数十行にわたって <code>types.cr</code> に書かれており、すべて型ヒエラルキーの上に成り立っている。</p>
+<hr />
+<h3>Q10. Union型になる典型コード</h3>
+<pre><code class="language-crystal">x = condition ? 42 : &quot;hello&quot;
+</code></pre>
+<p>三項演算子の then 節は <code>Int32</code>、else 節は <code>String</code> を返す。コンパイラはどちらの分岐も実行される可能性を考慮して両方の型を合成し、<code>x</code> の型を <code>Int32 | String</code> と確定させる。ここで <code>x + 1</code> などと書けば、<code>String</code> の可能性をコンパイラは見逃さない。問題をランタイムエラーではなくコンパイルエラーとして表面化させる——それが静的Union型の本質的な価値だ。</p>
+<hr />
+<h2>5. Crystal::Program</h2>
+<h3>Q11. 「中央データベース」と呼ぶ理由</h3>
+<p>コンパイルに関わるすべてのパス——<code>TopLevelVisitor</code> も <code>MainVisitor</code> も <code>LLVMTyper</code> も——は <code>program</code> への参照を持っている。型が必要なら <code>program.int32</code>、require済みのファイルを確認したければ <code>program.requires.includes?(...)</code>、とここへ問い合わせる構造だ。グローバル変数で状態を持つ代わりに <code>Program</code> インスタンスを使うことで、テスト時に独立した複数のコンパイル環境を起動・廃棄できる。</p>
+<p><code>Program</code> クラスが <code>NonGenericModuleType</code> を継承している点も見逃せない。<code>Program</code> 自身がCrystalの型として存在しているわけで、トップレベルに書いてある <code>puts &quot;hello&quot;</code> の「実行主体」は何かと問われれば、それもまた <code>Program</code> という型が担っている。</p>
+<hr />
+<h3>Q12. <code>Program</code> が管理する情報を3つ</h3>
+<p><strong><code>requires</code>（<code>Set(String)</code>）</strong> はrequire済みのファイルパスを記録するコレクションだ。<code>parse</code> メソッドでは、ファイル名を <code>program.requires.add</code> した「後」にパースを開始する。この順序が重要で、循環requireや二重ロードをここで防いでいる。</p>
+<p><strong><code>unions</code>（<code>Hash(Array(UInt64), UnionType)</code>）</strong> はUnion型のキャッシュだ。<code>Int32 | String</code> という型はコンパイル全体を通じて一つしか存在しないべきで、同値なUnionを同一インスタンスに束ねるのがこのハッシュである。各型のID（<code>UInt64</code>）をソートした配列をキーにしており、<code>String | Int32</code> と <code>Int32 | String</code> は同じキーから同じインスタンスを返す。</p>
+<p><strong><code>symbols</code>（<code>Set(String)</code>）</strong> はCrystalのシンボルリテラルを集約するコレクションだ。意味解析中に出現したシンボルが次々と追加され、コード生成では <code>program.symbols.each_with_index</code> を使って <code>String -&gt; Int32</code> の対応表を構築する。シンボルに番号を振ることで、実行時の比較を整数比較に落とし込める。</p>
+<hr />
+<h2>6. 字句解析・構文解析</h2>
+<h3>Q13. LexerとParserの境界</h3>
+<p><code>class Parser &lt; Lexer</code> ——この一行に答えが書いてある。CrystalではParserがLexerを「継承」している。</p>
+<p>教科書的なコンパイラ設計ではLexerとParserを別々のクラスに分け、トークンのやり取りをインタフェース経由で行う。しかしCrystalでは継承による一体化を選んでいる。ParserはLexerの内部状態を直接保持し、ASTを構築しながら必要なタイミングでトークンを一つずつ消費していく。クラス間のデータ受け渡しコストがなく、コードも一カ所にまとまるという実利的な選択だ。</p>
+<hr />
+<h3>Q14. 再帰下降パーサーの利点と注意点</h3>
+<p>再帰下降パーサーの強みは、文法規則とコードの対応が直感的なことにある。<code>parse_if</code>、<code>parse_def</code>、<code>parse_call</code> というメソッドが文法をそのまま体現しているので、読めばわかり、修正は局所的に収まる。パーサージェネレータを使わないぶん、エラーメッセージを細かくコントロールできるのも大きい。</p>
+<p>注意すべき点が二つある。一つは左再帰（<code>expr := expr '+' term</code> のような文法）をそのまま書くと無限ループに陥ることだ。もう一つはCrystalの文法がかなり込み入っており、<code>parser.cr</code> は6500行を超える大ファイルだということ。一人で全体を把握するには、それなりの覚悟がいる。</p>
+<hr />
+<h2>7. requireシステム</h2>
+<h3>Q15. <code>crystal_path.cr</code> の責務</h3>
+<p><code>CrystalPath#find</code> は <code>require &quot;foo&quot;</code> の引数 <code>&quot;foo&quot;</code> を受け取り、実際に読み込むべきファイルの絶対パスを返す。</p>
+<p><code>&quot;./bar&quot;</code> のような相対パスなら、呼び出しもとのディレクトリからたどる。<code>&quot;json&quot;</code> のようなライブラリ名なら、<code>CRYSTAL_PATH</code> や設定由来の検索パスを順に当たる。さらに <code>require &quot;foo/bar&quot;</code> のような指定では、<code>foo/src/bar.cr</code>、<code>foo/src/foo/bar.cr</code> といったshardの命名規則に沿った複数候補をチェックする。ポータブルビルド向けに <code>$ORIGIN</code> というプレースホルダーを展開する仕組みまであり、パス解決の全体像はなかなか一筋縄ではいかない。</p>
+<hr />
+<h3>Q16. 重複ロード防止がないと何が起きるか</h3>
+<p><code>program.requires.add</code> の呼び出しはパースの「前」に行われている。</p>
+<pre><code class="language-crystal">program.requires.add source.filename
+parse(program, source).as(ASTNode)
+</code></pre>
+<p><code>require &quot;json&quot;</code> が50カ所に書かれていても、2回目以降は <code>requires.includes?</code> で弾かれてスキップされる。この仕組みがなければ、同じクラスが二重に定義されてコンパイルエラーになる。あるいは <code>require &quot;a&quot;</code> → <code>require &quot;b&quot;</code> → <code>require &quot;a&quot;</code> → … と循環を繰り返す無限ループに陥る。「追加してからパース」という順序は、循環検出のために不可欠な工夫だ。</p>
+<hr />
+<h2>8. 意味解析パス</h2>
+<h3>Q17. トップレベル収集パスが先に必要な理由</h3>
+<p>次のコードを考えてみてほしい。</p>
+<pre><code class="language-crystal">def greet(x : Greeter)
+  x.hello
+end
+
+class Greeter
+  def hello; &quot;hi&quot;; end
+end
+</code></pre>
+<p><code>Greeter</code> クラスが定義される前に <code>greet</code> がそれを参照している。それでもCrystalはこれをコンパイルできる。<code>TopLevelVisitor</code> が最初のパスで <code>Greeter</code> クラスと <code>greet</code> メソッドの「存在」を <code>program.types</code> に登録してしまうからだ。型推論の本パスが始まる頃には、<code>Greeter</code> はすでに登録済みで、前方参照でも難なく解決できる。この2パス構成がなければ、定義の出現順序がコンパイル成否を左右するような、かなり不便な言語になっていただろう。</p>
+<hr />
+<h3>Q18. <code>abstract def</code> チェックが検出する不整合</h3>
+<p><code>AbstractDefChecker</code> はすべてのabstractクラス・モジュールを走査し、各abstractメソッドがサブタイプで実装されているかを確認する。単純に同名メソッドがあるかどうかだけでなく、引数の数・型制約・ブロック有無・戻り値型まで細かく照合する。</p>
+<p>一つ興味深いルールがある。abstractメソッドが <code>foo(x : Int32)</code> という制約を持っていても、実装側が <code>foo(x)</code> と制約なしで書いた場合は「OK」と判定される。制約を緩める方向は許容されるが、より狭い制約を後から課すことはできない、というわけだ。</p>
+<hr />
+<h3>Q19. <code>cleanup_transformer</code> が取り除くもの</h3>
+<p><code>CleanupTransformer</code> のコメントには「<code>if true; 1; else; 2; end</code> を <code>1</code> に書き換える」とある。</p>
+<p>型推論が終わった段階では、<code>is_a?</code> や <code>nil?</code> によるチェックの結果が静的に確定していることがある。たとえば変数の型が <code>Int32</code> のみと確定しているとき、<code>value.is_a?(String)</code> は常に <code>false</code> であり、else 側のブランチは絶対に実行されない。そのブランチのノードには型がついておらず、コード生成は型のないノードを扱えない。だから到達不能なコードはcleanupで事前に除去しておく必要がある——これがcleanupトランスフォームの核心的な役割だ。</p>
+<hr />
+<h2>9. 型推論システム</h2>
+<h3>Q20. <code>Call#recalculate</code> が核心である理由</h3>
+<p>型推論の流れを追っていくと、あらゆる変化が最終的に <code>recalculate</code> へと収束していくことがわかる。あるメソッドの引数の型が変化すると、そのCallノードの <code>update</code> が呼ばれ、<code>recalculate</code> が起動する。<code>recalculate</code> はまず以前の <code>target_defs</code>（解決済み呼び出し先）とのバインドを切り離し、<code>lookup_matches</code> でオーバーロード解決をやり直して最良の候補を選ぶ。選んだ候補に再びバインドし、呼び出しの型を更新し、それに依存する次のノードへと変化を波及させる。</p>
+<p>これが繰り返される。依存グラフに沿って型の変化が連鎖し、全体が収束したところで型推論は完了する。</p>
+<hr />
+<h3>Q21. オーバーロード解決が曖昧になる代表ケース</h3>
+<pre><code class="language-crystal">def foo(x : Int8); end
+def foo(x : Int64); end
+foo(1)
+</code></pre>
+<p><code>1</code> という整数リテラルは <code>Int8</code> にも <code>Int64</code> にもオートキャストできる。まずオートキャストなしで解決を試みると、どちらの定義ともマッチしない。そこで <code>RetryLookupWithLiterals</code> という例外を投げて <code>with_autocast: true</code> のリトライに切り替える。今度は両方にマッチするが、どちらがより適切か決定できず「ambiguous call」エラーになる。</p>
+<p>「一度失敗して例外でリトライ」という流れは少し独特だが、オートキャストの有無を綺麗に分離するための工夫だと理解すれば、設計意図が見えてくる。</p>
+<hr />
+<h3>Q22. <code>is_a?</code> / <code>nil?</code> による型絞り込み</h3>
+<pre><code class="language-crystal">x : Int32 | Nil = get_value()
+
+if x.nil?
+  # ここでは x の型は Nil
+else
+  # ここでは x の型は Int32
+  puts x + 1  # コンパイルOK
+end
+</code></pre>
+<p>内部では <code>TypeFilteredNode</code> というノードでラップすることで、分岐ごとに異なる型を見せる仕組みになっている。<code>TruthyFilter</code>、<code>SimpleTypeFilter</code>、<code>NotFilter</code> といったフィルタが <code>And</code>/<code>Or</code>/<code>Not</code> で合成でき、ブール代数と同じ感覚で型フィルタを扱える設計だ。<code>if x.nil? &amp;&amp; x.is_a?(Foo)</code> のような複合条件も、フィルタの合成として一貫して処理される。</p>
+<hr />
+<h2>10. マクロシステム</h2>
+<h3>Q23. マクロが単なる文字列置換でない理由</h3>
+<p>Cのプリプロセッサを知っている人は、マクロを「テキストを別のテキストに置き換えるもの」として想像するかもしれない。Crystalのマクロはその発想とはかなり異なる。</p>
+<p><code>MacroInterpreter</code> は <code>MacroIf</code>、<code>MacroFor</code>、<code>Var</code>、<code>StringInterpolation</code> といったマクロ専用のASTノードを評価し、展開結果を <code>IO::Memory</code> に書き出す。その生成されたソースは <code>parse_macro_source</code> で再びパースされ、<code>VirtualFile</code> と結びついたASTとして本流に合流する。「ASTを評価してソースを生成し、そのソースを再パースしてASTに戻す」というサイクルだ。このためマクロ内から型情報やノード構造に基づいた、表現力の高いコード生成が可能になる。</p>
+<hr />
+<h3>Q24. <code>MacroInterpreter</code> が必要な理由</h3>
+<p>マクロはコンパイル時に実行されなければならない。しかしコンパイル時には、まだ実行バイナリが存在しない。通常の意味での「実行」はできないのだ。そこで <code>MacroInterpreter</code> がインタプリタとして機能する。</p>
+<p>マクロと通常のコードの本質的な違いは、マクロが「今実行する処理」ではなく「コンパイルされるコード」を生み出すものだという点にある。<code>{% if %}</code> による条件分岐も <code>{% for %}</code> によるループも、最終的には展開済みの静的な構文としてASTに織り込まれる。<code>MacroInterpreter</code> がなければ、Crystalのマクロは文字列処理に毛が生えた程度のものになっていただろう。</p>
+<hr />
+<h3>Q25. マクロのトレードオフ</h3>
+<p><code>record Point, x : Float64, y : Float64</code> の一行から <code>getter</code>、<code>initialize</code>、<code>==</code>、<code>to_s</code> などが展開される便利さは確かに魅力的だ。しかし展開後のコードはソースファイルに直接現れないため、その位置を指したエラーメッセージを出すために「仮想ファイル」という概念まで持ちこむことになった。</p>
+<p>コンパイル時間の面でも、<code>{% for %}</code> ループが大量の型や定義を生成すると意味解析の負荷は跳ね上がる。マクロは強力だが、「本当にコンパイル時評価が必要か」と立ち止まって考える習慣が、長期的なビルド速度を守ることになる。</p>
+<hr />
+<h2>11. LLVMコード生成</h2>
+<h3>Q26. <code>LLVMTyper</code> の役割</h3>
+<p><code>LLVMTyper#llvm_type</code> はCrystalの <code>Type</code> を受け取り、対応する <code>LLVM::Type</code> を返す。<code>Bool</code> なら <code>i1</code>、<code>Int32</code> なら <code>i32</code>、クラスならポインタ型、structならvalue型——という対応関係を管理するのが役割だ。</p>
+<p>特に工夫が必要になるのは再帰型への対処だ。<code>llvm_type</code> には <code>wants_size</code> フラグがあり、「サイズさえわかれば詳細は不要」なときにポインタを <code>void*</code> で近似する。<code>Foo</code> が <code>Pointer(Foo)</code> を含む再帰的なstructのサイズを求めるとき、循環を断ち切るための仕組みで、<code>@wants_size_cache</code> という専用のキャッシュまで用意されている。</p>
+<hr />
+<h3>Q27. Union型にタグが必要な理由</h3>
+<p><code>MixedUnionType</code> のLLVM表現は、「型IDフィールド」と「値を格納する領域」からなる構造体だ。型IDは現在格納されている型の番号であり、値領域はそのUnionに入りうる型のうち最大サイズに合わせて確保される。</p>
+<p>なぜタグが必要なのか。Union型の変数には <code>Int32</code> が入っていることも <code>String</code> が入っていることもある。実行時に <code>x.as(String)</code> と書いたとき、本当に <code>String</code> が入っているかを確認しなければならない。その確認の依り所が型IDだ。タグなしにUnionの値を読み出せば、型安全性は即座に崩れる。</p>
+<hr />
+<h3>Q28. <code>rescue/ensure</code> をLLVMで扱う難しさ</h3>
+<p><code>ensure</code> ブロックは例外の有無にかかわらず実行しなければならない。通常の経路では <code>ensure</code> を実行してから <code>ret</code> すればよい。しかし例外の経路では、LLVMの <code>invoke</code> 命令と <code>landingpad</code> を使って別のブロックへジャンプし、そこで <code>ensure</code> を実行してから例外を再スローする必要がある。</p>
+<p><code>fun.cr</code> の関数生成コードを見ると、<code>@ensure_exception_handlers</code>、<code>@rescue_block</code>、<code>@catch_pad</code> という3つの状態変数が関数生成の前後で保存・復元されている。例外ハンドラがネストする場合、これらはスタック的に積まれていく。どのrescueがどのensureに対応するかを正確に管理するコードはかなり複雑で、このあたりがCrystalのコード生成の中で最も入り組んだ部分の一つになっている。</p>
+<hr />
+<h2>12. コントリビュート</h2>
+<h3>Q29. 小さな改善PRの推奨手順</h3>
+<p>まず手を付けるべきは<strong>現象の最小化</strong>だ。バグであれ改善であれ、最小限のコードで再現・確認できる状態を作ることから始める。<code>spec/</code> 以下の関連するスペックを動かして、現在の挙動を自分の目で確かめる。</p>
+<p>次は<strong>影響範囲の見積もり</strong>。変更するファイルはどれか、それに依存しているモジュールはどれか。変更は局所的であるほど好ましく、広がりすぎると意図しない回帰を生みやすい。</p>
+<p>テストについては、少なくとも変更と並走させる。<code>spec/compiler/</code> にはコンパイラのテストが豊富に揃っており、新しいケースを追加するか、既存のテストが壊れていないかを確認する。</p>
+<p>そして最後に、これが最も重要かもしれないが、<strong>PRの本文で「なぜ」を語る</strong>こと。差分は「何を変えたか」しか語らない。「なぜその設計を選んだのか」「他にどんな選択肢を検討したか」を書くことで、レビュワーはコードの意図を正しく評価できる。</p>
+<hr />
+</article>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/crystal.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
@@ -52,17 +317,11 @@
       });
     }
 
-    fetch("QUIZ_JA_ANSWERS.md")
-      .then(function (res) { return res.text(); })
-      .then(function (md) {
-        var content = document.getElementById("content");
-        content.innerHTML = marked.parse(md);
-        highlightCodeBlocks(content);
-        renderMermaidBlocks(content);
-      })
-      .catch(function (err) {
-        document.getElementById("content").textContent = "Failed to load markdown: " + err;
-      });
+    document.addEventListener("DOMContentLoaded", function () {
+      var content = document.getElementById("content");
+      highlightCodeBlocks(content);
+      renderMermaidBlocks(content);
+    });
   </script>
 </body>
 </html>

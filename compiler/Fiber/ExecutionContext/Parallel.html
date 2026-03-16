@@ -7252,14 +7252,13 @@
 each others, in addition to the other fibers running in other execution
 contexts.</p>
 <p>The context internally keeps a number of fiber schedulers, each scheduler
-being able to start running on a system thread, so multiple schedulers can
-run in parallel. The fibers are resumable by any scheduler in the context,
-they can thus move from one system thread to another at any time.</p>
-<p>The actual parallelism is controlled by the execution context. As the need
-for parallelism increases, for example more fibers running longer, the more
-schedulers will start (and thus system threads), as the need decreases, for
-example not enough fibers, the schedulers will pause themselves and
-parallelism will decrease.</p>
+runs on a system thread, so multiple schedulers can run in parallel. The
+fibers are resumable by any scheduler in the context, and can thus move from
+one system thread to another at any time.</p>
+<p>The actual parallelism is dynamic. As the need for parallelism increases,
+for example more fibers running longer, the more schedulers will start (and
+thus system threads), as the need decreases, for example not enough fibers,
+the schedulers will pause themselves and parallelism will decrease.</p>
 <p>The parallelism can be as low as 1, in which case the context becomes a
 concurrent context (no parallelism) until resized.</p>
 <p>For example: we can start a parallel context to run consumer fibers, while
@@ -7292,6 +7291,9 @@ channel.close
 wg.wait
 
 p result.get <span class="c"># =&gt; 523776</span></code></pre>
+<p><span class="flag purple">NOTE</span>  The <code><a href="../../Fiber/ExecutionContext/Parallel.html">Parallel</a></code> execution context isn't tied to a fixed set of system
+threads, and execution can switch to other system threads, for example when
+a fiber is blocked on a syscall.</p>
 
 
 
@@ -7346,14 +7348,14 @@ p result.get <span class="c"># =&gt; 523776</span></code></pre>
   </h2>
   
     
-      <a href="https://github.com/kojix2/crystal_compiler_explained/blob/44d276e/src/fiber/execution_context/parallel.cr#L58" target="_blank">
+      <a href="https://github.com/kojix2/crystal_compiler_explained/blob/c38c5c4/src/fiber/execution_context/parallel.cr#L61" target="_blank">
         fiber/execution_context/parallel.cr
       </a>
     
     <br/>
   
     
-      <a href="https://github.com/kojix2/crystal_compiler_explained/blob/44d276e/src/fiber/execution_context/parallel/scheduler.cr#L6" target="_blank">
+      <a href="https://github.com/kojix2/crystal_compiler_explained/blob/c38c5c4/src/fiber/execution_context/parallel/scheduler.cr#L6" target="_blank">
         fiber/execution_context/parallel/scheduler.cr
       </a>
     
@@ -7417,7 +7419,7 @@ p result.get <span class="c"># =&gt; 523776</span></code></pre>
       <li class="entry-summary">
         <a href="#capacity%3AInt32-instance-method" class="signature"><strong>#capacity</strong> : Int32</a>
         
-          <div class="summary"><p>The maximum number of threads that can be started.</p></div>
+          <div class="summary"><p>The maximum number of schedulers that can be started, aka how many fibers can run in parallel or maximum parallelism of the context.</p></div>
         
       </li>
     
@@ -7437,13 +7439,6 @@ p result.get <span class="c"># =&gt; 523776</span></code></pre>
         <a href="#resize%28maximum%3AInt32%29%3ANil-instance-method" class="signature"><strong>#resize</strong>(maximum : Int32) : Nil</a>
         
           <div class="summary"><p>Resizes the context to the new <em>maximum</em> parallelism.</p></div>
-        
-      </li>
-    
-      <li class="entry-summary">
-        <a href="#size%3AInt32-instance-method" class="signature"><strong>#size</strong> : Int32</a>
-        
-          <div class="summary"><p>The number of threads that have been started.</p></div>
         
       </li>
     
@@ -7911,7 +7906,7 @@ decreasing as needed, but will never go past the configured <em>maximum</em>.</p
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/44d276e/src/fiber/execution_context/parallel.cr#L90" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/c38c5c4/src/fiber/execution_context/parallel.cr#L93" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -7932,7 +7927,7 @@ decreasing as needed, but will never go past the configured <em>maximum</em>.</p
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/44d276e/src/fiber/execution_context/parallel.cr#L95" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/c38c5c4/src/fiber/execution_context/parallel.cr#L98" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -7953,7 +7948,7 @@ decreasing as needed, but will never go past the configured <em>maximum</em>.</p
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/44d276e/src/fiber/execution_context/parallel.cr#L100" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/c38c5c4/src/fiber/execution_context/parallel.cr#L103" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -7984,13 +7979,14 @@ decreasing as needed, but will never go past the configured <em>maximum</em>.</p
       
         <div class="doc">
           
-          <p>The maximum number of threads that can be started.</p>
+          <p>The maximum number of schedulers that can be started, aka how many fibers
+can run in parallel or maximum parallelism of the context.</p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/44d276e/src/fiber/execution_context/parallel.cr#L129" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/c38c5c4/src/fiber/execution_context/parallel.cr#L136" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8023,7 +8019,7 @@ and the values of all instance variables.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/44d276e/src/fiber/execution_context/parallel.cr#L367" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/c38c5c4/src/fiber/execution_context/parallel.cr#L374" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8039,7 +8035,7 @@ and the values of all instance variables.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/44d276e/src/fiber/execution_context/parallel.cr#L61" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/c38c5c4/src/fiber/execution_context/parallel.cr#L64" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8066,28 +8062,7 @@ tries to switch to another fiber.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/44d276e/src/fiber/execution_context/parallel.cr#L188" target="_blank">View source</a>]
-        
-      </div>
-    </div>
-  
-    <div class="entry-detail" id="size:Int32-instance-method">
-      <div class="signature">
-        
-        def <strong>size</strong> : <a href="../../Int32.html">Int32</a>
-
-        <a class="method-permalink" href="#size%3AInt32-instance-method">#</a>
-      </div>
-      
-        <div class="doc">
-          
-          <p>The number of threads that have been started.</p>
-        </div>
-      
-      <br/>
-      <div>
-        
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/44d276e/src/fiber/execution_context/parallel.cr#L124" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/c38c5c4/src/fiber/execution_context/parallel.cr#L195" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8119,7 +8094,7 @@ which includes its class name and its object address.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/44d276e/src/fiber/execution_context/parallel.cr#L371" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/c38c5c4/src/fiber/execution_context/parallel.cr#L378" target="_blank">View source</a>]
         
       </div>
     </div>

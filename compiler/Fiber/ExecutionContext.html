@@ -7245,23 +7245,25 @@
     Overview
   </h2>
 
-  <p>An execution context creates and manages a dedicated pool of 1 or more
+  <p>An execution context creates and manages a dedicated pool of one or more
 schedulers where fibers will be running in. Each context manages the rules to
 run, suspend and swap fibers internally.</p>
 <p><span class="flag lime">EXPERIMENTAL</span>  Execution contexts are an experimental feature, implementing
 <a href="https://github.com/crystal-lang/rfcs/pull/2">RFC 2</a>. It's opt-in and requires
 the compiler flags <code>-Dpreview_mt -Dexecution_context</code>.</p>
-<p>Applications can create any number of execution contexts in parallel. These
-contexts are isolated but they can communicate with the usual synchronization
-primitives such as <code><a href="../Channel.html">Channel</a></code> or <code><a href="../Mutex.html">Mutex</a></code>.</p>
 <p>An execution context groups fibers together. Instead of associating a fiber to
 a specific system thread, we associate a fiber to an execution context,
 abstracting which system thread(s) the fibers will run on.</p>
+<p>Applications can create any number of execution contexts in parallel. Fibers
+running in any context can communicate and synchronize with any other fiber
+running in any context through the usual synchronization primitives such as
+<code><a href="../Channel.html">Channel</a></code>, <code><a href="../WaitGroup.html">WaitGroup</a></code> or <code><a href="../Sync.html">Sync</a></code>.</p>
 <p>When spawning a fiber with <code>::spawn</code>, it spawns into the execution context of
-the current fiber, so child fibers execute in the same context as their parent
-(unless told otherwise).</p>
-<p>Once spawned, a fiber cannot <em>move</em> to another execution context. It always
-resumes in the same execution context.</p>
+the current fiber, so child fibers execute in the same context as their
+parent, unless told otherwise (see <code><a href="../Fiber/ExecutionContext.html#spawn%28%2A%2Cname%3AString%7CNil%3Dnil%2C%26block%3A-%3E%29%3AFiber-instance-method">ExecutionContext#spawn</a></code>).</p>
+<p>Fibers are scoped to the execution context they are spawned into. Once
+spawned, a fiber cannot <em>move</em> to another execution context, and is always
+resumed in the same execution context.</p>
 <h2><a id="context-types" class="anchor" href="#context-types">
   <svg class="octicon-link" aria-hidden="true">
     <use href="#octicon-link"/>
@@ -7270,24 +7272,36 @@ resumes in the same execution context.</p>
 <p>The standard library provides a number of execution context implementations
 for common use cases.</p>
 <ul>
-<li><code><a href="../Fiber/ExecutionContext/Concurrent.html">ExecutionContext::Concurrent</a></code>: Fully concurrent with limited parallelism.
-Fibers run concurrently to each other, never in parallel (only one fiber at a
-time). They can use simpler and faster synchronization primitives internally
-(no atomics, limited thread safety). Communication with fibers in other
-contexts requires thread-safe primitives. A blocking fiber blocks the entire
-thread and all other fibers in the context.</li>
-<li><code><a href="../Fiber/ExecutionContext/Parallel.html">ExecutionContext::Parallel</a></code>: Fully concurrent, fully parallel. Fibers
-running in this context can be resumed by multiple system threads in this
-context. They run concurrently and in parallel to each other (multiple fibers
-at a time), in addition to running in parallel to any fibers in other
-contexts. Schedulers steal work from each other. The parallelism can grow and
-shrink dynamically.</li>
-<li><code><a href="../Fiber/ExecutionContext/Isolated.html">ExecutionContext::Isolated</a></code>: Single fiber in a single system thread without
-concurrency. This is useful for tasks that can block thread execution for a
-long time (e.g. a GUI main loop, a game loop, or CPU heavy computation). The
-event-loop works normally (when the fiber sleeps, it pauses the thread).
-Communication with fibers in other contexts requires thread-safe primitives.</li>
+<li>
+<p><code><a href="../Fiber/ExecutionContext/Concurrent.html">ExecutionContext::Concurrent</a></code>: Fully concurrent with limited parallelism.</p>
+<p>Fibers run concurrently to each other, never in parallel (only one fiber at
+a time). They can use simpler and faster synchronization primitives
+internally (no atomics, limited thread safety), however communication with
+fibers in other contexts must be safe (e.g. <code><a href="../Channel.html">Channel</a>,  </code>Sync`, ...). A
+blocking fiber blocks the entire thread and all other fibers in the context.</p>
+</li>
+<li>
+<p><code><a href="../Fiber/ExecutionContext/Parallel.html">ExecutionContext::Parallel</a></code>: Fully concurrent, fully parallel.</p>
+<p>Fibers running in this context can be resumed by multiple system threads in
+this context. They run concurrently and in parallel to each other (multiple
+fibers at a time), in addition to running in parallel to any fibers in other
+contexts. Schedulers steal work from each other. The parallelism can grow
+and shrink dynamically.</p>
+</li>
+<li>
+<p><code><a href="../Fiber/ExecutionContext/Isolated.html">ExecutionContext::Isolated</a></code>: Single fiber in a single system thread without
+concurrency.</p>
+<p>This is useful for tasks that can block thread execution for a long time
+(e.g. CPU heavy computation) or must be reactive (e.g. a GUI or game loop).
+The event-loop works normally and so does communication and synchronization
+with fibers in other contexts (<code><a href="../Channel.html">Channel</a></code>, <code><a href="../WaitGroup.html">WaitGroup</a></code>, <code><a href="../Sync.html">Sync</a></code>, ...). When
+the fiber needs to wait, it pauses the thread.</p>
+</li>
 </ul>
+<p>Again, any number of execution contexts can be created (as far as the computer
+can physically allow). An advantage of starting execution contexts is that it
+creates execution boundaries, the OS thread scheduler can for example preempt
+a system thread, allowing fibers in other system threads to run.</p>
 <h2><a id="the-default-execution-context" class="anchor" href="#the-default-execution-context">
   <svg class="octicon-link" aria-hidden="true">
     <use href="#octicon-link"/>
@@ -7300,6 +7314,26 @@ to be single-threaded and concurrent only. You can increase the parallelism at
 any time using <code><a href="../Fiber/ExecutionContext/Parallel.html#resize%28maximum%3AInt32%29%3ANil-instance-method">Parallel#resize</a></code>, for example:</p>
 <pre><code class="language-crystal">count <span class="o">=</span> <span class="t">Fiber</span><span class="t">::</span><span class="t">ExecutionContext</span>.default_workers_count
 <span class="t">Fiber</span><span class="t">::</span><span class="t">ExecutionContext</span>.default.resize(count)</code></pre>
+<h2><a id="relationship-with-system-threads" class="anchor" href="#relationship-with-system-threads">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>Relationship with system threads</h2>
+<p>Execution contexts control when and how fibers run, and on which system thread
+they execute. The term <em>parallelism</em> is the maximum number of fibers that can
+run in parallel (maximum number of schedulers) but there can be less or more
+system threads running in practice, for example when a fiber is blocked on a
+syscall.</p>
+<p>There are no guarantees on how a fiber will run on system threads. A fiber can
+start in thread A, then be resumed and terminated on thread A, B or C. This is
+true for both the <code><a href="../Fiber/ExecutionContext/Parallel.html">Parallel</a></code> and <code><a href="../Fiber/ExecutionContext/Concurrent.html">Concurrent</a></code> contexts.</p>
+<p>Notable exception: <code><a href="../Fiber/ExecutionContext/Isolated.html">Isolated</a></code> guarantees that its fiber will always run on the
+same system thread. During its lifetime, the fiber owns the thread, but only
+for the fiber's lifetime.</p>
+<p>Threads are kept in a thread pool: threads can be started, attached and
+detached from any context at any time. Threads can be detached from a context
+and reattached to the same execution context or to another one (<code><a href="../Fiber/ExecutionContext/Concurrent.html">Concurrent</a></code>,
+<code><a href="../Fiber/ExecutionContext/Parallel.html">Parallel</a></code> or <code><a href="../Fiber/ExecutionContext/Isolated.html">Isolated</a></code>).</p>
 <p><span class="flag lime">EXPERIMENTAL</span> </p>
 
 
@@ -7343,70 +7377,70 @@ any time using <code><a href="../Fiber/ExecutionContext/Parallel.html#resize%28m
   </h2>
   
     
-      <a href="https://github.com/kojix2/crystal_compiler_explained/blob/44d276e/src/fiber/execution_context.cr#L71" target="_blank">
+      <a href="https://github.com/kojix2/crystal_compiler_explained/blob/c38c5c4/src/fiber/execution_context.cr#L106" target="_blank">
         fiber/execution_context.cr
       </a>
     
     <br/>
   
     
-      <a href="https://github.com/kojix2/crystal_compiler_explained/blob/44d276e/src/fiber/execution_context/concurrent.cr#L3" target="_blank">
+      <a href="https://github.com/kojix2/crystal_compiler_explained/blob/c38c5c4/src/fiber/execution_context/concurrent.cr#L3" target="_blank">
         fiber/execution_context/concurrent.cr
       </a>
     
     <br/>
   
     
-      <a href="https://github.com/kojix2/crystal_compiler_explained/blob/44d276e/src/fiber/execution_context/global_queue.cr#L8" target="_blank">
+      <a href="https://github.com/kojix2/crystal_compiler_explained/blob/c38c5c4/src/fiber/execution_context/global_queue.cr#L8" target="_blank">
         fiber/execution_context/global_queue.cr
       </a>
     
     <br/>
   
     
-      <a href="https://github.com/kojix2/crystal_compiler_explained/blob/44d276e/src/fiber/execution_context/isolated.cr#L4" target="_blank">
+      <a href="https://github.com/kojix2/crystal_compiler_explained/blob/c38c5c4/src/fiber/execution_context/isolated.cr#L4" target="_blank">
         fiber/execution_context/isolated.cr
       </a>
     
     <br/>
   
     
-      <a href="https://github.com/kojix2/crystal_compiler_explained/blob/44d276e/src/fiber/execution_context/monitor.cr#L1" target="_blank">
+      <a href="https://github.com/kojix2/crystal_compiler_explained/blob/c38c5c4/src/fiber/execution_context/monitor.cr#L1" target="_blank">
         fiber/execution_context/monitor.cr
       </a>
     
     <br/>
   
     
-      <a href="https://github.com/kojix2/crystal_compiler_explained/blob/44d276e/src/fiber/execution_context/parallel.cr#L4" target="_blank">
+      <a href="https://github.com/kojix2/crystal_compiler_explained/blob/c38c5c4/src/fiber/execution_context/parallel.cr#L4" target="_blank">
         fiber/execution_context/parallel.cr
       </a>
     
     <br/>
   
     
-      <a href="https://github.com/kojix2/crystal_compiler_explained/blob/44d276e/src/fiber/execution_context/parallel/scheduler.cr#L5" target="_blank">
+      <a href="https://github.com/kojix2/crystal_compiler_explained/blob/c38c5c4/src/fiber/execution_context/parallel/scheduler.cr#L5" target="_blank">
         fiber/execution_context/parallel/scheduler.cr
       </a>
     
     <br/>
   
     
-      <a href="https://github.com/kojix2/crystal_compiler_explained/blob/44d276e/src/fiber/execution_context/runnables.cr#L14" target="_blank">
+      <a href="https://github.com/kojix2/crystal_compiler_explained/blob/c38c5c4/src/fiber/execution_context/runnables.cr#L14" target="_blank">
         fiber/execution_context/runnables.cr
       </a>
     
     <br/>
   
     
-      <a href="https://github.com/kojix2/crystal_compiler_explained/blob/44d276e/src/fiber/execution_context/scheduler.cr#L1" target="_blank">
+      <a href="https://github.com/kojix2/crystal_compiler_explained/blob/c38c5c4/src/fiber/execution_context/scheduler.cr#L1" target="_blank">
         fiber/execution_context/scheduler.cr
       </a>
     
     <br/>
   
     
-      <a href="https://github.com/kojix2/crystal_compiler_explained/blob/44d276e/src/fiber/execution_context/thread_pool.cr#L2" target="_blank">
+      <a href="https://github.com/kojix2/crystal_compiler_explained/blob/c38c5c4/src/fiber/execution_context/thread_pool.cr#L2" target="_blank">
         fiber/execution_context/thread_pool.cr
       </a>
     
@@ -7508,7 +7542,7 @@ any time using <code><a href="../Fiber/ExecutionContext/Parallel.html#resize%28m
       <li class="entry-summary">
         <a href="#spawn%28%2A%2Cname%3AString%7CNil%3Dnil%2C%26block%3A-%3E%29%3AFiber-instance-method" class="signature"><strong>#spawn</strong>(*, name : String | Nil = <span class="n">nil</span>, &block :  -> ) : Fiber</a>
         
-          <div class="summary"><p>Creates a new fiber then calls enqueues it to the execution context.</p></div>
+          <div class="summary"><p>Creates a new fiber then enqueues it to the execution context.</p></div>
         
       </li>
     
@@ -7546,7 +7580,7 @@ any time using <code><a href="../Fiber/ExecutionContext/Parallel.html#resize%28m
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/44d276e/src/fiber/execution_context.cr#L135" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/c38c5c4/src/fiber/execution_context.cr#L170" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -7574,7 +7608,7 @@ any time using <code><a href="../Fiber/ExecutionContext/Parallel.html#resize%28m
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/44d276e/src/fiber/execution_context.cr#L139" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/c38c5c4/src/fiber/execution_context.cr#L174" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -7599,7 +7633,7 @@ parallelism set to 1. The parallelism can be changed using
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/44d276e/src/fiber/execution_context.cr#L87" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/c38c5c4/src/fiber/execution_context.cr#L122" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -7624,7 +7658,7 @@ process or on the computer.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/44d276e/src/fiber/execution_context.cr#L104" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/c38c5c4/src/fiber/execution_context.cr#L139" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -7645,7 +7679,7 @@ process or on the computer.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/44d276e/src/fiber/execution_context.cr#L129" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/c38c5c4/src/fiber/execution_context.cr#L164" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -7667,7 +7701,7 @@ Defaults to 5 minutes.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/44d276e/src/fiber/execution_context/thread_pool.cr#L5" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/c38c5c4/src/fiber/execution_context/thread_pool.cr#L5" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -7689,7 +7723,7 @@ Defaults to 5 minutes.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/44d276e/src/fiber/execution_context/thread_pool.cr#L5" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/c38c5c4/src/fiber/execution_context/thread_pool.cr#L5" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -7718,14 +7752,14 @@ Defaults to 5 minutes.</p>
       
         <div class="doc">
           
-          <p>Creates a new fiber then calls enqueues it to the execution context.</p>
+          <p>Creates a new fiber then enqueues it to the execution context.</p>
 <p>May be called from any <code><a href="../Fiber/ExecutionContext.html">ExecutionContext</a></code> (i.e. must be thread-safe).</p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/44d276e/src/fiber/execution_context.cr#L178" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/c38c5c4/src/fiber/execution_context.cr#L213" target="_blank">View source</a>]
         
       </div>
     </div>

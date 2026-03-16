@@ -7253,7 +7253,7 @@ parallel to each others. However, they still run in parallel to fibers
 running in other execution contexts.</p>
 <p>Fibers in this context can use simpler and faster synchronization primitives
 between themselves (for example no atomics or thread safety required), but
-data shared with other contexts needs to be protected (e.g. <code><a href="../../Mutex.html">Mutex</a></code>), and
+data shared with other contexts needs to be protected (see <code><a href="../../Sync.html">Sync</a></code>), and
 communication with fibers in other contexts requires safe primitives, for
 example <code><a href="../../Channel.html">Channel</a></code>.</p>
 <p>A blocking fiber blocks the entire context, and thus all the other fibers in
@@ -7289,8 +7289,11 @@ wg.wait
 
 p result <span class="c"># =&gt; 523776</span></code></pre>
 <p>In practice, we still recommended to always protect shared accesses to a
-variable, for example using <code><a href="../../Atomic.html#add%28value%3AT%2Cordering%3AOrdering%3D%3Asequentially_consistent%29%3AT-instance-method">Atomic#add</a></code> to increment <em>result</em> or a <code><a href="../../Mutex.html">Mutex</a></code>
-for more complex operations.</p>
+variable, for example using <code><a href="../../Atomic.html#add%28value%3AT%2Cordering%3AOrdering%3D%3Asequentially_consistent%29%3AT-instance-method">Atomic#add</a></code> to increment <em>result</em> or a <code><a href="../../Sync.html">Sync</a></code>
+primitive for more complex operations.</p>
+<p><span class="flag purple">NOTE</span>  The <code><a href="../../Fiber/ExecutionContext/Concurrent.html">Concurrent</a></code> execution context isn't tied to a system thread, and
+may switch to another system thread, for example when a fiber is blocked on
+a syscall.</p>
 
 
 
@@ -7317,7 +7320,7 @@ for more complex operations.</p>
   </h2>
   
     
-      <a href="https://github.com/kojix2/crystal_compiler_explained/blob/44d276e/src/fiber/execution_context/concurrent.cr#L56" target="_blank">
+      <a href="https://github.com/kojix2/crystal_compiler_explained/blob/c38c5c4/src/fiber/execution_context/concurrent.cr#L60" target="_blank">
         fiber/execution_context/concurrent.cr
       </a>
     
@@ -7400,11 +7403,6 @@ for more complex operations.</p>
     <a href="../../Fiber/ExecutionContext/Parallel.html#resize%28maximum%3AInt32%29%3ANil-instance-method" class="tooltip">
       <span>resize(maximum : Int32) : Nil</span>
     resize</a>, 
-    
-  
-    <a href="../../Fiber/ExecutionContext/Parallel.html#size%3AInt32-instance-method" class="tooltip">
-      <span>size : Int32</span>
-    size</a>, 
     
   
     <a href="../../Fiber/ExecutionContext/Parallel.html#to_s%28io%3AIO%29%3ANil-instance-method" class="tooltip">
@@ -7882,7 +7880,7 @@ fiber is spawned into it.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/44d276e/src/fiber/execution_context/concurrent.cr#L64" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/c38c5c4/src/fiber/execution_context/concurrent.cr#L68" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -7920,7 +7918,7 @@ cannot be resized.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/44d276e/src/fiber/execution_context/concurrent.cr#L70" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/c38c5c4/src/fiber/execution_context/concurrent.cr#L74" target="_blank">View source</a>]
         
       </div>
     </div>

@@ -7,19 +7,1554 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.8.1/github-markdown-light.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/github.min.css">
   <style>
-    body { margin: 0; background: #f6f8fa; }
-    .container { max-width: 980px; margin: 0 auto; padding: 2rem 1rem; }
-    .markdown-body { background: #fff; border: 1px solid #d0d7de; border-radius: 8px; padding: 2rem; }
-    .topnav { margin-bottom: 1rem; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    :root {
+      --page-bg: #f3f6fb;
+      --card-bg: #ffffff;
+      --border: #d0d7de;
+      --text: #24292f;
+      --muted: #57606a;
+      --link: #0969da;
+      --code-bg: #f6f8fa;
+      --shadow: 0 8px 30px rgba(31, 35, 40, 0.08);
+    }
+
+    body {
+      margin: 0;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 15% 15%, #e8f1ff 0%, transparent 35%),
+        radial-gradient(circle at 85% 10%, #eef9f2 0%, transparent 30%),
+        var(--page-bg);
+    }
+
+    .container {
+      max-width: 1024px;
+      margin: 0 auto;
+      padding: 2rem 1rem 3rem;
+    }
+
+    .topnav {
+      margin-bottom: 1rem;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    .topnav a {
+      color: var(--link);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .topnav a:hover { text-decoration: underline; }
+
+    .markdown-body {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+      padding: 2rem;
+      line-height: 1.8;
+      font-size: 16px;
+    }
+
+    .markdown-body h1,
+    .markdown-body h2,
+    .markdown-body h3 {
+      line-height: 1.35;
+      scroll-margin-top: 1rem;
+    }
+
+    .markdown-body h1 { margin-top: 0.25rem; }
+    .markdown-body p,
+    .markdown-body ul,
+    .markdown-body ol,
+    .markdown-body blockquote,
+    .markdown-body table,
+    .markdown-body pre {
+      margin-top: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .markdown-body pre {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem;
+      overflow-x: auto;
+    }
+
+    .markdown-body code {
+      font-size: 0.9em;
+      border-radius: 6px;
+      padding: 0.15em 0.35em;
+    }
+
+    .markdown-body table {
+      display: block;
+      width: 100%;
+      overflow-x: auto;
+      border-collapse: collapse;
+    }
+
+    .markdown-body blockquote {
+      border-left: 4px solid var(--border);
+      color: var(--muted);
+      background: #f8fafc;
+      padding: 0.75rem 1rem;
+      border-radius: 0 8px 8px 0;
+    }
+
+    @media (max-width: 768px) {
+      .container { padding: 1rem 0.75rem 2rem; }
+      .markdown-body {
+        border-radius: 10px;
+        padding: 1rem;
+        font-size: 15px;
+      }
+    }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="topnav"><a href="index.html">Back to top</a></div>
-    <article id="content" class="markdown-body">Loading...</article>
+    <article id="content" class="markdown-body"><h1>Crystal コンパイラの仕組み</h1>
+<blockquote>
+<p><strong>対象読者:</strong> Crystal の型システムや一般的なコンパイラ理論（字句解析・構文解析・型推論・コード生成）を把握しており、Crystalコンパイラ本体に貢献したい開発者<br />
+<strong>目的:</strong> <code>src/compiler/crystal/</code> 配下のコードを自力で読み、変更を加えられるようになること</p>
+</blockquote>
+<hr />
+<h2>目次</h2>
+<ol>
+<li><a href="#1-%E5%85%A8%E4%BD%93%E3%82%A2%E3%83%BC%E3%82%AD%E3%83%86%E3%82%AF%E3%83%81%E3%83%A3">全体アーキテクチャ</a></li>
+<li><a href="#2-%E3%83%87%E3%82%A3%E3%83%AC%E3%82%AF%E3%83%88%E3%83%AA%E6%A7%8B%E9%80%A0%E3%83%AA%E3%83%95%E3%82%A1%E3%83%AC%E3%83%B3%E3%82%B9">ディレクトリ構造リファレンス</a></li>
+<li><a href="#3-ast%E3%83%8E%E3%83%BC%E3%83%89%E4%BD%93%E7%B3%BB">ASTノード体系</a></li>
+<li><a href="#4-%E5%9E%8B%E3%83%92%E3%82%A8%E3%83%A9%E3%83%AB%E3%82%AD%E3%83%BC">型ヒエラルキー</a></li>
+<li><a href="#5-crystalprogram--%E3%82%B3%E3%83%B3%E3%83%91%E3%82%A4%E3%83%AB%E3%81%AE%E4%B8%AD%E5%A4%AE%E3%83%87%E3%83%BC%E3%82%BF%E3%83%99%E3%83%BC%E3%82%B9">Crystal::Program — コンパイルの中央データベース</a></li>
+<li><a href="#6-%E5%AD%97%E5%8F%A5%E8%A7%A3%E6%9E%90%E6%A7%8B%E6%96%87%E8%A7%A3%E6%9E%90">字句解析・構文解析</a></li>
+<li><a href="#7-require-%E3%82%B7%E3%82%B9%E3%83%86%E3%83%A0">require システム</a></li>
+<li><a href="#8-%E6%84%8F%E5%91%B3%E8%A7%A3%E6%9E%90%E3%81%AE%E5%85%A8%E3%83%91%E3%82%B9">意味解析の全パス</a></li>
+<li><a href="#9-%E5%9E%8B%E6%8E%A8%E8%AB%96%E3%82%B7%E3%82%B9%E3%83%86%E3%83%A0%E6%A0%B8%E5%BF%83">型推論システム（核心）</a></li>
+<li><a href="#10-%E3%83%9E%E3%82%AF%E3%83%AD%E3%82%B7%E3%82%B9%E3%83%86%E3%83%A0">マクロシステム</a></li>
+<li><a href="#11-llvm%E3%82%B3%E3%83%BC%E3%83%89%E7%94%9F%E6%88%90">LLVMコード生成</a></li>
+<li><a href="#12-%E3%82%B3%E3%83%B3%E3%83%88%E3%83%AA%E3%83%93%E3%83%A5%E3%83%BC%E3%83%88%E3%82%AC%E3%82%A4%E3%83%89">コントリビュートガイド</a></li>
+</ol>
+<hr />
+<h2>1. 全体アーキテクチャ</h2>
+<p>Crystal コンパイラはコンパイラ自身が Crystal で書かれたセルフホスティングコンパイラである。コンパイルは大きく <strong>①フロントエンド（パース）→ ②ミドルエンド（意味解析）→ ③バックエンド（コード生成）</strong> の三層に分かれる。</p>
+<pre><code class="language-mermaid">flowchart TD
+    SRC[&quot;📄 ソースコード (.cr)&quot;]
+
+    subgraph PARSE [&quot;① Parse&quot;]
+        P1[&quot;Lexer 字句解析&quot;]
+        P2[&quot;Parser 構文解析&quot;]
+        P3[&quot;ASTNode 構文木&quot;]
+        P4[&quot;prelude を 先頭に挿入&quot;]
+        P1 --&gt; P2 --&gt; P3
+        P4 -.-&gt; P3
+    end
+
+    subgraph SEM [&quot;② Semantic  ─  Program#semantic  (semantic.cr)&quot;]
+        direction TB
+        S1[&quot;top level: class/def/macro 宣言収集&quot;]
+        S2[&quot;new methods: initialize → new 自動生成&quot;]
+        S3[&quot;type declarations: @x : T の freeze&quot;]
+        S4[&quot;abstract def check&quot;]
+        S5[&quot;restrictions augmenter&quot;]
+        S6[&quot;ivars / cvars initializers&quot;]
+        S7[&quot;main: 型推論本体 MainVisitor&quot;]
+        S8[&quot;cleanup: デッドコード除去&quot;]
+        S1 --&gt; S2 --&gt; S3 --&gt; S4 --&gt; S5 --&gt; S6 --&gt; S7 --&gt; S8
+    end
+
+    subgraph CG [&quot;③ Codegen&quot;]
+        C1[&quot;LLVM IR 生成 型単位でモジュール分割&quot;]
+        C2[&quot;LLVM 最適化 並列 .o 生成&quot;]
+        C1 --&gt; C2
+    end
+
+    LINK[&quot;🔗 システムリンカ cc / cl.exe&quot;]
+    BIN[&quot;⚙️ 実行バイナリ&quot;]
+
+    SRC --&gt; PARSE
+    PARSE --&gt; SEM
+    SEM --&gt; CG
+    CG --&gt; LINK --&gt; BIN
+</code></pre>
+<p>フロントエンドのエントリポイントは <a href="https://github.com/crystal-lang/crystal/blob/master/src/compiler/crystal/compiler.cr"><code>src/compiler/crystal/compiler.cr</code></a> の <code>Crystal::Compiler</code> クラスである。<code>compile(sources)</code> メソッドがパース・意味解析・コード生成を順番に呼び出す。</p>
+<pre><code class="language-crystal"># compiler.cr — parse ステージの実装
+private def parse(program, sources : Array)
+  @progress_tracker.stage(&quot;Parse&quot;) do
+    nodes = sources.map { |source| parse(program, source).as(ASTNode) }
+    nodes = Expressions.from(nodes)
+    location = Location.new(program.filename, 1, 1)
+    # すべてのソースの先頭に `require &quot;prelude&quot;` を自動挿入する
+    nodes = Expressions.new([Require.new(prelude).at(location), nodes] of ASTNode)
+    program.normalize(nodes)
+  end
+end
+</code></pre>
+<p><strong><code>--progress</code> フラグを付けると現在のコンパイルステージと進捗が標準エラー出力に表示される。<code>--stats</code> を併用すると各ステージの経過時間とメモリ使用量も確認できる。</strong> パフォーマンス改善やボトルネック特定に有用。</p>
+<hr />
+<h2>2. ディレクトリ構造リファレンス</h2>
+<h3><code>src/compiler/crystal/</code> — コンパイラ本体</h3>
+<p>| パス                                                                                                                  | 責務                                                                 |
+| --------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------- |
+| <a href="https://github.com/crystal-lang/crystal/blob/master/src/compiler/crystal/compiler.cr"><code>compiler.cr</code></a>                 | <code>Crystal::Compiler</code> クラス。コンパイル全体を統括する                 |
+| <a href="https://github.com/crystal-lang/crystal/blob/master/src/compiler/crystal/program.cr"><code>program.cr</code></a>                   | <code>Crystal::Program</code> クラス。型・メソッド・requireキャッシュ等の中央DB |
+| <a href="https://github.com/crystal-lang/crystal/blob/master/src/compiler/crystal/types.cr"><code>types.cr</code></a>                       | 型システム全定義（約3600行）。<code>Type</code> から始まる継承ツリー            |
+| <a href="https://github.com/crystal-lang/crystal/blob/master/src/compiler/crystal/semantic.cr"><code>semantic.cr</code></a>                 | 意味解析の全パスを定義・呼び出す                                     |
+| <a href="https://github.com/crystal-lang/crystal/blob/master/src/compiler/crystal/crystal_path.cr"><code>crystal_path.cr</code></a>         | <code>require</code> のファイルシステムパス解決                                 |
+| <a href="https://github.com/crystal-lang/crystal/blob/master/src/compiler/crystal/formatter.cr"><code>formatter.cr</code></a>               | <code>crystal format</code> のコードフォーマッタ                                |
+| <a href="https://github.com/crystal-lang/crystal/blob/master/src/compiler/crystal/progress_tracker.cr"><code>progress_tracker.cr</code></a> | コンパイルステージの進捗・時間計測                                   |</p>
+<h3><code>syntax/</code> — 字句解析・構文解析</h3>
+<p>| ファイル                                                                                                                    | 責務                                                    |
+| --------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------- |
+| <a href="https://github.com/crystal-lang/crystal/blob/master/src/compiler/crystal/syntax/lexer.cr"><code>syntax/lexer.cr</code></a>               | 字句解析器（約2980行）。ソース文字列を <code>Token</code> 列へ変換 |
+| <a href="https://github.com/crystal-lang/crystal/blob/master/src/compiler/crystal/syntax/token.cr"><code>syntax/token.cr</code></a>               | 全トークン種別・全キーワードの定義                      |
+| <a href="https://github.com/crystal-lang/crystal/blob/master/src/compiler/crystal/syntax/parser.cr"><code>syntax/parser.cr</code></a>             | 再帰降下構文解析器（約6500行）。<code>Lexer</code> を継承          |
+| <a href="https://github.com/crystal-lang/crystal/blob/master/src/compiler/crystal/syntax/ast.cr"><code>syntax/ast.cr</code></a>                   | 全ASTノードクラス（約2500行）                           |
+| <a href="https://github.com/crystal-lang/crystal/blob/master/src/compiler/crystal/syntax/visitor.cr"><code>syntax/visitor.cr</code></a>           | Visitorパターン基底クラス                               |
+| <a href="https://github.com/crystal-lang/crystal/blob/master/src/compiler/crystal/syntax/transformer.cr"><code>syntax/transformer.cr</code></a>   | 木を新しい木に変換する Transformer 基底クラス           |
+| <a href="https://github.com/crystal-lang/crystal/blob/master/src/compiler/crystal/syntax/location.cr"><code>syntax/location.cr</code></a>         | ソース位置（ファイル名・行・列）の値オブジェクト        |
+| <a href="https://github.com/crystal-lang/crystal/blob/master/src/compiler/crystal/syntax/to_s.cr"><code>syntax/to_s.cr</code></a>                 | ASTノードを Crystal ソースコード文字列に戻す            |
+| <a href="https://github.com/crystal-lang/crystal/blob/master/src/compiler/crystal/syntax/virtual_file.cr"><code>syntax/virtual_file.cr</code></a> | マクロ展開後の仮想ソースファイル管理                    |</p>
+<h3><code>semantic/</code> — 意味解析</h3>
+<p>| ファイル                                                                                                                                                    | 責務                                                         |
+| ----------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------ |
+| <a href="https://github.com/crystal-lang/crystal/blob/master/src/compiler/crystal/semantic/top_level_visitor.cr"><code>semantic/top_level_visitor.cr</code></a>                   | 第1パス: class/module/def/macro の宣言処理                   |
+| <a href="https://github.com/crystal-lang/crystal/blob/master/src/compiler/crystal/semantic/main_visitor.cr"><code>semantic/main_visitor.cr</code></a>                             | メインパス: 型推論の本体（約3700行）                         |
+| <a href="https://github.com/crystal-lang/crystal/blob/master/src/compiler/crystal/semantic/semantic_visitor.cr"><code>semantic/semantic_visitor.cr</code></a>                     | 上記2つの共通基底クラス。<code>require</code> 処理を担う                |
+| <a href="https://github.com/crystal-lang/crystal/blob/master/src/compiler/crystal/semantic/bindings.cr"><code>semantic/bindings.cr</code></a>                                     | ASTノードの型依存グラフ。<code>SmallNodeList</code> で observers を管理 |
+| <a href="https://github.com/crystal-lang/crystal/blob/master/src/compiler/crystal/semantic/call.cr"><code>semantic/call.cr</code></a>                                             | <code>Call#recalculate</code> — 呼び出し型推論の核心                    |
+| <a href="https://github.com/crystal-lang/crystal/blob/master/src/compiler/crystal/semantic/method_lookup.cr"><code>semantic/method_lookup.cr</code></a>                           | オーバーロード解決                                           |
+| <a href="https://github.com/crystal-lang/crystal/blob/master/src/compiler/crystal/semantic/type_merge.cr"><code>semantic/type_merge.cr</code></a>                                 | 複数型の Union 合成アルゴリズム                              |
+| <a href="https://github.com/crystal-lang/crystal/blob/master/src/compiler/crystal/semantic/restrictions.cr"><code>semantic/restrictions.cr</code></a>                             | <code>def foo(x : Int32)</code> のような型制約の評価                    |
+| <a href="https://github.com/crystal-lang/crystal/blob/master/src/compiler/crystal/semantic/filters.cr"><code>semantic/filters.cr</code></a>                                       | <code>is_a?</code> や <code>nil?</code> による制御フロー型絞り込み                 |
+| <a href="https://github.com/crystal-lang/crystal/blob/master/src/compiler/crystal/semantic/cleanup_transformer.cr"><code>semantic/cleanup_transformer.cr</code></a>               | デッドコード除去・AST後処理                                  |
+| <a href="https://github.com/crystal-lang/crystal/blob/master/src/compiler/crystal/semantic/type_declaration_processor.cr"><code>semantic/type_declaration_processor.cr</code></a> | <code>@x : Int32</code> 型宣言の処理                                    |
+| <a href="https://github.com/crystal-lang/crystal/blob/master/src/compiler/crystal/semantic/abstract_def_checker.cr"><code>semantic/abstract_def_checker.cr</code></a>             | abstract メソッドの実装確認                                  |
+| <a href="https://github.com/crystal-lang/crystal/blob/master/src/compiler/crystal/semantic/recursive_struct_checker.cr"><code>semantic/recursive_struct_checker.cr</code></a>     | 再帰的 struct の検出（コード生成不可のため必要）             |
+| <a href="https://github.com/crystal-lang/crystal/blob/master/src/compiler/crystal/semantic/literal_expander.cr"><code>semantic/literal_expander.cr</code></a>                     | <code>[1, 2, 3]</code> 等のリテラルをメソッド呼び出しに展開             |
+| <a href="https://github.com/crystal-lang/crystal/blob/master/src/compiler/crystal/semantic/exhaustiveness_checker.cr"><code>semantic/exhaustiveness_checker.cr</code></a>         | <code>case/in</code> の網羅性チェック                                   |</p>
+<h3><code>codegen/</code> — LLVMコード生成</h3>
+<p>| ファイル                                                                                                                  | 責務                                              |
+| ------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------- |
+| <a href="https://github.com/crystal-lang/crystal/blob/master/src/compiler/crystal/codegen/codegen.cr"><code>codegen/codegen.cr</code></a>       | <code>CodeGenVisitor</code> の定義（約2630行）               |
+| <a href="https://github.com/crystal-lang/crystal/blob/master/src/compiler/crystal/codegen/llvm_typer.cr"><code>codegen/llvm_typer.cr</code></a> | Crystal型 → LLVM型 の変換テーブル                 |
+| <a href="https://github.com/crystal-lang/crystal/blob/master/src/compiler/crystal/codegen/llvm_id.cr"><code>codegen/llvm_id.cr</code></a>       | 各型への <code>type_id</code> 整数の割り当て                 |
+| <a href="https://github.com/crystal-lang/crystal/blob/master/src/compiler/crystal/codegen/call.cr"><code>codegen/call.cr</code></a>             | メソッド呼び出しの LLVM IR 生成                   |
+| <a href="https://github.com/crystal-lang/crystal/blob/master/src/compiler/crystal/codegen/primitives.cr"><code>codegen/primitives.cr</code></a> | 整数演算等のプリミティブを直接 LLVM 命令に変換    |
+| <a href="https://github.com/crystal-lang/crystal/blob/master/src/compiler/crystal/codegen/unions.cr"><code>codegen/unions.cr</code></a>         | Union 型のタグ付き共用体のメモリレイアウト生成    |
+| <a href="https://github.com/crystal-lang/crystal/blob/master/src/compiler/crystal/codegen/cast.cr"><code>codegen/cast.cr</code></a>             | 型キャスト命令の生成                              |
+| <a href="https://github.com/crystal-lang/crystal/blob/master/src/compiler/crystal/codegen/debug.cr"><code>codegen/debug.cr</code></a>           | DWARF デバッグ情報の生成                          |
+| <a href="https://github.com/crystal-lang/crystal/blob/master/src/compiler/crystal/codegen/exception.cr"><code>codegen/exception.cr</code></a>   | <code>rescue/ensure</code> の LLVM 実装（landingpad）        |
+| <a href="https://github.com/crystal-lang/crystal/blob/master/src/compiler/crystal/codegen/target.cr"><code>codegen/target.cr</code></a>         | ターゲットアーキテクチャ・OS の設定               |
+| <a href="https://github.com/crystal-lang/crystal/blob/master/src/compiler/crystal/codegen/abi/"><code>codegen/abi/</code></a>                   | ABI 実装: <code>x86_64</code>, <code>aarch64</code>, <code>arm</code>, <code>wasm32</code> 等 |</p>
+<h3><code>macros/</code> — マクロシステム</h3>
+<p>| ファイル                                                                                                                  | 責務                                                  |
+| ------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------- |
+| <a href="https://github.com/crystal-lang/crystal/blob/master/src/compiler/crystal/macros/interpreter.cr"><code>macros/interpreter.cr</code></a> | <code>MacroInterpreter &lt; Visitor</code> — マクロコードの解釈実行 |
+| <a href="https://github.com/crystal-lang/crystal/blob/master/src/compiler/crystal/macros/macros.cr"><code>macros/macros.cr</code></a>           | マクロ展開のコアロジック                              |
+| <a href="https://github.com/crystal-lang/crystal/blob/master/src/compiler/crystal/macros/methods.cr"><code>macros/methods.cr</code></a>         | マクロ内メソッド（<code>.stringify</code>, <code>.instance_vars</code> 等） |
+| <a href="https://github.com/crystal-lang/crystal/blob/master/src/compiler/crystal/macros/types.cr"><code>macros/types.cr</code></a>             | マクロ内での型情報へのアクセス                        |</p>
+<hr />
+<h2>3. ASTノード体系</h2>
+<h3><code>Crystal::ASTNode</code> — 全ノードの基底</h3>
+<p><a href="https://github.com/crystal-lang/crystal/blob/master/src/compiler/crystal/syntax/ast.cr"><code>syntax/ast.cr</code></a> に定義。全 ASTノードが継承する抽象クラス。</p>
+<pre><code class="language-crystal">abstract class ASTNode
+  property location : Location?       # ノード開始位置
+  property end_location : Location?   # ノード終了位置
+
+  def clone   # ディープコピー（マクロ展開時に多用）
+    clone = clone_without_location
+    clone.location = location
+    clone.end_location = end_location
+    clone.doc = doc
+    clone
+  end
+end
+</code></pre>
+<p>意味解析後には <a href="https://github.com/crystal-lang/crystal/blob/master/src/compiler/crystal/semantic/bindings.cr"><code>semantic/bindings.cr</code></a> で以下が追加される:</p>
+<pre><code class="language-crystal">class ASTNode
+  getter dependencies : SmallNodeList = SmallNodeList.new  # 依存ノード
+  # @observers は private; add_observer/notify_observers 経由でアクセス
+  @type : Type?  # セマンティック解析後に設定される型
+end
+</code></pre>
+<h3>ASTNode クラス図</h3>
+<pre><code class="language-mermaid">classDiagram
+    class ASTNode {
+        &lt;&lt;abstract&gt;&gt;
+        +location : Location?
+        +end_location : Location?
+        +type : Type?
+        +dependencies : SmallNodeList
+        +accept(visitor) void
+        +bind_to(node) void
+        +clone() ASTNode
+        +notify_observers() void
+    }
+    class Expressions {
+        +expressions : Array~ASTNode~
+        +keyword : Keyword
+    }
+    class Nop
+    class Var {
+        +name : String
+    }
+    class Call {
+        +obj : ASTNode?
+        +name : String
+        +args : Array~ASTNode~
+        +block : Block?
+    }
+    class Def {
+        +name : String
+        +args : Array~Arg~
+        +body : ASTNode
+        +return_type : ASTNode?
+    }
+    class If {
+        +cond : ASTNode
+        +then : ASTNode
+        +else : ASTNode
+    }
+    class Assign {
+        +target : ASTNode
+        +value : ASTNode
+    }
+    class ClassDef {
+        +name : Path
+        +body : ASTNode
+        +superclass : ASTNode?
+    }
+    class BinaryOp {
+        &lt;&lt;abstract&gt;&gt;
+        +left : ASTNode
+        +right : ASTNode
+    }
+    class ControlExpression {
+        &lt;&lt;abstract&gt;&gt;
+        +exp : ASTNode?
+    }
+    class Return
+    class Break
+    class Next
+
+    ASTNode &lt;|-- Expressions
+    ASTNode &lt;|-- Nop
+    ASTNode &lt;|-- Var
+    ASTNode &lt;|-- Call
+    ASTNode &lt;|-- Def
+    ASTNode &lt;|-- If
+    ASTNode &lt;|-- Assign
+    ASTNode &lt;|-- ClassDef
+    ASTNode &lt;|-- BinaryOp
+    ASTNode &lt;|-- ControlExpression
+    ControlExpression &lt;|-- Return
+    ControlExpression &lt;|-- Break
+    ControlExpression &lt;|-- Next
+</code></pre>
+<h3>Visitor と Transformer</h3>
+<p><strong><code>Visitor</code></strong>（<a href="https://github.com/crystal-lang/crystal/blob/master/src/compiler/crystal/syntax/visitor.cr"><code>syntax/visitor.cr</code></a>）は読み取り専用の木の巡回パターン。<code>visit(node : NodeType)</code> を実装してノードを処理する。意味解析の各パスは原則として <code>Visitor</code> を継承する。</p>
+<p><strong><code>Transformer</code></strong>（<a href="https://github.com/crystal-lang/crystal/blob/master/src/compiler/crystal/syntax/transformer.cr"><code>syntax/transformer.cr</code></a>）は各ノードを変換した新ノードを返すパターン。<code>transform(node : NodeType)</code> がノードを受け取り変換後のノードを返す。<code>CleanupTransformer</code> 等がこれを利用する。</p>
+<h3>ASTNode の二重性</h3>
+<p><code>ASTNode</code> は<strong>構文ノード</strong>と<strong>型情報ノード</strong>の二つの役割を同時に担うが、これらは時系列的に分離している。</p>
+<pre><code>パース後 (型なし状態):
+  ASTNode
+  ├── location, end_location  # ソース位置（Lexer が付与）
+  ├── @type = nil             # まだ型がない
+  └── @dependencies = []     # まだ依存グラフが空
+
+意味解析後 (型付き状態):
+  ASTNode
+  ├── location, end_location
+  ├── @type = Int32           # MainVisitor が設定
+  ├── @dependencies = [...]   # bind_to で構築された依存グラフ
+  └── @observers = [...]      # このノードの型変化を監視するノード群
+</code></pre>
+<h3><code>Expressions</code> の特殊な役割</h3>
+<p><a href="https://github.com/crystal-lang/crystal/blob/master/src/compiler/crystal/syntax/ast.cr"><code>syntax/ast.cr</code></a> の <code>Expressions</code> は Crystal 構文の「文のリスト（ブロック）」を表す唯一のノードで、他のほぼ全ノードの根幹をなす。</p>
+<pre><code class="language-crystal">class Expressions &lt; ASTNode
+  enum Keyword
+    None   # 通常の式の列
+    Paren  # `(a; b)` のような括弧付き
+    Begin  # `begin ... end`
+  end
+
+  property expressions : Array(ASTNode)
+  property keyword : Keyword = Keyword::None
+</code></pre>
+<p><strong><code>Expressions.from</code> ファクトリメソッド</strong> は Crystal コンパイラ内で非常に多用される:</p>
+<pre><code class="language-crystal"># 配列が空 → Nop.new（何もしないノード）
+# 配列が1要素 → その要素を直接返す（Expressions で包まない！）
+# 配列が2要素以上 → Expressions.new
+def self.from(obj : Array)
+  case obj.size
+  when 0 then Nop.new
+  when 1 then obj.first
+  else        new obj
+  end
+end
+</code></pre>
+<p>この挙動が重要な理由: <code>require</code> が展開された後の AST において、<code>Expressions.from</code> は単一ファイルの場合に不要なラッパーを作らない。パフォーマンスと後続 Visitor の処理を簡潔にするための設計である。</p>
+<h3><code>MainVisitor#visit(node : Expressions)</code> の処理</h3>
+<p><code>Expressions</code> の visit では<strong>最後の式だけが型を持ち、それ以外は副作用のためだけに評価される</strong>:</p>
+<pre><code class="language-crystal">def visit(node : Expressions)
+  exp_count = node.expressions.size
+  node.expressions.each_with_index do |exp, i|
+    if i == exp_count - 1
+      exp.accept self          # 最後の式: bind_to して型を伝播
+      node.bind_to exp
+    else
+      ignoring_type_filters { exp.accept self }  # 中間の式: 型フィルタを無視して評価
+    end
+  end
+
+  if node.empty?
+    node.set_type(@program.nil)  # 空の Expressions は nil 型
+  end
+  false
+end
+</code></pre>
+<p><code>ignoring_type_filters</code> は <code>is_a?</code> 等の型絞り込みの副作用を途中の式に残さないための機構である。</p>
+<h3><code>FileNode</code> — ファイルの境界ノード</h3>
+<p><code>require</code> が展開されたとき、<code>Expressions</code> の中に <code>FileNode</code> が挿入される。<code>FileNode</code> はファイル名を保持し、<code>MainVisitor</code> が visit したとき <strong><code>@vars</code> と <code>@meta_vars</code> をファイルローカルなものに切り替える</strong>:</p>
+<pre><code class="language-crystal">def visit(node : FileNode)
+  old_vars = @vars
+  old_meta_vars = @meta_vars
+  old_file_module = @file_module
+
+  @vars = MetaVars.new
+  @file_module = file_module = @program.file_module(node.filename)
+  @meta_vars = file_module.vars          # ファイルローカルなメタ変数辞書
+
+  node.node.accept self                  # ファイル内容を visit
+
+  @vars = old_vars                       # 呼び出し元の変数スコープに戻す
+  @meta_vars = old_meta_vars
+  @file_module = old_file_module
+  false
+end
+</code></pre>
+<p>これにより、各ファイルのトップレベル変数が他のファイルに漏れない。<code>program.file_module(filename)</code> が <code>Program#file_modules</code> ハッシュを引くことで、同一ファイルが複数回 visit されても同一の <code>FileModule</code> を再利用できる。</p>
+<h3>主要な ASTNode サブクラスのカテゴリ</h3>
+<p>| カテゴリ       | 代表的なノード                                                   | 特徴                                                            |
+| -------------- | ---------------------------------------------------------------- | --------------------------------------------------------------- |
+| <strong>リテラル</strong>   | <code>NumberLiteral</code>, <code>StringLiteral</code>, <code>BoolLiteral</code>, <code>SymbolLiteral</code> | パース後に即座に型が確定。<code>set_type</code> で固定                     |
+| <strong>参照</strong>       | <code>Var</code>, <code>InstanceVar</code>, <code>ClassVar</code>, <code>Global</code>, <code>Path</code>               | <code>bind_to</code> で型を依存グラフに組み込む                            |
+| <strong>呼び出し</strong>   | <code>Call</code>                                                           | <code>recalculate</code> が observer 機構で繰り返し型推論する              |
+| <strong>制御フロー</strong> | <code>If</code>, <code>While</code>, <code>Return</code>, <code>Yield</code>, <code>Block</code>                        | 複数の子ノードの型をマージして自身の型を決定                    |
+| <strong>宣言</strong>       | <code>Def</code>, <code>ClassDef</code>, <code>ModuleDef</code>, <code>MacroDef</code>                       | 型を返さない（<code>Nil</code> 型を設定）。副作用で <code>Program</code> を変異させる |
+| <strong>型注釈</strong>     | <code>TypeDeclaration</code>, <code>UninitializedVar</code>                            | <code>freeze_type</code> を設定して変数の型を固定                          |
+| <strong>変換</strong>       | <code>Cast (as)</code>, <code>IsA (is_a?)</code>, <code>NilableCast (as?)</code>                  | 型フィルタの生成と型変換ノード                                  |</p>
+<h3>基本的な呼び出し契約</h3>
+<p><a href="https://github.com/crystal-lang/crystal/blob/master/src/compiler/crystal/syntax/visitor.cr"><code>syntax/visitor.cr</code></a> で定義されるプロトコルを実際のコードで示す:</p>
+<pre><code class="language-crystal">class Visitor
+  def visit_any(node) = true   # 全ノード共通の前処理フック（デフォルト: continue）
+  def end_visit(node) = nil    # 後処理フック（デフォルト: no-op）
+end
+
+class ASTNode
+  def accept(visitor)
+    if visitor.visit_any self       # ① フック。false を返すと以下をすべてスキップ
+      if visitor.visit self         # ② このノード固有の visit。false を返すと子をスキップ
+        accept_children visitor     # ③ 子ノードを再帰的に accept
+      end
+      visitor.end_visit self        # ④ 後処理
+    end
+  end
+
+  def accept_children(visitor)
+    # ASTNode のデフォルト実装は空（子なし）
+    # サブクラスごとに子ノードを列挙してオーバーライドされる
+  end
+end
+</code></pre>
+<p>これにより <code>visit</code> が <code>false</code> を返すと<strong>子ノードの走査を止められる</strong>。意味解析のほとんどの <code>visit</code> メソッドは自分で子を <code>accept</code> した後に <code>false</code> を返し、デフォルトの <code>accept_children</code> による二重走査を防ぐ。</p>
+<p>例えば <code>Expressions</code> の accept_children:</p>
+<pre><code class="language-crystal">class Expressions &lt; ASTNode
+  def accept_children(visitor)
+    @expressions.each &amp;.accept(visitor)
+  end
+end
+</code></pre>
+<p><code>Def</code> 等の宣言ノードは <code>TopLevelVisitor</code> での処理において <code>false</code> を返して本体（<code>body</code>）の走査を止める。本体が走査されるのは <code>MainVisitor</code> フェーズのみである。</p>
+<h3><code>visit_any</code> による横断的処理</h3>
+<p><code>MainVisitor#visit_any</code>:</p>
+<pre><code class="language-crystal">def visit_any(node)
+  @unreachable = false   # どのノードに入っても unreachable フラグをリセット
+  super
+end
+</code></pre>
+<p><code>@unreachable</code> は <code>NoReturn</code> 型の式（<code>raise</code>, <code>return</code> 等）に出会った後に <code>true</code> になり、以降の式の型推論をスキップするために使われる。<code>visit_any</code> でリセットすることで、各ノードの入口で常にフレッシュな状態から始められる。</p>
+<h3>Transformer の走査</h3>
+<p><code>Transformer</code> は <code>Visitor</code> とは独立した走査機構を持つ。<code>ASTNode#transform(transformer)</code> が自身を変換して新ノードを返す:</p>
+<pre><code class="language-crystal">class ASTNode
+  def transform(transformer)
+    if transformer.transform_any self    # ① 変換前フック
+      new_node = transformer.transform self  # ② 変換（自分自身または新ノードを返す）
+      new_node.transform_children transformer  # ③ 子を再帰的に変換
+      new_node
+    else
+      self
+    end
+  end
+end
+</code></pre>
+<p><code>CleanupTransformer</code> での実例: <code>If</code> ノードが常に then 節しか実行されないと判明した場合（else 節が <code>NoReturn</code>）、<code>If</code> ノードを <code>then</code> の内容に置き換えて返す。</p>
+<hr />
+<h2>4. 型ヒエラルキー</h2>
+<p><a href="https://github.com/crystal-lang/crystal/blob/master/src/compiler/crystal/types.cr"><code>types.cr</code></a>（約3600行）が型システム全体を実装する。精選した継承ツリー:</p>
+<pre><code>Type (abstract)
+├── NoReturnType            # 決して値を持たない式の型 (raise, exit 等)
+├── VoidType                # C の void 相当
+├── NilType                 # nil の型
+├── BoolType
+├── IntegerType
+│   ├── Int8Type, Int16Type, Int32Type, Int64Type, Int128Type
+│   └── UInt8Type, UInt16Type, UInt32Type, UInt64Type, UInt128Type
+├── FloatType
+│   ├── Float32Type
+│   └── Float64Type
+├── NamedType               # 名前を持つ型の基底
+│   ├── ModuleType
+│   │   ├── NonGenericModuleType   ← Program はここから継承
+│   │   └── GenericModuleType      (例: Comparable(T))
+│   ├── ClassType
+│   │   ├── NonGenericClassType    (例: String, IO)
+│   │   └── GenericClassType       (例: Array(T), Hash(K,V))
+│   ├── StructType
+│   │   ├── NonGenericStructType
+│   │   └── GenericStructType      (例: Tuple(T*))
+│   ├── EnumType
+│   ├── LibType                    # `lib Foo` ブロック
+│   └── AliasType                  # `alias Foo = Bar`
+├── UnionType               # A | B。Program#unions でキャッシュ管理
+├── PointerInstanceType     # Pointer(T) のインスタンス側
+├── ProcInstanceType        # Proc(A, B, R) のインスタンス側
+└── VirtualType             # abstract class の仮想ディスパッチ型
+</code></pre>
+<h3>Type クラス図</h3>
+<pre><code class="language-mermaid">classDiagram
+    class Type {
+        &lt;&lt;abstract&gt;&gt;
+        +program : Program
+        +to_s() String
+        +no_return?() Bool
+    }
+    class NamedType {
+        &lt;&lt;abstract&gt;&gt;
+        +name : String
+        +locations : Array~Location~
+    }
+    class ModuleType {
+        &lt;&lt;abstract&gt;&gt;
+        +types : Hash~String, Type~
+        +defs : Hash~String, Array~Def~~
+    }
+    class ClassType {
+        &lt;&lt;abstract&gt;&gt;
+        +superclass : ClassType?
+        +subclasses : Array~Type~
+    }
+    class PrimitiveType {
+        &lt;&lt;abstract&gt;&gt;
+    }
+    class NonGenericClassType
+    class GenericClassType {
+        +type_vars : Array~String~
+    }
+    class NonGenericModuleType
+    class GenericModuleType {
+        +type_vars : Array~String~
+    }
+    class NoReturnType
+    class VoidType
+    class AliasType {
+        +aliased_type : Type
+    }
+    class UnionType {
+        &lt;&lt;abstract&gt;&gt;
+        +union_types : Array~Type~
+    }
+    class MixedUnionType
+    class VirtualType {
+        +base_type : ClassType
+    }
+    class EnumType
+    class LibType
+
+    Type &lt;|-- NamedType
+    Type &lt;|-- UnionType
+    Type &lt;|-- VirtualType
+    NamedType &lt;|-- ModuleType
+    NamedType &lt;|-- ClassType
+    NamedType &lt;|-- NoReturnType
+    NamedType &lt;|-- VoidType
+    NamedType &lt;|-- AliasType
+    ModuleType &lt;|-- NonGenericModuleType
+    ModuleType &lt;|-- GenericModuleType
+    ModuleType &lt;|-- EnumType
+    ModuleType &lt;|-- LibType
+    ClassType &lt;|-- NonGenericClassType
+    ClassType &lt;|-- GenericClassType
+    ClassType &lt;|-- PrimitiveType
+    UnionType &lt;|-- MixedUnionType
+    NonGenericModuleType &lt;|-- Program
+</code></pre>
+<p><strong><code>VirtualType</code></strong> は特に重要である。<code>abstract class Animal</code> を継承した <code>Dog</code>, <code>Cat</code> が存在するとき、<code>Animal</code> 型として扱われる変数の実体は <code>VirtualType(Animal)</code> になる。コード生成時にはタグ付き共用体（Union 型と同様の手法）として LLVM IR に変換され、仮想ディスパッチを実現する。</p>
+<blockquote>
+<p><strong>📊 他言語との比較: Union 型と Nil 安全</strong></p>
+<p><strong>Union 型の実装:</strong></p>
+<p>| 言語 | モデル | ランタイム表現 | 安全性 |
+|---|---|---|---|
+| <strong>Crystal</strong> | フラット Union（<code>A \| B \| C</code>、同一構成は singleton） | <code>{type_id: i32, data: union}</code> タグ付き共用体 | ◎ コンパイル時に全ケース検査 |
+| Rust | 代数的データ型（<code>enum</code>、名前付き variant） | タグ付き共用体（variant ごとにサイズ最大に揃える） | ◎ <code>match</code> で全網羅必須 |
+| TypeScript | 構造的 Union（<code>A \| B</code>） | ランタイムタグなし（duck typing） | △ 型ガード頼み |
+| Haskell | ADT（<code>data Either a b = Left a \| Right b</code>） | ヒープ上のタグ付きポインタ | ◎ 全 case 網羅必須 |
+| C | <code>union</code>（タグなし） | 生のメモリ共用 | ✗ 手動管理、unsafe |</p>
+<p><strong>Nil 安全の実装:</strong></p>
+<p>| 言語 | モデル | 記法 | Nil の本質 |
+|---|---|---|---|
+| <strong>Crystal</strong> | <code>Nil</code> はただの型（<code>String \| Nil</code>） | <code>String?</code> は糖衣構文 | Union 型と統一された概念 |
+| Rust | <code>Option&lt;T&gt;</code>（<code>Some(T) \| None</code>） | <code>Option&lt;String&gt;</code> | ADT の特殊ケース |
+| Swift | <code>Optional&lt;T&gt;</code> | <code>String?</code> | ADT の特殊ケース |
+| Kotlin | nullable 型（<code>String?</code>） | <code>String?</code> | 型システムに別軸として組み込み |
+| Java（〜10） | <code>null</code>（全参照型に存在） | なし | 型システム外（unsafe） |</p>
+<p>Crystal における <code>Nil</code> の最大の特徴は、<strong>他言語のような特別扱いが一切ない</strong>点にある。<code>String?</code> は <code>String | Nil</code> の構文糖衣に過ぎず、<code>Nil</code> は <code>NilType</code> という通常の型クラスである。Union 型の仕組みがそのまま Nil 安全を提供するため、<code>Option&lt;T&gt;</code> のようなラッパー型を別途用意する必要がない。</p>
+</blockquote>
+<hr />
+<h2>5. Crystal::Program — コンパイルの中央データベース</h2>
+<p><a href="https://github.com/crystal-lang/crystal/blob/master/src/compiler/crystal/program.cr"><code>program.cr</code></a> の <code>Crystal::Program</code> は <code>NonGenericModuleType</code> を継承しており、コンパイル全体に関わるすべてのグローバルな状態を保持する。</p>
+<pre><code class="language-crystal">class Program &lt; NonGenericModuleType
+  # プログラム中に現れる全シンボル (:foo, :bar 等)
+  getter symbols = Set(String).new
+
+  # ファイルローカルな def とトップレベル変数の格納先
+  # キーはファイルの絶対パス
+  getter file_modules = {} of String =&gt; FileModule
+
+  # require 済みファイルを記録して重複 require を防止
+  getter requires = Set(String).new
+
+  # Union型のキャッシュ。Union の構成型（のopaque id の配列）をキーとする
+  # これにより `Int32 | String` と `String | Int32` は同一オブジェクトになる
+
+  # トップレベル変数（main ファイルのみ）
+  getter vars = MetaVars.new
+
+  # スプラット展開の再帰チェック用
+  getter splat_expansions : Hash(Def, Array(Type))
+end
+</code></pre>
+<h3>Program クラス図</h3>
+<pre><code class="language-mermaid">classDiagram
+    class Type {
+        &lt;&lt;abstract&gt;&gt;
+    }
+    class NamedType {
+        &lt;&lt;abstract&gt;&gt;
+        +name : String
+    }
+    class ModuleType {
+        &lt;&lt;abstract&gt;&gt;
+        +types : Hash~String, Type~
+        +defs : Hash~String, Array~Def~~
+        +macros : Hash~String, Array~Macro~~
+    }
+    class NonGenericModuleType
+    class Program {
+        +symbols : Set~String~
+        +requires : Set~String~
+        +file_modules : Hash~String, FileModule~
+        +unions : Hash~Array~UInt64~, UnionType~
+        +vars : MetaVars
+        +filename : String?
+        +progress_tracker : ProgressTracker
+        +compiler : Compiler?
+        +string_pool : StringPool
+    }
+    class ProgressTracker {
+        +stage(name, block)
+    }
+    class Compiler {
+        +compile(sources)
+    }
+
+    Type &lt;|-- NamedType
+    NamedType &lt;|-- ModuleType
+    ModuleType &lt;|-- NonGenericModuleType
+    NonGenericModuleType &lt;|-- Program
+    Program --&gt; ProgressTracker : progress_tracker
+    Program --&gt; Compiler : compiler
+    Program --&gt; &quot;*&quot; Type : types[]
+</code></pre>
+<p><code>Program</code> はトップレベルのモジュール型でもあるため、<code>Int32</code>, <code>String</code> 等の組み込み型はすべて <code>Program</code> に属する <code>NamedType</code> として格納されている。型を検索するには <code>program.types[&quot;String&quot;]</code> のようにアクセスする。</p>
+<hr />
+<h2>6. 字句解析・構文解析</h2>
+<h3>Lexer — 字句解析器</h3>
+<p><a href="https://github.com/crystal-lang/crystal/blob/master/src/compiler/crystal/syntax/lexer.cr"><code>syntax/lexer.cr</code></a> の <code>Crystal::Lexer</code> は <code>Char::Reader</code> でソース文字列を Unicode 単位で走査し、<code>Token</code> オブジェクト列を生成する。<strong>Parser が直接 <code>next_token</code> を呼んで都度トークンを要求するプルモデル</strong>であるため、トークン列は一括で生成されない。</p>
+<p>重要な状態フラグ:</p>
+<p>| フラグ                    | 意味                                                      |
+| ------------------------- | --------------------------------------------------------- |
+| <code>slash_is_regex</code>          | <code>/</code> を除算ではなく正規表現リテラルの開始として解析する    |
+| <code>doc_enabled</code>             | <code>#</code> で始まるドキュメントコメントを <code>Token#doc</code> に保存する |
+| <code>wants_def_or_macro_name</code> | <code>def</code>・<code>macro</code> の直後で予約語も名前として受け入れる       |</p>
+<h3>Parser — 再帰降下構文解析器</h3>
+<p><a href="https://github.com/crystal-lang/crystal/blob/master/src/compiler/crystal/syntax/parser.cr"><code>syntax/parser.cr</code></a> の <code>Crystal::Parser</code> は <code>Lexer</code> を直接継承し、メソッド呼び出しでトークンを消費する古典的な再帰降下パーサである（約6500行）。</p>
+<pre><code class="language-crystal">class Parser &lt; Lexer
+  enum ParseMode
+    Normal
+    Lib             # `lib Foo` ブロック内
+    LibStructOrUnion
+    Enum
+  end
+</code></pre>
+<p><strong>変数スコープ管理が識別子/呼び出し判定の核心である。</strong> <code>@var_scopes : Array(Set(String))</code> が変数名の集合をスタックとして保持する。パーサが識別子を読んだとき、それが現在スコープの変数名集合に含まれていれば「変数参照」、含まれていなければ「引数なしメソッド呼び出し」として解析される。</p>
+<pre><code>foo   # @var_scopes に &quot;foo&quot; が存在する → Var.new(&quot;foo&quot;)
+foo   # @var_scopes に &quot;foo&quot; が存在しない → Call.new(nil, &quot;foo&quot;, [])
+</code></pre>
+<p>エントリポイントは <code>parse</code> → <code>parse_expressions</code> → 各 <code>parse_XXX</code> メソッドと連鎖する。構文解析結果は <code>ASTNode</code> のツリーとして返される。</p>
+<blockquote>
+<p><strong>📊 他言語との比較: Lexer/Parser 実装方式</strong></p>
+<p>| 言語 | Lexer | Parser | 特記事項 |
+|---|---|---|---|
+| <strong>Crystal</strong> | 手書き DFA (<code>case current_char</code>) | 手書き再帰降下 | <code>@var_scopes</code> スタックで文脈依存判断 |
+| Rust | 手書き DFA | 手書き再帰降下 | 型文脈（<code>&lt;</code> の曖昧性）を前後参照で解消 |
+| Go | 手書き DFA | 手書き再帰降下 | 文法がシンプルなため文脈依存ほぼ不要 |
+| Clang | 手書き DFA | 手書き再帰降下 | C/C++ の文脈依存構文をスコープ解析で解消 |
+| Ruby (〜3.1) | flex（字句生成器） | Yacc/Bison（LR(1)） | 宣言的文法だがエラーメッセージが難解 |
+| Ruby (3.2〜) | 手書き | LRAMA（LR、独自実装） | Yacc から独自 LR ジェネレータへ移行 |
+| Python (3.9〜) | 手書き | PEG/Packrat（pegen） | バックトラックを Packrat でメモ化 |
+| GHC (Haskell) | Alex（flex 系） | Happy（LALR） | 記号型言語の曖昧性を文法レベルで管理 |</p>
+<p>Crystal が手書き再帰降下を選んだ本質的理由は<strong>文脈依存</strong>にある。<code>foo</code> が変数かメソッド呼び出しかは <code>@var_scopes</code> を参照しないと決定できず、<code>{</code> がブロックか Hash リテラルかは呼び出し文脈によって変わる。これらは LR や PEG の宣言的文法では自然に表現しにくく、手書きコードの方が <code>ParseMode</code> enum や <code>@stop_on_do</code> フラグを使って直接制御できる。「本番利用されるコンパイラは手書き再帰降下に収束する」という現代の潮流はこの文脈依存性の困難さを反映している。</p>
+</blockquote>
+<hr />
+<h2>7. require システム</h2>
+<h3>ファイル検索: <code>CrystalPath</code></h3>
+<p><a href="https://github.com/crystal-lang/crystal/blob/master/src/compiler/crystal/crystal_path.cr"><code>crystal_path.cr</code></a> の <code>Crystal::CrystalPath</code> が <code>require &quot;foo&quot;</code> の解決を担う。</p>
+<p>検索パスの優先順位:</p>
+<ol>
+<li><strong><code>CRYSTAL_PATH</code> 環境変数</strong> — <code>:</code> 区切りのディレクトリリスト</li>
+<li><strong><code>Crystal::Config.path</code></strong> — コンパイラバイナリにビルド時に埋め込まれたパス</li>
+<li><strong><code>lib/</code></strong> — shards がインストールしたライブラリ</li>
+</ol>
+<p><strong><code>$ORIGIN</code> 展開:</strong> インストール可搬性のため <code>$ORIGIN</code> という特殊インディレクタが使われ、コンパイラバイナリのディレクトリからの相対パスとして標準ライブラリを参照する。</p>
+<p><code>require &quot;./foo&quot;</code> は現在ファイルからの相対パスとして解決される。<code>require &quot;foo&quot;</code> はパス検索を行う。</p>
+<h3>require の重複防止</h3>
+<p><a href="https://github.com/crystal-lang/crystal/blob/master/src/compiler/crystal/semantic/semantic_visitor.cr"><code>semantic/semantic_visitor.cr</code></a> の <code>visit(node : Require)</code> が処理する:</p>
+<pre><code class="language-crystal">def visit(node : Require)
+  filenames = @program.find_in_path(node.string, relative_to_filename)
+
+  @program.run_requires(node, filenames) do |filename|
+    # Program#requires に追加済みなら skip（Set で O(1) 判定）
+    next if @program.requires.includes?(filename)
+
+    @program.requires &lt;&lt; filename
+    # ファイルをその場でパース → ASTNode に展開
+    nodes &lt;&lt; require_file(node, filename)
+  end
+end
+</code></pre>
+<p><code>Program#requires</code> は <code>Set(String)</code>（絶対パスのセット）であり、同一ファイルを複数回 require しても1回だけ処理される。</p>
+<h3>prelude のブートストラップ</h3>
+<p><code>Compiler#parse</code> は全ソースの先頭に <code>Require.new(&quot;prelude&quot;)</code> ノードを挿入する。<code>prelude</code> は <a href="https://github.com/crystal-lang/crystal/blob/master/src/prelude.cr"><code>src/prelude.cr</code></a> を指し、そこから <code>object.cr</code>, <code>value.cr</code>, <code>int.cr</code>, <code>string.cr</code>, <code>array.cr</code> 等が連鎖的に require され、Crystal の全組み込み型が定義される。</p>
+<hr />
+<h2>8. 意味解析の全パス</h2>
+<p><a href="https://github.com/crystal-lang/crystal/blob/master/src/compiler/crystal/semantic.cr"><code>semantic.cr</code></a> に定義される <code>Program#semantic</code> が全パスを順番に実行する。各ステージは <code>@progress_tracker.stage(&quot;Semantic (xxx)&quot;) { ... }</code> でラップされている。</p>
+<pre><code class="language-crystal">def semantic(node : ASTNode, cleanup = true, ...) : ASTNode
+  node, processor = top_level_semantic(node)         # パス 1〜5
+
+  # パス 6: インスタンス変数初期化子 (@x = 1)
+  @progress_tracker.stage(&quot;Semantic (ivars initializers)&quot;) { ... }
+
+  # パス 7: クラス変数初期化子 (@@x = 1)
+  @progress_tracker.stage(&quot;Semantic (cvars initializers)&quot;) { ... }
+
+  # パス 8: メインコード・型推論（最も重い）
+  result = @progress_tracker.stage(&quot;Semantic (main)&quot;) do
+    visit_main(node, ...)
+  end
+
+  # パス 9: デッドコード除去
+  @progress_tracker.stage(&quot;Semantic (cleanup)&quot;) { cleanup_types; cleanup_files }
+
+  # パス 10: 再帰的 struct の検出
+  @progress_tracker.stage(&quot;Semantic (recursive struct check)&quot;) do
+    RecursiveStructChecker.new(self).run
+  end
+
+  result
+end
+</code></pre>
+<p><code>top_level_semantic</code> が呼ぶ前半のパス:</p>
+<pre><code class="language-crystal">def top_level_semantic(node, ...)
+  # パス 1: TopLevelVisitor — class/def/macro/alias/include 宣言の登録
+  @progress_tracker.stage(&quot;Semantic (top level)&quot;) do
+    node.accept TopLevelVisitor.new(self)
+  end
+
+  # パス 2: initialize → new の自動生成
+  @progress_tracker.stage(&quot;Semantic (new)&quot;) do
+    define_new_methods(new_expansions)
+  end
+
+  # パス 3: 型宣言処理 (@x : Int32 など)
+  node, processor = @progress_tracker.stage(&quot;Semantic (type declarations)&quot;) do
+    TypeDeclarationProcessor.new(self).process(node)
+  end
+
+  # パス 4: abstract def の実装確認
+  @progress_tracker.stage(&quot;Semantic (abstract def check)&quot;) do
+    AbstractDefChecker.new(self).run
+  end
+
+  # パス 5: 型制約オーグメンター（オーバーロード解決最適化）
+  @progress_tracker.stage(&quot;Semantic (restrictions augmenter)&quot;) do
+    node.accept RestrictionsAugmenter.new(self, new_expansions)
+  end
+end
+</code></pre>
+<h3>各パスの責務詳細</h3>
+<p>| パス                   | クラス                           | 要点                                                                                      |
+| ---------------------- | -------------------------------- | ----------------------------------------------------------------------------------------- |
+| top level              | <code>TopLevelVisitor</code>                | クラス・モジュール・def・macro の <strong>宣言</strong> のみ処理。型のインスタンス化は行わない         |
+| new                    | <code>define_new_methods</code>             | <code>initialize</code> のオーバーロードごとに <code>self.new(...)</code> を自動生成。これが <code>new</code> の実装の正体 |
+| type declarations      | <code>TypeDeclarationProcessor</code>       | <code>@x : Int32</code> 等の明示的型宣言を収集し、型の freeze 化（<code>freeze_type</code>）を設定              |
+| abstract def check     | <code>AbstractDefChecker</code>             | すべての具象クラスが abstract メソッドを実装しているか検査                                |
+| restrictions augmenter | <code>RestrictionsAugmenter</code>          | オーバーロード候補に暗黙の型制約を付与してディスパッチを高速化                            |
+| ivars initializers     | <code>InstanceVarsInitializerVisitor</code> | <code>@x = 1</code> のような初期化式を各クラスの型情報に紐付ける                                     |
+| cvars initializers     | <code>ClassVarsInitializerVisitor</code>    | <code>@@x = 1</code> のグローバルな初期化順序を解決                                                  |
+| main                   | <code>MainVisitor</code>                    | <strong>型推論の本体</strong>。すべての式に型を付与しメソッドをインスタンス化する（詳細は§7）          |
+| cleanup                | <code>CleanupTransformer</code>             | 型推論後、<code>NoReturn</code> になった分岐の除去、単一型 Union の展開                              |
+| recursive struct       | <code>RecursiveStructChecker</code>         | 無限サイズになる再帰的 struct を検出してエラー                                            |</p>
+<h3>全体の連鎖の全体図</h3>
+<pre><code>Crystal::Compiler#compile
+│
+├─ parse(sources)
+│   └─ Parser#parse → ASTNode
+│       └─ Lexer#next_token（プルモデル）
+│
+└─ Program#semantic(node)
+    │
+    ├─ TopLevelVisitor.new.accept(node)         [パス1]
+    │   └─ visit(ClassDef / ModuleDef / Def / Macro)
+    │       ├─ Program#add_def / add_macro → @program.types を変異
+    │       └─ MacroInterpreter（マクロ呼び出し時）
+    │           └─ ExpandedMacro を再パース → 再度 TopLevelVisitor で visit
+    │
+    ├─ define_new_methods                        [パス2]
+    │
+    ├─ TypeDeclarationProcessor#process(node)   [パス3]
+    │   └─ TypeDeclarationVisitor.accept(node)
+    │
+    ├─ AbstractDefChecker#run                   [パス4]
+    │
+    ├─ RestrictionsAugmenter.accept(node)        [パス5]
+    │
+    ├─ InstanceVarsInitializerVisitor.accept(node) [パス6]
+    │   └─ MainVisitor.new（初期化式を型推論）
+    │
+    ├─ ClassVarsInitializerVisitor               [パス7]
+    │   └─ MainVisitor.new（クラス変数初期化式を型推論）
+    │
+    ├─ MainVisitor.new.accept(node)              [パス8: メイン]
+    │   ├─ visit(FileNode)
+    │   │   └─ 同一 MainVisitor インスタンスで node.node.accept self
+    │   │       ↑ 変数スコープを FileModule に切り替えて再帰
+    │   │
+    │   ├─ visit(Call) → Call#recalculate
+    │   │   ├─ lookup_matches → DefWithMetadata を発見
+    │   │   ├─ Def#instantiate(arg_types)
+    │   │   └─ MainVisitor.new(program, vars, typed_def)  ← 新しいインスタンス！
+    │   │       └─ typed_def.body.accept(new_visitor)    ← メソッド本体の型推論
+    │   │
+    │   ├─ visit(Yield) → Block#accept(call.parent_visitor)
+    │   │   ↑ ブロックはブロックを呼び出した Call の parent_visitor（元の MainVisitor）で走査
+    │   │
+    │   ├─ visit(Block) → MainVisitor.new（ブロック専用）
+    │   │   └─ block_visitor.accept(node.body)
+    │   │
+    │   ├─ visit(Const) → MainVisitor.new（定数専用）
+    │   │   └─ const.value.accept(type_visitor)
+    │   │
+    │   └─ visit(FunLiteral) → MainVisitor.new（クロージャ本体）
+    │
+    ├─ CleanupTransformer#transform(node)        [パス9]
+    │   └─ デッドコード除去・単純化
+    │       └─ 一部の呼び出しを MainVisitor.new で再評価
+    │
+    └─ RecursiveStructChecker#run                [パス10]
+</code></pre>
+<h3>require による再帰的なパース</h3>
+<p><code>require</code> ノードに到達したとき、<strong>SemanticVisitor（TopLevelVisitor または MainVisitor の基底クラス）が即座にファイルを読んでパース・走査する</strong>。これは「遅延評価」ではなく「即時展開」である。</p>
+<p><a href="https://github.com/crystal-lang/crystal/blob/master/src/compiler/crystal/semantic/semantic_visitor.cr"><code>semantic/semantic_visitor.cr</code></a>:</p>
+<pre><code class="language-crystal">def visit(node : Require)
+  # ... 既に展開済みなら再訪しない
+  if expanded = node.expanded
+    expanded.accept self
+    return false
+  end
+
+  filenames = @program.find_in_path(filename, relative_to)
+
+  if filenames
+    nodes = Array(ASTNode).new(filenames.size)
+    @program.run_requires(node, filenames) do |filename|
+      nodes &lt;&lt; require_file(node, filename)  # ← ここで即座にファイルをパース・走査
+    end
+    expanded = Expressions.from(nodes)
+  else
+    expanded = Nop.new
+  end
+
+  node.expanded = expanded        # 展開結果をノードにキャッシュ（2回目以降はスキップ）
+  node.bind_to(expanded)
+  false
+end
+
+private def require_file(node : Require, filename : String)
+  parser = @program.new_parser(File.read(filename))  # ← Lexer + Parser 生成
+  parser.filename = filename
+  parsed_nodes = parser.parse                         # ← 字句解析・構文解析
+  parsed_nodes = @program.normalize(parsed_nodes)     # ← AST 正規化
+  parsed_nodes.accept self                            # ← 現在の Visitor で即時走査
+  #                      ^^^
+  # TopLevelVisitor が require に出会った → 新ファイルも TopLevelVisitor で走査
+  # MainVisitor が require に出会った → 新ファイルも MainVisitor で走査
+
+  FileNode.new(parsed_nodes, filename)  # ← FileNode でラップして返す
+end
+</code></pre>
+<p><strong>パース → 走査が現在の Visitor のスタックフレームの中で起きる</strong>ため、<code>require</code> は事実上インライン展開である。エラーが起きれば &quot;while requiring ...&quot; というネストされたエラーメッセージが表示される。</p>
+<h3>MainVisitor が自分自身を生成するすべての箇所</h3>
+<p>| 箇所                   | 生成コード                                                           | 目的                                                             |
+| ---------------------- | -------------------------------------------------------------------- | ---------------------------------------------------------------- |
+| メソッドインスタンス化 | <code>MainVisitor.new(program, vars, typed_def)</code>                          | def 本体の型推論。<code>typed_def</code> でどのメソッドを処理中かを保持     |
+| ブロック               | <code>MainVisitor.new(program, before_block_vars, @typed_def, meta_vars)</code> | ブロック本体専用スコープ。ブロック引数が前後の変数を上書きしない |
+| 定数                   | <code>MainVisitor.new(@program, meta_vars, const_def)</code>                    | 定数初期化式の型推論。<code>inside_constant = true</code> でフラグ管理      |
+| クロージャ             | <code>MainVisitor.new(program, fun_vars, node.def, meta_vars)</code>            | Fun リテラル（<code>-&gt; { }</code> 等）の本体                                |
+| インタープリタ         | <code>MainVisitor.new(from_main_visitor: @main_visitor)</code>                  | REPL セッション継続。<code>vars</code>/<code>meta_vars</code> を引き継ぐ               |</p>
+<p><strong>各新しい MainVisitor は独立した <code>vars</code> 辞書を持つが、<code>Program</code> は共有される</strong>。型変化が <code>notify_observers</code> で伝播するとき、異なる MainVisitor インスタンスが付けた observer 同士もグラフを通じて連鎖する。</p>
+<h3><code>TopLevelVisitor</code> が書き込むデータ</h3>
+<p><code>TopLevelVisitor</code> が <code>Program</code>（および各 <code>NamedType</code>）に書き込む主なデータ:</p>
+<pre><code class="language-crystal"># ① クラス・struct・module の作成
+type = NonGenericClassType.new(@program, scope, name, superclass, false)
+scope.types[name] = type                   # Program#types に登録
+
+# ② メソッド定義の登録
+def visit(node : Def)
+  node.owner = @current_type
+  @current_type.add_def(node)
+  # add_def は @current_type.defs ハッシュに DefWithMetadata を追加
+  # Hash(String, Array(DefWithMetadata)) 構造
+  false   # ← 本体には入らない
+end
+
+# ③ マクロ登録
+def visit(node : MacroDef)
+  @current_type.add_macro(node)
+  # @current_type.macros ハッシュに追加
+  false
+end
+
+# ④ include/extend の処理
+def visit(node : Include)
+  included_module = lookup_type(node.name)
+  @current_type.include(included_module)
+  # @current_type.parents に追加
+end
+</code></pre>
+<p><strong><code>add_def</code> のオーバーロード管理 (<code>types.cr</code>):</strong></p>
+<pre><code class="language-crystal">def add_def(a_def)
+  a_def.owner = self
+  item = DefWithMetadata.new(a_def)
+  defs = (@defs ||= {} of String =&gt; Array(DefWithMetadata))
+  list = defs[a_def.name] ||= [] of DefWithMetadata
+
+  # 既存の def との比較で「より厳密」「同一シグネチャ」「より緩い」を判定
+  list.each_with_index do |ex_item, i|
+    case item.compare_strictness(ex_item, self)
+    when 0           # 同一シグネチャ → 上書き（再定義）
+      list[i] = item
+      a_def.previous = ex_item   # 前の定義へのリンク（previous_def 用）
+    when .&lt; 0        # より厳密 → 前に挿入（オーバーロード解決は先頭から試みる）
+      list.insert(i, item)
+      return nil
+    end
+  end
+  list &lt;&lt; item   # 最も緩い → 末尾に追加
+end
+</code></pre>
+<p><code>defs</code> は <code>Hash(String, Array(DefWithMetadata))</code> で、名前でインデックスされたオーバーロードリストである。<code>DefWithMetadata</code> は <code>Def</code> ノードと型制約メタデータ（引数の制約の厳しさ）をラップする。</p>
+<h3><code>TypeDeclarationProcessor</code> が書き込むデータ</h3>
+<pre><code class="language-crystal"># @x : Int32 の処理 → インスタンス変数に freeze_type を設定
+ivar = type.lookup_instance_var(name)
+ivar.freeze_type = declared_type    # 以後この型以外の代入はエラー
+
+# @@x : Int32 → クラス変数
+class_var = type.lookup_class_var(name)
+class_var.freeze_type = declared_type
+</code></pre>
+<p><code>freeze_type</code> が設定されると <code>ASTNode#set_type</code> が制約チェックを行い、型が合わない場合に <code>FrozenTypeException</code> を発生させる。</p>
+<h3><code>MainVisitor</code> が書き込むデータ</h3>
+<p><code>MainVisitor</code> はすべての <code>ASTNode</code> に型を付与するが、<code>Program</code> オブジェクト自体への書き込みは以下の箇所に集中する:</p>
+<p>| 書き込み先                           | コード                                         | タイミング                           |
+| ------------------------------------ | ---------------------------------------------- | ------------------------------------ |
+| <code>Node#type</code>                          | <code>node.set_type(t)</code> / <code>node.bind_to(other)</code>     | 各ノードの visit 時                  |
+| <code>Def#vars</code> (= <code>typed_def.vars</code>)      | <code>meta_vars = typed_def.vars = MetaVars.new</code>    | メソッドインスタンス化時             |
+| <code>Program#vars</code>                       | <code>@meta_vars = @program.vars</code>（トップレベル用） | 初期化時                             |
+| <code>FileModule#vars</code>                    | <code>@meta_vars = file_module.vars</code>                | FileNode visit 時                    |
+| <code>Program#const_initializers</code>         | <code>program.const_initializers &lt;&lt; type</code>           | 定数 visit 時                        |
+| <code>DefInstanceContainer#def_instances</code> | <code>type.add_def_instance(key, typed_def)</code>        | メソッドインスタンス化時にキャッシュ |
+| <code>Symbol</code> テーブル                    | <code>@program.symbols &lt;&lt; symbol_name</code>              | <code>:foo</code> リテラル visit 時             |</p>
+<h3><code>DefInstanceContainer</code> — メソッドインスタンス化のキャッシュ</h3>
+<p>同じ引数型の組み合わせで同一メソッドを繰り返し型推論しないためのキャッシュを <code>types.cr</code> の <code>DefInstanceContainer</code> モジュールが提供する:</p>
+<pre><code class="language-crystal"># キャッシュのキー: (元Defのオブジェクトid, 引数型配列, ブロック型, 名前付き引数型)
+record DefInstanceKey,
+  def_object_id : UInt64,
+  arg_types : Array(Type),
+  block_type : Type?,
+  named_args : Array(NamedArgumentType)?
+
+module DefInstanceContainer
+  getter(def_instances) { {} of DefInstanceKey =&gt; Def }
+
+  def add_def_instance(key, typed_def)
+    def_instances[key] = typed_def   # 型付き Def ノードをキャッシュ
+  end
+
+  def lookup_def_instance(key)
+    def_instances[key]?              # キャッシュヒットなら再型推論スキップ
+  end
+end
+</code></pre>
+<p>型付き <code>Def</code> は <strong>元の <code>Def</code> ノードのクローン</strong>に型情報が追加されたものである（ジェネリクスの場合は型パラメータが具体型に置換される）。同一シグネチャは同一の型付き <code>Def</code> を再利用するため、<code>Main</code> を1000回呼んでも1回しか解析されない。</p>
+<h3><code>SemanticVisitor#current_type</code> — コンテキストの型スタック</h3>
+<p><code>SemanticVisitor</code> は <code>@current_type : ModuleType</code> プロパティを持ち、現在 visit 中のクラス/モジュール文脈を保持する：</p>
+<pre><code class="language-crystal">abstract class SemanticVisitor &lt; Visitor
+  property current_type : ModuleType  # 初期値は Program 自体
+
+  def pushing_type(type : ModuleType)
+    old = @current_type
+    @current_type = type
+    yield
+    @current_type = old   # old context に戻す（スタック的動作）
+  end
+end
+</code></pre>
+<p><code>visit(ClassDef)</code> は <code>pushing_type(node.resolved_type)</code> で内側へ進み、クラス本体の <code>def</code> や <code>include</code> は <code>@current_type</code> として正しいクラスに対して登録される。</p>
+<hr />
+<h2>9. 型推論システム（核心）</h2>
+<h3>依存グラフと型伝播</h3>
+<p>Crystal の型推論は <strong>Andersen スタイルのデータフロー解析</strong> に近い、依存グラフ上の伝播で動作する。</p>
+<p>各 <code>ASTNode</code> は <a href="https://github.com/crystal-lang/crystal/blob/master/src/compiler/crystal/semantic/bindings.cr"><code>semantic/bindings.cr</code></a> によって拡張され、依存関係グラフのノードになる:</p>
+<pre><code class="language-crystal">struct SmallNodeList
+  # 最初の2要素をインライン保持し、それ以上は @tail の Array に退避。
+  # ASTNode あたり平均2要素以下という観測に基づく最適化。
+  # これにより Array のヘッダ+バッファ計4アロケーションを節約できる。
+  @first : ASTNode?
+  @second : ASTNode?
+  @tail : Array(ASTNode)?
+  ...
+end
+
+class ASTNode
+  getter dependencies : SmallNodeList  # 自分が型を依存するノード
+  @observers : SmallNodeList           # 自分の型変化を監視するノード
+  @type : Type?
+end
+</code></pre>
+<p>型伝播の仕組みは以下の通り:</p>
+<ol>
+<li><strong><code>bind_to(node)</code></strong> — <code>self.dependencies &lt;&lt; node</code>、<code>node.observers &lt;&lt; self</code> を同時に設定</li>
+<li><strong><code>type=</code></strong> — <code>@type</code> が変化したとき <code>notify_observers</code> を呼ぶ</li>
+<li><strong><code>notify_observers</code></strong> — 全 observer の <code>update_type</code> を再帰的に呼び、型変化を連鎖伝播させる</li>
+</ol>
+<pre><code class="language-crystal">def type=(type)
+  return if @type.same?(type) || (!type &amp;&amp; !@type)
+  set_type(type)
+  notify_observers   # 型変化を依存するノードに伝播
+  @type
+end
+
+def bind_to(node : ASTNode) : Nil
+  bind(node) do
+    @dependencies.push node
+    node.add_observer self
+  end
+end
+</code></pre>
+<h3><code>vars</code> と <code>meta_vars</code> の二重管理</h3>
+<p><code>MainVisitor</code> は変数の型を<strong>2種類の辞書</strong>で追跡する:</p>
+<pre><code class="language-crystal">class MainVisitor &lt; SemanticVisitor
+  # vars: 現在の実行ポイントにおける変数の型（単一・確定）
+  # 例: `if x.is_a?(Int32)` の then ブロック内では x → Int32
+  getter vars
+
+  # meta_vars: 関数全体での変数の型（全代入経路の Union）
+  # 例: `x = 1` と `x = &quot;a&quot;` があれば meta_vars[&quot;x&quot;] → Int32 | String
+  getter meta_vars : MetaVars
+end
+</code></pre>
+<p><code>vars</code> は制御フロー（<code>if</code>/<code>while</code>/<code>rescue</code>等）をまたぐたびにスナップショットが取られ、ブランチ後にマージされる。<code>meta_vars</code> はメソッド全体で累積されつづけ、最終的なローカル変数の宣言型になる。</p>
+<p><strong>制御フロー型絞り込み（Type Narrowing）</strong><br />
+<a href="https://github.com/crystal-lang/crystal/blob/master/src/compiler/crystal/semantic/filters.cr"><code>semantic/filters.cr</code></a> が実装する。<code>if x.is_a?(Int32)</code> の then 節では <code>x</code> の型が <code>Int32</code> に絞り込まれ、else 節では <code>Int32</code> を除いた型になる。これは <code>TypeFilter</code> オブジェクトを <code>vars[name].filter</code> に設定し、<code>MainVisitor</code> が <code>visit(Var)</code> するたびにフィルタを適用することで実現される。</p>
+<h3><code>Call#recalculate</code> — 呼び出し型推論の核心</h3>
+<p><a href="https://github.com/crystal-lang/crystal/blob/master/src/compiler/crystal/semantic/call.cr"><code>semantic/call.cr</code></a> の <code>recalculate</code> は、呼び出し先の型が変わるたびに再実行されるメソッドである。依存グラフの observer 機構によって自動的に呼び出される。</p>
+<pre><code class="language-crystal">def recalculate
+  obj = @obj
+  obj_type = obj.type? if obj
+
+  case obj_type
+  when NoReturnType
+    return  # NoReturn への呼び出しは型推論不要
+  when LibType
+    return recalculate_lib_call obj_type  # C の extern 関数は別ロジック
+  end
+
+  # いずれかの引数が NoReturn なら呼び出しはリーチしない
+  return if args.any? &amp;.type?.try &amp;.no_return?
+
+  # 型が揃っていなければスキップ（後で再計算される）
+  return unless obj_and_args_types_set?
+
+  # オーバーロード解決 → 最適な def を lookup_matches で発見
+  # → instantiate でジェネリクス型パラメータを代入
+  # → 新しい MainVisitor でメソッド本体を型推論
+  # → 戻り値ノードに bind_to して型伝播を設定
+end
+</code></pre>
+<h3><code>type_merge</code> — Union 合成</h3>
+<p><a href="https://github.com/crystal-lang/crystal/blob/master/src/compiler/crystal/semantic/type_merge.cr"><code>semantic/type_merge.cr</code></a> が複数の型を Union にまとめる。2型マージが最頻ケースのため特別に最適化されている:</p>
+<pre><code class="language-crystal">def type_merge(first : Type?, second : Type?) : Type?
+  return first if first == second   # 同一型 → どちらか返す
+  return second unless first        # nil → second を返す
+  return first unless second        # nil → first を返す
+  return second if first.no_return? # NoReturn は Union から除外
+  return first if second.no_return?
+
+  # 一般ケース: compact_types で展開・重複排除してから union_of
+  combined_union_of compact_types({first, second})
+end
+
+def compact_types(objects, &amp;) : Array(Type)
+  all_types = Array(Type).new(objects.size)
+  objects.each { |obj| add_type all_types, yield(obj) }
+  # NoReturn は Union に含めない（複数型の場合のみ）
+  all_types.reject! &amp;.no_return? if all_types.size &gt; 1
+  all_types
+end
+</code></pre>
+<p><code>add_type</code> は <code>UnionType</code> を再帰的に展開するため、<code>(A | B) | C</code> は <code>A | B | C</code> に正規化される。また <code>Program#unions</code> がキャッシュとして機能し、同じ構成型の Union が複数のオブジェクトとして存在することはない。</p>
+<blockquote>
+<p><strong>📊 他言語との比較: 型推論方式</strong></p>
+<p>| 言語 | 方式 | 関数境界での注釈 | グローバル推論 |
+|---|---|---|---|
+| <strong>Crystal</strong> | データフロー伝播（observer パターン） | 不要（戻り値型も推論） | ◎ あり |
+| Haskell / ML | Hindley-Milner（制約ユニフィケーション） | 不要 | ◎ あり |
+| Rust | 双方向局所推論（型制約の伝播） | 必要（関数シグネチャは明示） | △ 関数内のみ |
+| TypeScript | 双方向推論＋構造的型付け | 省略可（any にフォールバック） | △ 制限あり |
+| Go | 変数宣言時のみ（<code>:=</code>） | 必要 | ✗ ほぼなし |
+| Java / C# | 局所変数のみ（<code>var</code>/ローカル） | 必要 | ✗ なし |</p>
+<p>Crystal の型推論は Hindley-Milner 的な制約ソルバーではなく、<strong>ASTノード間の依存グラフを observer パターンで伝播させる</strong>独自方式である。<code>x = foo()</code> の戻り値型が後から変化すれば <code>x</code> の型も自動的に再計算される。この仕組みにより型注釈なしでグローバル推論が実現するが、循環依存（再帰・相互再帰）の収束判定が必要になる点が Hindley-Milner との大きな違いである。</p>
+</blockquote>
+<hr />
+<h2>10. マクロシステム</h2>
+<h3>概念</h3>
+<p>Crystal のマクロはコンパイル時に <strong>AST レベルで</strong> 展開される。ランタイムのメタプログラミングではない。マクロ呼び出しは <code>TopLevelVisitor</code> または <code>MainVisitor</code> が検出し、<code>MacroInterpreter</code> に評価を委ねる。</p>
+<h3><code>MacroInterpreter</code> の動作</h3>
+<p><a href="https://github.com/crystal-lang/crystal/blob/master/src/compiler/crystal/macros/interpreter.cr"><code>macros/interpreter.cr</code></a> の <code>MacroInterpreter &lt; Visitor</code> は、マクロのASTを「解釈実行」する仮想マシンである。コードを機械語に変換するのではなく、ASTを直接 visit して <code>@str : IO::Memory</code> に文字列を書き出す。</p>
+<p>展開フロー:</p>
+<pre><code>① TopLevelVisitor がマクロ呼び出し Call を検出
+② MacroInterpreter.new(macro_def, call_args) を生成
+   - 引数を @vars : Hash(String, ASTNode) にバインド
+③ macro_def.body を visitor.visit() で評価
+   - {{ 変数 }}  → @vars から取得して .to_s
+   - {% if cond %} → ASTNode を評価してブール判定
+   - {% for x in items %} → items を展開してループ
+④ @str の内容を Crystal パーサで再パース → ASTNode を取得
+⑤ 取得した ASTNode を元のマクロ呼び出し位置に挿入
+⑥ VirtualFile に展開後のソースを記録（エラーメッセージの行番号用）
+</code></pre>
+<h3>マクロメソッド（イントロスペクション）</h3>
+<p><a href="https://github.com/crystal-lang/crystal/blob/master/src/compiler/crystal/macros/methods.cr"><code>macros/methods.cr</code></a> がマクロ内で呼べる特殊メソッドを実装する:</p>
+<p>| マクロメソッド            | 返り値                        | 備考                                    |
+| ------------------------- | ----------------------------- | --------------------------------------- |
+| <code>@type.instance_vars</code>     | <code>ArrayLiteral</code>                | 全インスタンス変数の名前と型            |
+| <code>@type.methods</code>           | <code>ArrayLiteral</code>                | 全メソッド定義                          |
+| <code>@type.subclasses</code>        | <code>ArrayLiteral</code>                | 直接のサブクラス一覧                    |
+| <code>@type.ancestors</code>         | <code>ArrayLiteral</code>                | 先祖型一覧                              |
+| <code>@type.has_method?(:foo)</code> | <code>BoolLiteral</code>                 | メソッドの存在確認                      |
+| <code>system(&quot;cmd&quot;)</code>           | <code>StringLiteral</code>               | シェルコマンドの実行（コンパイル時）    |
+| <code>run(&quot;path.cr&quot;, args)</code>    | <code>StringLiteral</code>               | 別 Crystal プログラムのコンパイル・実行 |
+| <code>env(&quot;VAR&quot;)</code>              | <code>StringLiteral or NilLiteral</code> | 環境変数の読み取り                      |</p>
+<p><code>@type</code> はマクロが展開されているコンテキストの型を指す。インスタンスメソッド内なら self の型、クラスメソッド内ならクラス型である。</p>
+<blockquote>
+<p><strong>📊 他言語との比較: マクロシステム</strong></p>
+<p>| 言語 | 方式 | 実行タイミング | 入出力 |
+|---|---|---|---|
+| <strong>Crystal</strong> | AST マクロ（<code>MacroInterpreter</code> で AST を解釈実行） | 意味解析フェーズ（型情報アクセス可） | Crystal ソース文字列 → 再パース |
+| Rust | <code>macro_rules!</code>（パターンマッチ）＋ proc macro | パース後・型検査前（proc macro は型前） | TokenStream → TokenStream |
+| C | テキスト置換（プリプロセッサ） | パース前 | テキスト → テキスト（型情報なし） |
+| Lisp / Clojure | 同相マクロ（データ＝コード） | リード後・評価前 | S 式 → S 式 |
+| Nim | 型付き AST マクロ | 意味解析フェーズ | 型付き AST → 型付き AST |
+| Haskell | Template Haskell | 型検査後 | Q モナドで AST 構築 |</p>
+<p>Crystal マクロの際立った特徴は<strong>型情報へのアクセスと出力形式</strong>にある。<code>@type.instance_vars</code>・<code>@type.methods</code>・<code>@type.subclasses</code> で意味解析済みの型情報を参照しながらコードを生成できる。出力は Crystal <strong>ソース文字列</strong>として <code>@str</code> に書き出され再パース・再解析されるため、「マクロが返す AST 構造を直接組み立てる」Rust proc macro や Lisp マクロとは異なる。<code>run(&quot;script.cr&quot;)</code> でコンパイル時にシェルスクリプトを代替できる点も他言語にはほぼない機能である。</p>
+</blockquote>
+<hr />
+<h2>11. LLVMコード生成</h2>
+<h3><code>CodeGenVisitor</code></h3>
+<p><a href="https://github.com/crystal-lang/crystal/blob/master/src/compiler/crystal/codegen/codegen.cr"><code>codegen/codegen.cr</code></a> の <code>CodeGenVisitor</code> は <code>Visitor</code> を継承し、型推論済みの AST を LLVM IR に変換する。</p>
+<p>コンパイラが前提とするランタイム関数（<code>libcrystal</code> に実装）:</p>
+<pre><code class="language-crystal">MAIN_NAME              = &quot;__crystal_main&quot;        # 生成コードのエントリポイント
+RAISE_NAME             = &quot;__crystal_raise&quot;       # 例外スロー
+RAISE_OVERFLOW_NAME    = &quot;__crystal_raise_overflow&quot;
+RAISE_CAST_FAILED_NAME = &quot;__crystal_raise_cast_failed&quot;  # as! の失敗
+MALLOC_NAME            = &quot;__crystal_malloc64&quot;    # GC ヒープ確保
+MALLOC_ATOMIC_NAME     = &quot;__crystal_malloc_atomic64&quot;     # ポインタを含まないデータ用
+REALLOC_NAME           = &quot;__crystal_realloc64&quot;
+ONCE_INIT              = &quot;__crystal_once_init&quot;   # クラス変数の once-initialization
+</code></pre>
+<h3>マルチモジュールコンパイル</h3>
+<p>デフォルトでは型ごとに独立した <code>LLVM::Module</code> を生成し、最大8スレッドで並列コンパイルする（<code>@n_threads</code>）。<code>--release</code> または <code>--single-module</code> を指定すると全コードを1つの <code>LLVM::Module</code> にまとめ、LTO（Link Time Optimization）の恩恵を受けられる。</p>
+<h3><code>LLVMTyper</code> — Crystal型 → LLVM型の変換</h3>
+<p><a href="https://github.com/crystal-lang/crystal/blob/master/src/compiler/crystal/codegen/llvm_typer.cr"><code>codegen/llvm_typer.cr</code></a> の <code>LLVMTyper</code> が型変換を行う。主要な変換規則:</p>
+<p><strong><code>String</code>型のメモリレイアウト:</strong></p>
+<pre><code class="language-crystal">def llvm_string_type(bytesize)
+  @llvm_context.struct [
+    @llvm_context.int32,                    # type_id   (4 bytes)
+    @llvm_context.int32,                    # @bytesize (4 bytes)
+    @llvm_context.int32,                    # @length   (4 bytes)
+    @llvm_context.int8.array(bytesize + 1), # @c (null終端バイト配列)
+  ]
+end
+</code></pre>
+<p><strong><code>Proc</code>型:</strong> クロージャと関数ポインタの2要素タプル</p>
+<pre><code class="language-crystal">def proc_type
+  @llvm_context.struct [
+    @llvm_context.void_pointer,  # クロージャデータへのポインタ
+    @llvm_context.void_pointer,  # 関数ポインタ
+  ], &quot;-&gt;&quot;
+end
+</code></pre>
+<p><strong><code>Nil</code>型:</strong> 空の struct（ゼロバイト）</p>
+<pre><code class="language-crystal">def nil_type
+  @llvm_context.struct([] of LLVM::Type, &quot;Nil&quot;)
+end
+</code></pre>
+<p><strong>循環型への対応:</strong> <code>@wants_size_cache</code> と <code>@wants_size_struct_cache</code> によって、型サイズの計算時に再帰を防ぐ。例えば <code>Pointer(Int32 | Foo)</code> を含む struct <code>Foo</code> のサイズを計算するとき、Union のサイズ計算でポインタは word サイズとして近似することで無限再帰を回避している。</p>
+<h3>Union 型のメモリレイアウト</h3>
+<p><a href="https://github.com/crystal-lang/crystal/blob/master/src/compiler/crystal/codegen/unions.cr"><code>codegen/unions.cr</code></a> が実装するタグ付き共用体。</p>
+<pre><code>{ i32 type_id, [N x i8] data }
+</code></pre>
+<ul>
+<li><code>type_id</code>: どの型の値が格納されているかを示す整数タグ（<code>LLVMTyper#type_id</code> が各型に割り当て）</li>
+<li><code>data</code>: Union の全構成型の中で最大サイズ分のバイト列</li>
+</ul>
+<p>ディスパッチ時は <code>type_id</code> で分岐し、適切な型にビットキャストして読み出す。<code>VirtualType</code>（abstract class の継承ツリー）も同じ表現を使う。</p>
+<h3>プリミティブ演算</h3>
+<p><a href="https://github.com/crystal-lang/crystal/blob/master/src/compiler/crystal/codegen/primitives.cr"><code>codegen/primitives.cr</code></a> は整数・浮動小数点演算やポインタ操作を LLVM IR 命令に直接変換する。例えば <code>Int32#+</code> は LLVM の <code>add nsw i32</code> 命令として生成される（<code>nsw</code> = No Signed Wrap、オーバーフロー時に未定義動作を許可して最適化を促進）。</p>
+<h3>ABI 実装</h3>
+<p><a href="https://github.com/crystal-lang/crystal/blob/master/src/compiler/crystal/codegen/abi/"><code>codegen/abi/</code></a> に各ターゲットの C 呼び出し規約が実装されている。Crystal が <code>lib</code> 宣言でCライブラリと連携するとき、引数と戻り値をどのレジスタに配置するかはアーキテクチャごとに異なり、これが ABI の役割。</p>
+<p>| ファイル           | ターゲット                              |
+| ------------------ | --------------------------------------- |
+| <code>abi/x86_64.cr</code>    | Linux/macOS x86-64 (System V AMD64 ABI) |
+| <code>abi/x86_win64.cr</code> | Windows x86-64 (Microsoft x64 ABI)      |
+| <code>abi/aarch64.cr</code>   | ARM64 (AARCH64 Procedure Call Standard) |
+| <code>abi/arm.cr</code>       | ARM 32bit                               |
+| <code>abi/wasm32.cr</code>    | WebAssembly 32bit                       |
+| <code>abi/avr.cr</code>       | AVR マイクロコントローラ                |</p>
+<h3>分割の単位</h3>
+<p>デフォルト（<code>--single-module</code> なし）では <strong>型単位で LLVM モジュールを分割する</strong>。<code>CodeGenVisitor#type_module(type)</code> がこの対応を管理する:</p>
+<pre><code class="language-crystal">def type_module(type)
+  return @main_module_info if @single_module   # --single-module なら全部まとめる
+
+  @types_to_modules[type] ||= begin
+    type = type.remove_typedef
+    case type
+    when Nil, Program, LibType
+      type_name = &quot;&quot;          # トップレベルのコードは &quot;main_module&quot; に入る
+    else
+      type_name = type.instance_type.to_s   # &quot;String&quot;, &quot;Array(Int32)&quot; 等
+    end
+
+    @modules[type_name] ||= begin
+      # 型ごとに独立した LLVM::Context + LLVM::Module + LLVMTyper を生成
+      llvm_context = LLVM::Context.new
+      llvm_typer = LLVMTyper.new(@program, llvm_context)
+      llvm_mod = configure_module(llvm_context.new_module(type_name))
+      llvm_builder = new_builder(llvm_context)
+      ModuleInfo.new(llvm_mod, llvm_typer, llvm_builder)
+    end
+  end
+end
+</code></pre>
+<p><strong><code>@modules : Hash(String, ModuleInfo)</code></strong> が全モジュールの辞書。キーは型名文字列（空文字列がメインモジュール）。</p>
+<p><strong><code>@types_to_modules : Hash(Type, ModuleInfo)</code></strong> は型オブジェクトからモジュール情報へのキャッシュで、同一の型に対して <code>type_module</code> を何度呼んでも同じ <code>ModuleInfo</code> を返す。</p>
+<h3><code>ModuleInfo</code> の中身</h3>
+<pre><code class="language-crystal">record ModuleInfo,
+  mod : LLVM::Module,           # LLVM モジュール本体
+  typer : LLVMTyper,            # このモジュール専用の型変換器
+  builder : CrystalLLVMBuilder  # LLVM IR ビルダー
+</code></pre>
+<p>各モジュールは <strong>独立した <code>LLVM::Context</code></strong> を持つ。これが重要なのは並列コンパイル時の安全性のためである。LLVM::Context は非スレッドセーフであり、別コンテキストのモジュールなら並列コンパイルしても安全である。</p>
+<h3>並列コンパイルとビットコード中継</h3>
+<pre><code>メインスレッドで:
+  各型 → CodeGenVisitor.visit() → LLVM::Module（メモリ上）
+         → unit.generate_bitcode()  ← ビットコードを生成してメモリに保持
+
+並列（n_threads スレッド / プロセス）で:
+  各 CompilationUnit:
+    → ビットコードを独立した LLVM::Context にパース
+    → LLVM 最適化（O1〜O3）
+    → type_name.o（オブジェクトファイル）
+</code></pre>
+<p><strong>LLVM IR の生成はシングルスレッド</strong>（グローバルな LLVM コンテキストを共有しているため）、<strong>最適化とオブジェクトファイル生成は並列</strong>という分担になっている。</p>
+<p><code>--preview_mt</code> ビルド（スレッドモデル）と通常ビルド（<code>fork</code> モデル）で並列化の実装が異なる:</p>
+<pre><code class="language-crystal">private def parallel_codegen(units, n_threads)
+  {% if flag?(:preview_mt) %}
+    # スレッドモデル: Channel でユニットを渡す
+    mt_codegen(units, n_threads)
+  {% elsif LibC.has_method?(&quot;fork&quot;) %}
+    # プロセスモデル: fork して並列 .o 生成
+    fork_codegen(units, n_threads)
+  {% else %}
+    raise &quot;Cannot fork compiler.&quot;
+  {% end %}
+end
+</code></pre>
+<p><code>fork_codegen</code> の場合は <code>fork</code> したプロセスが独立したアドレス空間で動作するため LLVM コンテキストの競合が起きない。<code>mt_codegen</code> の場合は <code>unit.generate_bitcode</code>（共有コンテキスト使用）をシングルスレッドで行い、<code>channel.send(unit)</code> でスレッドに渡した後に <code>unit.compile(isolate_context: true)</code>（独立コンテキストに再パース後に最適化）で並列化する。</p>
+<h3>ファイルキャッシュと差分コンパイル</h3>
+<p>コンパイル結果はキャッシュディレクトリ（<code>CacheDir.instance.directory_for(sources)</code>）に保存される。各 <code>CompilationUnit</code> は <code>.bc</code> （ビットコード）と <code>.o</code>（オブジェクトファイル）の両方をキャッシュし、<strong>ソースが変化していない型のモジュールは .o を再利用する</strong>：</p>
+<pre><code>出力ディレクトリ構造:
+~/.cache/crystal/&lt;hash&gt;/
+├── String.bc                 # String 型のビットコード
+├── String.o                  # String 型のオブジェクトファイル
+├── Array(Int32).bc
+├── Array(Int32).o
+├── (main).bc                 # トップレベルコード
+├── (main).o
+└── bc_flags                  # コンパイルフラグのキャッシュキー
+</code></pre>
+<p><code>bc_flags_changed?</code> はコンパイラフラグ（ターゲット・最適化レベル等）が変わったかを検出し、変化していれば全モジュールを再コンパイルする。フラグが同じでも <code>.bc</code> ハッシュが違えば個別に再コンパイルされる。</p>
+<blockquote>
+<p><strong>📊 他言語との比較: コンパイル並列化の単位</strong></p>
+<p>| 言語 | 並列化単位 | 単位の変更で無効になる範囲 | キャッシュ粒度 |
+|---|---|---|---|
+| <strong>Crystal</strong> | <strong>型</strong>（<code>String</code>, <code>Array(Int32)</code> 等） | その型のメソッドを持つ <code>.o</code> のみ | 型ごとの <code>.bc</code> / <code>.o</code> |
+| Rust | クレート（<code>Cargo.toml</code> 単位） | クレート全体を再コンパイル | クレートごとの <code>.rlib</code> |
+| Go | パッケージ（ディレクトリ単位） | パッケージ全体を再コンパイル | パッケージごとの <code>.a</code> |
+| C / C++ | 翻訳単位（<code>.c</code> / <code>.cpp</code> ファイル単位） | そのファイルのみ（ヘッダ変更は広く伝播） | オブジェクトファイル |
+| Swift | モジュール（フレームワーク単位）＋ファイル | モジュール全体（WMO 時） | モジュールごと |
+| Java / Kotlin | クラスファイル（<code>.class</code> 単位） | 依存クラスが変更されれば連鎖 | <code>.class</code> ファイル |</p>
+<p>Crystal の「<strong>型単位</strong>」という並列化粒度は他の主要言語にはないユニークな設計である。<code>String</code> の新しいメソッドを追加しても、<code>Array(Int32)</code> の <code>.o</code> は変化しないため再コンパイルされない。一方 Rust はクレート単位のため、クレート内のどこかを変更すると全体を再コンパイルする必要がある（インクリメンタルコンパイルで緩和中）。型単位のキャッシュが成立するのは、Crystal の型システムが「型ごとに独立した LLVM モジュール」として自然に分割できる構造を持つためである。</p>
+</blockquote>
+<h3>CodeGenVisitor の全体変換フロー</h3>
+<p><a href="https://github.com/crystal-lang/crystal/blob/master/src/compiler/crystal/codegen/codegen.cr"><code>codegen/codegen.cr</code></a> の <code>CodeGenVisitor</code> は <code>Visitor</code> を継承し、<strong>意味解析済みの型付き AST</strong> を LLVM IR に変換する。型推論後なので各 <code>ASTNode</code> には確定した <code>@type</code> が付いており、コード生成は型情報を読み出すだけでよい。</p>
+<pre><code class="language-mermaid">flowchart TD
+    A[&quot;型付き ASTNode ツリー&quot;]
+    B[&quot;CodeGenVisitor#accept(node)&quot;]
+    C{&quot;ノード種別&quot;}
+    D[&quot;visit(Assign)
+store 命令&quot;]
+    E[&quot;visit(If)
+br + phi 命令&quot;]
+    F[&quot;visit(Call)
+codegen_call&quot;]
+    G[&quot;visit(While)
+ループ基本ブロック&quot;]
+    H[&quot;visit(NumberLiteral)
+LLVM::Value 定数&quot;]
+    I[&quot;codegen_call 内部&quot;]
+    J{&quot;レシーバの型&quot;}
+    K[&quot;visit_primitive
+プリミティブ命令
+(add nsw, fadd 等)&quot;]
+    L[&quot;codegen_dispatch
+type_id switch
+仮想ディスパッチ&quot;]
+    M[&quot;通常の call 命令
+単一型&quot;]
+    N[&quot;LLVM::Module
+(型ごとに分割)&quot;]
+
+    A --&gt; B --&gt; C
+    C --&gt; D &amp; E &amp; F &amp; G &amp; H
+    F --&gt; I --&gt; J
+    J --&gt;|プリミティブ| K
+    J --&gt;|Union/Virtual| L
+    J --&gt;|単一型| M
+    D &amp; E &amp; G &amp; H &amp; K &amp; L &amp; M --&gt; N
+</code></pre>
+<p>各ノードを visit したとき <code>@last : LLVM::Value</code> に生成した値をセットし、呼び出し元はその値を <code>@last</code> から読んで親ノードの IR 生成に使う。</p>
+<h3>主要ノードの LLVM IR 変換例</h3>
+<h4><code>Assign</code> → <code>store</code></h4>
+<pre><code class="language-crystal"># Crystal: x = 42
+# ↓
+def visit(node : Assign)
+  target, value = node.target, node.value
+  value.accept self
+  val = @last                          # RHS の LLVM::Value
+  ptr = declare_var(target)            # LHS のアロカ済みポインタ
+  store val, ptr                       # LLVM store 命令
+end
+</code></pre>
+<p>生成 IR:</p>
+<pre><code class="language-llvm">%x = alloca i32
+store i32 42, i32* %x
+</code></pre>
+<h4><code>If</code> → <code>br</code> + <code>phi</code></h4>
+<pre><code class="language-crystal"># Crystal: y = x &gt; 0 ? x : -x
+# ↓
+def visit(node : If)
+  node.cond.accept self
+  cond_val = @last
+  then_block = new_block(&quot;then&quot;)
+  else_block = new_block(&quot;else&quot;)
+  merge_block = new_block(&quot;merge&quot;)
+
+  cond_br cond_val, then_block, else_block
+
+  position_at_end then_block
+  node.then.accept self
+  then_val = @last
+  br merge_block
+
+  position_at_end else_block
+  node.else.accept self
+  else_val = @last
+  br merge_block
+
+  position_at_end merge_block
+  @last = phi(llvm_type(node.type), {then_val =&gt; then_block, else_val =&gt; else_block})
+end
+</code></pre>
+<h4><code>While</code> → ループ基本ブロック</h4>
+<pre><code class="language-llvm">; Crystal: while i &lt; 10; i += 1; end
+entry:
+  br label %while_cond
+
+while_cond:
+  %cmp = icmp slt i32 %i, 10
+  br i1 %cmp, label %while_body, label %while_exit
+
+while_body:
+  ; i += 1 の body
+  br label %while_cond
+
+while_exit:
+  ; ループ後続コード
+</code></pre>
+<p><code>While</code> の <code>accept</code> は <code>while_cond</code>・<code>while_body</code>・<code>while_exit</code> の3基本ブロックを生成し、<code>cond_br</code> / <code>br</code> で接続する。</p>
+<h3>仮想ディスパッチ（VirtualType / Union）の生成</h3>
+<p><a href="https://github.com/crystal-lang/crystal/blob/master/src/compiler/crystal/codegen/call.cr"><code>codegen/call.cr</code></a> の <code>codegen_dispatch</code> が担う。レシーバが <code>VirtualType</code> または <code>UnionType</code> のとき、<code>type_id</code> フィールドを読み出して LLVM <code>switch</code> 命令に変換する:</p>
+<pre><code>; Animal 型 (VirtualType) の meow 呼び出し
+%type_id = getelementptr %Animal, %Animal* %recv, i32 0, i32 0
+%tid = load i32, i32* %type_id
+switch i32 %tid, label %dispatch_fail [
+  i32 1, label %call_Dog_meow
+  i32 2, label %call_Cat_meow
+]
+
+call_Dog_meow:
+  call void @&quot;*Dog#meow&lt;Dog&gt;&quot;(%Dog* %recv_cast)
+  br label %join
+call_Cat_meow:
+  call void @&quot;*Cat#meow&lt;Cat&gt;&quot;(%Cat* %recv_cast)
+  br label %join
+</code></pre>
+<p>型が確定している場合（オーバーロード1候補・型絞り込み後）は <code>switch</code> は生成されず単一の <code>call</code> になる。<code>codegen_dispatch</code> は <code>matches.size == 1</code> のとき直接 <code>codegen_call_or_invoke</code> に進む最適化を持つ。</p>
+<h3>クロージャと Proc リテラルの実装</h3>
+<p>Proc リテラル（<code>-&gt; { }</code> や <code>method</code> 参照）は <a href="https://github.com/crystal-lang/crystal/blob/master/src/compiler/crystal/codegen/codegen.cr"><code>codegen/codegen.cr</code></a> の <code>visit(node : ProcLiteral)</code> が処理する。</p>
+<p><strong>メモリレイアウト:</strong> Proc は <code>{void* closure_data, void* func_ptr}</code> の2ワード構造体である（<code>LLVMTyper#proc_type</code> が定義）。</p>
+<pre><code>┌───────────────────┬──────────────────┐
+│ closure_data ptr  │  func_ptr        │
+│ (8 bytes)         │  (8 bytes)       │
+└───────────────────┴──────────────────┘
+</code></pre>
+<p><strong>クロージャデータのヒープ確保:</strong> キャプチャ変数がある場合、コード生成は <code>__crystal_malloc64</code> でヒープにクロージャ構造体を確保し、キャプチャ変数の現在値をコピーする:</p>
+<pre><code class="language-llvm">; -&gt; { puts x } のクロージャ生成 (x をキャプチャ)
+%closure = call i8* @__crystal_malloc64(i64 8)      ; x の分の領域
+%x_slot  = getelementptr i8, i8* %closure, i64 0    ; クロージャの x フィールド
+store i64 %x_val, i64* %x_slot                      ; 現在値をコピー
+
+%proc.0 = insertvalue { i8*, i8* } undef, i8* %closure, 0
+%proc.1 = insertvalue { i8*, i8* } %proc.0, i8* @&quot;~closure_0&quot;, 1
+; → { closure_data=..., func_ptr=@~closure_0 }
+</code></pre>
+<p><strong>クロージャ呼び出し:</strong> Proc を call するとき（<code>proc.call(args)</code>）は func_ptr を取り出し、closure_data を暗黙の第1引数として渡す:</p>
+<pre><code class="language-llvm">%fp  = extractvalue { i8*, i8* } %proc, 1    ; 関数ポインタ
+%env = extractvalue { i8*, i8* } %proc, 0    ; クロージャデータ
+call i32 %fp(i8* %env, ...)                   ; 第1引数に env を差し込む
+</code></pre>
+<p>キャプチャ変数がない（環境なし）Proc は closure_data が <code>null</code> になるだけで構造は同じである。</p>
+<h2>12. コントリビュートガイド</h2>
+<h3>やりたいこと別・修正すべきファイル早見表</h3>
+<p>| やりたいこと                | 主な修正対象ファイル                                                                                                                                                                                                                                                                                                                            |
+| --------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 新しいキーワードを追加      | <a href="https://github.com/crystal-lang/crystal/blob/master/src/compiler/crystal/syntax/token.cr"><code>syntax/token.cr</code></a> → <a href="https://github.com/crystal-lang/crystal/blob/master/src/compiler/crystal/syntax/lexer.cr"><code>syntax/lexer.cr</code></a> → <a href="https://github.com/crystal-lang/crystal/blob/master/src/compiler/crystal/syntax/parser.cr"><code>syntax/parser.cr</code></a> |
+| 新しい構文・ASTノードを追加 | <a href="https://github.com/crystal-lang/crystal/blob/master/src/compiler/crystal/syntax/ast.cr"><code>syntax/ast.cr</code></a>（ノード定義）→ <a href="https://github.com/crystal-lang/crystal/blob/master/src/compiler/crystal/syntax/visitor.cr"><code>syntax/visitor.cr</code></a>（visit メソッド追加）→ 各 Visitor で処理を実装                                                       |
+| 型チェックのルールを変更    | <a href="https://github.com/crystal-lang/crystal/blob/master/src/compiler/crystal/semantic/main_visitor.cr"><code>semantic/main_visitor.cr</code></a>（<code>visit(NodeType)</code> メソッド）                                                                                                                                                                                   |
+| オーバーロード解決を変更    | <a href="https://github.com/crystal-lang/crystal/blob/master/src/compiler/crystal/semantic/method_lookup.cr"><code>semantic/method_lookup.cr</code></a>、<a href="https://github.com/crystal-lang/crystal/blob/master/src/compiler/crystal/semantic/restrictions.cr"><code>semantic/restrictions.cr</code></a>                                                                              |
+| 新しい組み込み演算を追加    | <a href="https://github.com/crystal-lang/crystal/blob/master/src/compiler/crystal/codegen/primitives.cr"><code>codegen/primitives.cr</code></a>（<code>visit_primitive</code>）                                                                                                                                                                                                  |
+| マクロメソッドを追加        | <a href="https://github.com/crystal-lang/crystal/blob/master/src/compiler/crystal/macros/methods.cr"><code>macros/methods.cr</code></a>                                                                                                                                                                                                                               |
+| 新しいコンパイラオプション  | <a href="https://github.com/crystal-lang/crystal/blob/master/src/compiler/crystal/compiler.cr"><code>compiler.cr</code></a>（property 追加）→ <a href="https://github.com/crystal-lang/crystal/blob/master/src/compiler/crystal/command/compile.cr"><code>command/compile.cr</code></a>（OptionParser に追加）                                                                              |
+| 型の内部表現を変更          | <a href="https://github.com/crystal-lang/crystal/blob/master/src/compiler/crystal/types.cr"><code>types.cr</code></a> と <a href="https://github.com/crystal-lang/crystal/blob/master/src/compiler/crystal/codegen/llvm_typer.cr"><code>codegen/llvm_typer.cr</code></a> を両方変更                                                                                                         |
+| 新しいアーキテクチャ対応    | <a href="https://github.com/crystal-lang/crystal/blob/master/src/compiler/crystal/codegen/abi/"><code>codegen/abi/</code></a> に新ファイル追加 → <a href="https://github.com/crystal-lang/crystal/blob/master/src/compiler/crystal/codegen/target.cr"><code>codegen/target.cr</code></a> で認識                                                                                             |
+| エラーメッセージを改善      | エラーを raise している箇所を grep で探し、同ファイル内を直接修正                                                                                                                                                                                                                                                                               |</p>
+<h3>スペックの構成と実行</h3>
+<p>テストは <code>spec/compiler/</code> 配下に <code>src/compiler/crystal/</code> と対応する構造で配置されている:</p>
+<pre><code>spec/compiler/
+├── spec_helper.cr       # 全 spec 共通ヘルパー（assert_type, assert_error 等）
+├── lexer/               # トークン化の単体テスト
+├── parser/              # AST構造の検証
+├── semantic/            # 型推論結果・型エラーの検証
+├── codegen/             # 生成コードの実行結果検証
+├── macro/               # マクロ展開の検証
+├── normalize/           # AST正規化の検証
+└── formatter/           # コードフォーマッタのテスト
+</code></pre>
+<p><strong>実行コマンド:</strong></p>
+<pre><code class="language-sh"># 全コンパイラスペック（時間がかかる）
+make spec/compiler
+
+# 特定のファイルだけ
+bin/crystal spec spec/compiler/semantic/proc_spec.cr
+
+# 特定のテストケースだけ（describe/it の名前でフィルタ）
+bin/crystal spec spec/compiler/semantic/ -e &quot;proc type&quot;
+
+# 進捗表示
+bin/crystal build src/compiler/crystal.cr --progress
+
+# 各ステージ時間とメモリ使用量を表示
+bin/crystal build src/compiler/crystal.cr --stats
+</code></pre>
+<p><code>spec_helper.cr</code> の <code>assert_type(&quot;x = 1&quot;)</code> は式の型を検証する、<code>assert_error(&quot;...&quot;, &quot;message&quot;)</code> はコンパイルエラーのメッセージを検証するヘルパーである。これらを使った小さなスペックを書いて pull request に添付することが期待される。</p>
+<h3>デバッグ tips</h3>
+<ul>
+<li><strong><code>--no-codegen</code></strong> — コード生成をスキップして型チェックだけ実行。型エラーの調査に速い</li>
+<li><strong><code>--debug</code></strong> — デバッグシンボル付きでビルド。<code>gdb</code>/<code>lldb</code> の <code>bt</code> で Crystal のスタックトレースが読める</li>
+<li><strong><code>--dump-ll</code></strong> — 生成した LLVM IR を <code>.ll</code> ファイルとしてキャッシュディレクトリに保存。コード生成が正しいか確認できる</li>
+<li><strong><code>node.to_s</code></strong> / <strong><code>node.inspect</code></strong> — ASTノードを人間可読な文字列にダンプ。意味解析の途中状態を確認するのに便利</li>
+</ul>
+<hr />
+<h2>まとめ</h2>
+<p>Crystal コンパイラは、以下の層が密接に連携して動作している:</p>
+<ol>
+<li><strong>Lexer/Parser</strong> — 6500行の手書き再帰降下パーサ。変数スコープスタックと <code>ParseMode</code> で曖昧さを解決</li>
+<li><strong>Program</strong> — 型・メソッド・requireキャッシュ等を一元管理するコンパイル全体の共有オブジェクト</li>
+<li><strong>Semantic（多ステージ）</strong> — 宣言収集 → 型宣言処理 → 型推論 → クリーンアップの多段パス。型推論は依存グラフと observer パターンで型変化を伝播させる</li>
+<li><strong>MacroInterpreter</strong> — AST を直接解釈実行してコンパイル時コード生成を行う仮想マシン</li>
+<li><strong>CodeGenVisitor + LLVMTyper</strong> — 型付き AST から LLVM IR へ変換。Union は <code>{type_id, data}</code> のタグ付き共用体、Proc はクロージャポインタのペアとして実装</li>
+<li><strong>accept/visit プロトコル</strong> — すべての Visitor/Transformer の基盤。<code>visit</code> が <code>false</code> を返すことで子の走査を制御し、<code>require</code> は SemanticVisitor が現在のスタックフレームで即座にパース・走査する即時インライン展開として動作する</li>
+<li><strong>型データの変異</strong> — <code>TopLevelVisitor</code> が <code>Program#types</code>・<code>Type#defs</code>・<code>Type#macros</code> を構築し、<code>MainVisitor</code> が各 <code>ASTNode#type</code> と <code>Def#vars</code>（alloca のための変数型情報）を埋め、コード生成に必要な完全な型付き AST を形成する</li>
+<li><strong>並列コンパイル</strong> — 型単位の LLVM モジュール分割と <code>.o</code> キャッシュにより、変更のない型のコードを再コンパイルせず差分コンパイルを実現する</li>
+</ol>
+</article>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/crystal.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
@@ -52,17 +1587,11 @@
       });
     }
 
-    fetch("JA.md")
-      .then(function (res) { return res.text(); })
-      .then(function (md) {
-        var content = document.getElementById("content");
-        content.innerHTML = marked.parse(md);
-        highlightCodeBlocks(content);
-        renderMermaidBlocks(content);
-      })
-      .catch(function (err) {
-        document.getElementById("content").textContent = "Failed to load markdown: " + err;
-      });
+    document.addEventListener("DOMContentLoaded", function () {
+      var content = document.getElementById("content");
+      highlightCodeBlocks(content);
+      renderMermaidBlocks(content);
+    });
   </script>
 </body>
 </html>
