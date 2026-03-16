@@ -16,10 +16,10 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - uses: crystal-lang/install-crystal@v1
-      - name: Install cmark
+      - name: Install cmark-gfm
         run: |
           sudo apt-get update
-          sudo apt-get install -y cmark
+          sudo apt-get install -y cmark-gfm
       - name: Build Pages artifact
         run: crystal run scripts/build_pages_site.cr
       - name: Deploy to GitHub Pages

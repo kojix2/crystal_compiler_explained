@@ -15,7 +15,7 @@ SITE_DIR          = File.join(REPO_ROOT, "site")
 COMPILER_DOCS_DIR = File.join(CRYSTAL_SRC_DIR, "docs")
 
 DOC_FILES      = ["README.md", "JA.md", "EN.md", "QUIZ_JA.md", "QUIZ_JA_ANSWERS.md"] of String
-REQUIRED_TOOLS = ["wget", "tar", "make", "cp", "cmark"] of String
+REQUIRED_TOOLS = ["wget", "tar", "make", "cp", "cmark-gfm"] of String
 
 def log(message : String)
   puts "[docs] #{message}"
@@ -75,7 +75,7 @@ def render_markdown(md_content : String) : String
   output = IO::Memory.new
   error = IO::Memory.new
   status = Process.run(
-    "cmark",
+    "cmark-gfm",
     ["--unsafe"],
     input: IO::Memory.new(md_content),
     output: output,
@@ -84,7 +84,7 @@ def render_markdown(md_content : String) : String
 
   return output.to_s if status.success?
 
-  fail!("cmark failed (#{status.exit_code}): #{error.to_s.strip}")
+  fail!("cmark-gfm failed (#{status.exit_code}): #{error.to_s.strip}")
 end
 
 def render_doc_page(title : String, md_file : String) : String
