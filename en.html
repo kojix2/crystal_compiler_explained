@@ -145,19 +145,29 @@
 
 		subgraph PARSE [&quot;① Parse&quot;]
 				P1[&quot;Lexer tokenization&quot;]
-				/* Lines 35-39 omitted */
+				P2[&quot;Parser syntax analysis&quot;]
+				P3[&quot;ASTNode syntax tree&quot;]
+				P4[&quot;prelude inserted at top&quot;]
+				P1 --&gt; P2 --&gt; P3
 				P4 -.-&gt; P3
 		end
 
 		subgraph SEM [&quot;② Semantic  ─  Program#semantic  (semantic.cr)&quot;]
 				direction TB
-				/* Lines 44-52 omitted */
+				S1[&quot;top level: collect class/def/macro declarations&quot;]
+				S2[&quot;new methods: auto-generate initialize → new&quot;]
+				S3[&quot;type declarations: freeze @x : T&quot;]
+				S4[&quot;abstract def check&quot;]
+				S5[&quot;restrictions augmenter&quot;]
+				S6[&quot;ivars / cvars initializers&quot;]
+				S7[&quot;main: type inference MainVisitor&quot;]
+				S8[&quot;cleanup: dead code elimination&quot;]
 				S1 --&gt; S2 --&gt; S3 --&gt; S4 --&gt; S5 --&gt; S6 --&gt; S7 --&gt; S8
 		end
 
 		subgraph CG [&quot;③ Codegen&quot;]
 				C1[&quot;Generate LLVM IR (module split by type)&quot;]
-				/* Lines 57-58 omitted */
+				C2[&quot;LLVM optimization, parallel .o generation&quot;]
 				C1 --&gt; C2
 		end
 
@@ -447,7 +457,13 @@ end
 <pre><code class="language-mermaid">classDiagram
 		class ASTNode {
 				&lt;&lt;abstract&gt;&gt;
-				/* Lines 202-209 omitted */
+				+location : Location?
+				+end_location : Location?
+				+type : Type?
+				+dependencies : SmallNodeList
+				+accept(visitor) void
+				+bind_to(node) void
+				+clone() ASTNode
 				+notify_observers() void
 		}
 		class Expressions {
@@ -460,11 +476,55 @@ end
 		}
 		class Call {
 				+obj : ASTNode?
-				/* Lines 221-223 omitted */
+				+name : String
+				+args : Array~ASTNode~
 				+block : Block?
 		}
 		class Def {
-				/* Lines 226-270 omitted */
+				+name : String
+				+args : Array~Arg~
+				+body : ASTNode
+				+return_type : ASTNode?
+		}
+		class If {
+				+cond : ASTNode
+				+then : ASTNode
+				+else : ASTNode
+		}
+		class Assign {
+				+target : ASTNode
+				+value : ASTNode
+		}
+		class ClassDef {
+				+name : Path
+				+body : ASTNode
+				+superclass : ASTNode?
+		}
+		class BinaryOp {
+				&lt;&lt;abstract&gt;&gt;
+				+left : ASTNode
+				+right : ASTNode
+		}
+		class ControlExpression {
+				&lt;&lt;abstract&gt;&gt;
+				+exp : ASTNode?
+		}
+		class Return
+		class Break
+		class Next
+
+		ASTNode &lt;|-- Expressions
+		ASTNode &lt;|-- Nop
+		ASTNode &lt;|-- Var
+		ASTNode &lt;|-- Call
+		ASTNode &lt;|-- Def
+		ASTNode &lt;|-- If
+		ASTNode &lt;|-- Assign
+		ASTNode &lt;|-- ClassDef
+		ASTNode &lt;|-- BinaryOp
+		ASTNode &lt;|-- ControlExpression
+		ControlExpression &lt;|-- Return
+		ControlExpression &lt;|-- Break
 		ControlExpression &lt;|-- Next
 </code></pre>
 <h3>Visitor and Transformer</h3>
@@ -639,7 +699,69 @@ end
 <h3>Type class diagram</h3>
 <pre><code class="language-mermaid">classDiagram
 		class Type {
-				/* Lines 513-576 omitted */
+				&lt;&lt;abstract&gt;&gt;
+				+program : Program
+				+to_s() String
+				+no_return?() Bool
+		}
+		class NamedType {
+				&lt;&lt;abstract&gt;&gt;
+				+name : String
+				+locations : Array~Location~
+		}
+		class ModuleType {
+				&lt;&lt;abstract&gt;&gt;
+				+types : Hash~String, Type~
+				+defs : Hash~String, Array~Def~~
+		}
+		class ClassType {
+				&lt;&lt;abstract&gt;&gt;
+				+superclass : ClassType?
+				+subclasses : Array~Type~
+		}
+		class PrimitiveType {
+				&lt;&lt;abstract&gt;&gt;
+		}
+		class NonGenericClassType
+		class GenericClassType {
+				+type_vars : Array~String~
+		}
+		class NonGenericModuleType
+		class GenericModuleType {
+				+type_vars : Array~String~
+		}
+		class NoReturnType
+		class VoidType
+		class AliasType {
+				+aliased_type : Type
+		}
+		class UnionType {
+				&lt;&lt;abstract&gt;&gt;
+				+union_types : Array~Type~
+		}
+		class MixedUnionType
+		class VirtualType {
+				+base_type : ClassType
+		}
+		class EnumType
+		class LibType
+
+		Type &lt;|-- NamedType
+		Type &lt;|-- UnionType
+		Type &lt;|-- VirtualType
+		NamedType &lt;|-- ModuleType
+		NamedType &lt;|-- ClassType
+		NamedType &lt;|-- NoReturnType
+		NamedType &lt;|-- VoidType
+		NamedType &lt;|-- AliasType
+		ModuleType &lt;|-- NonGenericModuleType
+		ModuleType &lt;|-- GenericModuleType
+		ModuleType &lt;|-- EnumType
+		ModuleType &lt;|-- LibType
+		ClassType &lt;|-- NonGenericClassType
+		ClassType &lt;|-- GenericClassType
+		ClassType &lt;|-- PrimitiveType
+		UnionType &lt;|-- MixedUnionType
 		NonGenericModuleType &lt;|-- Program
 </code></pre>
 <p><strong><code>VirtualType</code></strong> is especially important. If <code>abstract class Animal</code> has subclasses <code>Dog</code> and <code>Cat</code>, a variable typed as <code>Animal</code> is represented as <code>VirtualType(Animal)</code>. In codegen, it is lowered into a tagged union (similar to regular union representation) to enable virtual dispatch.</p>
@@ -745,7 +867,43 @@ end
 <h3>Program class diagram</h3>
 <pre><code class="language-mermaid">classDiagram
 		class Type {
-				/* Lines 639-676 omitted */
+				&lt;&lt;abstract&gt;&gt;
+		}
+		class NamedType {
+				&lt;&lt;abstract&gt;&gt;
+				+name : String
+		}
+		class ModuleType {
+				&lt;&lt;abstract&gt;&gt;
+				+types : Hash~String, Type~
+				+defs : Hash~String, Array~Def~~
+				+macros : Hash~String, Array~Macro~~
+		}
+		class NonGenericModuleType
+		class Program {
+				+symbols : Set~String~
+				+requires : Set~String~
+				+file_modules : Hash~String, FileModule~
+				+unions : Hash~Array~UInt64~, UnionType~
+				+vars : MetaVars
+				+filename : String?
+				+progress_tracker : ProgressTracker
+				+compiler : Compiler?
+				+string_pool : StringPool
+		}
+		class ProgressTracker {
+				+stage(name, block)
+		}
+		class Compiler {
+				+compile(sources)
+		}
+
+		Type &lt;|-- NamedType
+		NamedType &lt;|-- ModuleType
+		ModuleType &lt;|-- NonGenericModuleType
+		NonGenericModuleType &lt;|-- Program
+		Program --&gt; ProgressTracker : progress_tracker
+		Program --&gt; Compiler : compiler
 		Program --&gt; &quot;*&quot; Type : types[]
 </code></pre>
 <p>Because <code>Program</code> is also the top-level module type, built-in types like <code>Int32</code> and <code>String</code> are stored as <code>NamedType</code>s under <code>Program</code>. You can look up types via <code>program.types[&quot;String&quot;]</code>.</p>
@@ -1568,7 +1726,8 @@ end
 <p><code>CodeGenVisitor</code> in <code>codegen/codegen.cr</code> converts <strong>typed AST</strong> to LLVM IR. Since semantic analysis already fixed all node types, codegen mostly reads type metadata.</p>
 <pre><code class="language-mermaid">flowchart TD
 		A[&quot;Typed ASTNode tree&quot;]
-		/* Lines 1523-1525 omitted */
+		B[&quot;CodeGenVisitor#accept(node)&quot;]
+		C{&quot;Node type&quot;}
 		D[&quot;visit(Assign)
 store instruction&quot;]
 		E[&quot;visit(If)
@@ -1580,7 +1739,7 @@ loop basic blocks&quot;]
 		H[&quot;visit(NumberLiteral)
 LLVM::Value constant&quot;]
 		I[&quot;inside codegen_call&quot;]
-		/* Lines 1536-1537 omitted */
+		J{&quot;Receiver type&quot;}
 		K[&quot;visit_primitive
 primitive instructions
 (add nsw, fadd, etc.)&quot;]
@@ -1592,7 +1751,12 @@ single concrete type&quot;]
 		N[&quot;LLVM::Module
 (split by type)&quot;]
 
-		/* Lines 1548-1554 omitted */
+		A --&gt; B --&gt; C
+		C --&gt; D &amp; E &amp; F &amp; G &amp; H
+		F --&gt; I --&gt; J
+		J --&gt;|primitive| K
+		J --&gt;|Union/Virtual| L
+		J --&gt;|single type| M
 		D &amp; E &amp; G &amp; H &amp; K &amp; L &amp; M --&gt; N
 </code></pre>
 <p>For each visited node, the resulting value is set into <code>@last : LLVM::Value</code>; parent generation reads from <code>@last</code>.</p>
