@@ -4,8 +4,8 @@
   <meta charset="utf-8" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Crystal Docs 1.18.2">
-<meta name="crystal_docs.project_version" content="1.20.0-dev">
+<meta name="generator" content="Crystal Docs 1.19.1">
+<meta name="crystal_docs.project_version" content="1.21.0-dev">
 <meta name="crystal_docs.project_name" content="Crystal">
 
 
@@ -14,7 +14,7 @@
 <script type="text/javascript" src="js/doc.js"></script>
 
   <meta name="repository-name" content="Crystal">
-  <title>UUID - Crystal 1.20.0-dev</title>
+  <title>UUID - Crystal 1.21.0-dev</title>
   <script type="text/javascript">
     CrystalDocs.base_path = "";
   </script>
@@ -45,7 +45,7 @@
       </h1>
 
       <span class="project-version">
-        1.20.0-dev
+        1.21.0-dev
       </span>
     </div>
   </div>
@@ -917,6 +917,11 @@
       
     </li>
   
+  <li class=" " data-id="Crystal/Crystal/Command/Exit" data-name="crystal::command::exit">
+      <a href="Crystal/Command/Exit.html">Exit</a>
+      
+    </li>
+  
   <li class=" " data-id="Crystal/Crystal/Command/FlagsVisitor" data-name="crystal::command::flagsvisitor">
       <a href="Crystal/Command/FlagsVisitor.html">FlagsVisitor</a>
       
@@ -964,6 +969,11 @@
   
 </ul>
 
+      
+    </li>
+  
+  <li class=" " data-id="Crystal/Crystal/CompilerError" data-name="crystal::compilererror">
+      <a href="Crystal/CompilerError.html">CompilerError</a>
       
     </li>
   
@@ -4852,6 +4862,11 @@
       
     </li>
   
+  <li class=" " data-id="Crystal/IO/PrefixSuffixBuffer" data-name="io::prefixsuffixbuffer">
+      <a href="IO/PrefixSuffixBuffer.html">PrefixSuffixBuffer</a>
+      
+    </li>
+  
   <li class=" " data-id="Crystal/IO/Seek" data-name="io::seek">
       <a href="IO/Seek.html">Seek</a>
       
@@ -5682,18 +5697,8 @@
       
     </li>
   
-  <li class="parent " data-id="Crystal/Mutex" data-name="mutex">
+  <li class=" " data-id="Crystal/Mutex" data-name="mutex">
       <a href="Mutex.html">Mutex</a>
-      
-        <ul>
-  
-  <li class=" " data-id="Crystal/Mutex/Protection" data-name="mutex::protection">
-      <a href="Mutex/Protection.html">Protection</a>
-      
-    </li>
-  
-</ul>
-
       
     </li>
   
@@ -6082,6 +6087,11 @@
       
     </li>
   
+  <li class=" " data-id="Crystal/Process/ExitError" data-name="process::exiterror">
+      <a href="Process/ExitError.html">ExitError</a>
+      
+    </li>
+  
   <li class=" " data-id="Crystal/Process/ExitReason" data-name="process::exitreason">
       <a href="Process/ExitReason.html">ExitReason</a>
       
@@ -6089,6 +6099,11 @@
   
   <li class=" " data-id="Crystal/Process/Redirect" data-name="process::redirect">
       <a href="Process/Redirect.html">Redirect</a>
+      
+    </li>
+  
+  <li class=" " data-id="Crystal/Process/Result" data-name="process::result">
+      <a href="Process/Result.html">Result</a>
       
     </li>
   
@@ -6472,8 +6487,18 @@
       
     </li>
   
-  <li class=" " data-id="Crystal/Sync/Mutex" data-name="sync::mutex">
+  <li class="parent " data-id="Crystal/Sync/Mutex" data-name="sync::mutex">
       <a href="Sync/Mutex.html">Mutex</a>
+      
+        <ul>
+  
+  <li class=" " data-id="Crystal/Sync/Mutex/Protection" data-name="sync::mutex::protection">
+      <a href="Sync/Mutex/Protection.html">Protection</a>
+      
+    </li>
+  
+</ul>
+
       
     </li>
   
@@ -6554,6 +6579,11 @@
   
 </ul>
 
+      
+    </li>
+  
+  <li class=" " data-id="Crystal/TargetFeature" data-name="targetfeature">
+      <a href="TargetFeature.html">TargetFeature</a>
       
     </li>
   
@@ -7289,21 +7319,21 @@
   </h2>
   
     
-      <a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/uuid.cr#L15" target="_blank">
+      <a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/uuid.cr#L15" target="_blank">
         uuid.cr
       </a>
     
     <br/>
   
     
-      <a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/uuid/json.cr#L4" target="_blank">
+      <a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/uuid/json.cr#L4" target="_blank">
         uuid/json.cr
       </a>
     
     <br/>
   
     
-      <a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/uuid/yaml.cr#L4" target="_blank">
+      <a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/uuid/yaml.cr#L4" target="_blank">
         uuid/yaml.cr
       </a>
     
@@ -7413,6 +7443,27 @@
         <a href="#v5%28name%3AString%2Cnamespace%3AUUID%29%3Aself-class-method" class="signature"><strong>.v5</strong>(name : String, namespace : UUID) : <span class="k">self</span></a>
         
           <div class="summary"><p>Generates RFC 4122 v5 UUID using the <code>name</code> to generate the UUID, it can be a string of any size.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#v6%28%2A%2Cclock_seq%3AUInt16%7CNil%3Dnil%2Cnode_id%3AMAC%7CNil%3Dnil%29%3Aself-class-method" class="signature"><strong>.v6</strong>(*, clock_seq : UInt16 | Nil = <span class="n">nil</span>, node_id : MAC | Nil = <span class="n">nil</span>) : <span class="k">self</span></a>
+        
+          <div class="summary"><p>Generates an RFC 9562 v6 UUID.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#v8%28custom_bytes%3AStaticArray%28UInt8%2C16%29%29%3Aself-class-method" class="signature"><strong>.v8</strong>(custom_bytes : StaticArray(UInt8, <span class="n">16</span>)) : <span class="k">self</span></a>
+        
+          <div class="summary"><p>Generates an RFC 9562 v8 UUID from <em>custom_bytes</em>.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#v8%28custom_bytes%3ASlice%28UInt8%29%29%3Aself-class-method" class="signature"><strong>.v8</strong>(custom_bytes : Slice(UInt8)) : <span class="k">self</span></a>
+        
+          <div class="summary"><p>Generates an RFC 9562 v8 UUID from <em>custom_bytes</em>.</p></div>
         
       </li>
     
@@ -7667,6 +7718,20 @@
       </li>
     
       <li class="entry-summary">
+        <a href="#v6%21-instance-method" class="signature"><strong>#v6!</strong></a>
+        
+          <div class="summary"><p>Returns <code>true</code> if UUID is a V6, raises <code><a href="UUID/Error.html">Error</a></code> otherwise.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#v6%3F-instance-method" class="signature"><strong>#v6?</strong></a>
+        
+          <div class="summary"><p>Returns <code>true</code> if UUID is a V6, <code>false</code> otherwise.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
         <a href="#v7%21-instance-method" class="signature"><strong>#v7!</strong></a>
         
           <div class="summary"><p>Returns <code>true</code> if UUID is a V7, raises <code><a href="UUID/Error.html">Error</a></code> otherwise.</p></div>
@@ -7677,6 +7742,20 @@
         <a href="#v7%3F-instance-method" class="signature"><strong>#v7?</strong></a>
         
           <div class="summary"><p>Returns <code>true</code> if UUID is a V7, <code>false</code> otherwise.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#v8%21-instance-method" class="signature"><strong>#v8!</strong></a>
+        
+          <div class="summary"><p>Returns <code>true</code> if UUID is a V8, raises <code><a href="UUID/Error.html">Error</a></code> otherwise.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#v8%3F-instance-method" class="signature"><strong>#v8?</strong></a>
+        
+          <div class="summary"><p>Returns <code>true</code> if UUID is a V8, <code>false</code> otherwise.</p></div>
         
       </li>
     
@@ -8129,7 +8208,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/uuid.cr#L357" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/uuid.cr#L433" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8151,7 +8230,7 @@ present.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/uuid.cr#L81" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/uuid.cr#L85" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8173,7 +8252,7 @@ present.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/uuid.cr#L105" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/uuid.cr#L109" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8195,7 +8274,7 @@ present.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/uuid.cr#L116" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/uuid.cr#L120" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8218,7 +8297,7 @@ format, raising an <code><a href="ArgumentError.html">ArgumentError</a></code> i
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/uuid.cr#L123" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/uuid.cr#L127" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8252,7 +8331,7 @@ example.id <span class="c"># =&gt; UUID(50a11da6-377b-4bdf-b9f0-076f9db61c93)</s
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/uuid/yaml.cr#L23" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/uuid/yaml.cr#L23" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8286,7 +8365,7 @@ example.id <span class="c"># =&gt; UUID(ba714f86-cac6-42c7-8956-bcf5105e1b81)</s
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/uuid/json.cr#L23" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/uuid/json.cr#L23" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8309,7 +8388,7 @@ example.id <span class="c"># =&gt; UUID(ba714f86-cac6-42c7-8956-bcf5105e1b81)</s
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/uuid.cr#L212" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/uuid.cr#L216" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8341,7 +8420,7 @@ are used. In case the traditional MAC address based approach should be taken the
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/uuid.cr#L233" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/uuid.cr#L237" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8370,7 +8449,7 @@ random is used.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/uuid.cr#L274" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/uuid.cr#L278" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8392,7 +8471,7 @@ The <code>namespace</code> specifies the type of the name, usually one of <code>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/uuid.cr#L284" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/uuid.cr#L288" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8415,7 +8494,7 @@ The <code>namespace</code> specifies the type of the name, usually one of <code>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/uuid.cr#L297" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/uuid.cr#L301" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8437,7 +8516,114 @@ The <code>namespace</code> specifies the type of the name, usually one of <code>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/uuid.cr#L303" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/uuid.cr#L307" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="v6(*,clock_seq:UInt16|Nil=nil,node_id:MAC|Nil=nil):self-class-method">
+      <div class="signature">
+        
+        def self.<strong>v6</strong>(*, clock_seq : <a href="UInt16.html">UInt16</a> | <a href="Nil.html">Nil</a> = <span class="n">nil</span>, node_id : <a href="UUID/MAC.html">MAC</a> | <a href="Nil.html">Nil</a> = <span class="n">nil</span>) : <span class="k">self</span>
+
+        <a class="method-permalink" href="#v6%28%2A%2Cclock_seq%3AUInt16%7CNil%3Dnil%2Cnode_id%3AMAC%7CNil%3Dnil%29%3Aself-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Generates an RFC 9562 v6 UUID.</p>
+<p>UUIDv6 is a field-compatible version of UUIDv1 with the timestamp bits
+reordered to be most-significant-first, making the UUID lexicographically
+sortable by creation time.</p>
+<p>The sequence number <em>clock_seq</em> should be monotonically increasing across
+invocations; only 14 bits are used. If not provided, the current
+millisecond sub-second value is used. If <em>node_id</em> is not provided, a
+pseudo-random node ID is generated with the multicast bit set as
+recommended by RFC 4122 section 4.5.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/uuid.cr#L343" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="v8(custom_bytes:StaticArray(UInt8,16)):self-class-method">
+      <div class="signature">
+        
+        def self.<strong>v8</strong>(custom_bytes : <a href="StaticArray.html">StaticArray</a>(<a href="UInt8.html">UInt8</a>, <span class="n">16</span>)) : <span class="k">self</span>
+
+        <a class="method-permalink" href="#v8%28custom_bytes%3AStaticArray%28UInt8%2C16%29%29%3Aself-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Generates an RFC 9562 v8 UUID from <em>custom_bytes</em>.</p>
+<p>UUIDv8 is an RFC-compatible format for experimental or vendor-specific
+use cases where the caller defines the meaning of all 128 bits. Exactly
+<strong>6 bits</strong> of <em>custom_bytes</em> are unconditionally overwritten:</p>
+<ul>
+<li><strong>Bits 48–51</strong> (high nibble of byte 6) get set to <code>0x8</code> (version 8)</li>
+<li><strong>Bits 64–65</strong> (two high bits of byte 8) get set to <code>0b10</code> (RFC 9562 variant)</li>
+</ul>
+<p>All remaining 122 bits are preserved exactly as supplied. Callers must
+account for this when designing their custom layout; avoid placing
+meaningful data in those 6 bit positions.</p>
+<p>Example: embedding a 16-bit shard ID and a 32-bit sequence number.</p>
+<pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;uuid&quot;</span>
+
+buf <span class="o">=</span> <span class="t">StaticArray</span>(<span class="t">UInt8</span>, <span class="n">16</span>).new(<span class="n">0_u8</span>)
+<span class="t">IO</span><span class="t">::</span><span class="t">ByteFormat</span><span class="t">::</span><span class="t">BigEndian</span>.encode(shard_id, buf.to_slice[<span class="n">0</span>, <span class="n">2</span>])
+<span class="t">IO</span><span class="t">::</span><span class="t">ByteFormat</span><span class="t">::</span><span class="t">BigEndian</span>.encode(seq, buf.to_slice[<span class="n">2</span>, <span class="n">4</span>])
+<span class="c"># bytes 6 and 8 will have 6 bits overwritten; leave them as padding</span>
+uuid <span class="o">=</span> <span class="t">UUID</span>.v8(buf)</code></pre>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/uuid.cr#L419" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="v8(custom_bytes:Slice(UInt8)):self-class-method">
+      <div class="signature">
+        
+        def self.<strong>v8</strong>(custom_bytes : <a href="Slice.html">Slice</a>(<a href="UInt8.html">UInt8</a>)) : <span class="k">self</span>
+
+        <a class="method-permalink" href="#v8%28custom_bytes%3ASlice%28UInt8%29%29%3Aself-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Generates an RFC 9562 v8 UUID from <em>custom_bytes</em>.</p>
+<p>UUIDv8 is an RFC-compatible format for experimental or vendor-specific
+use cases where the caller defines the meaning of all 128 bits. Exactly
+<strong>6 bits</strong> of <em>custom_bytes</em> are unconditionally overwritten:</p>
+<ul>
+<li><strong>Bits 48–51</strong> (high nibble of byte 6) get set to <code>0x8</code> (version 8)</li>
+<li><strong>Bits 64–65</strong> (two high bits of byte 8) get set to <code>0b10</code> (RFC 9562 variant)</li>
+</ul>
+<p>All remaining 122 bits are preserved exactly as supplied. Callers must
+account for this when designing their custom layout; avoid placing
+meaningful data in those 6 bit positions.</p>
+<p>Example: embedding a 16-bit shard ID and a 32-bit sequence number.</p>
+<pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;uuid&quot;</span>
+
+buf <span class="o">=</span> <span class="t">StaticArray</span>(<span class="t">UInt8</span>, <span class="n">16</span>).new(<span class="n">0_u8</span>)
+<span class="t">IO</span><span class="t">::</span><span class="t">ByteFormat</span><span class="t">::</span><span class="t">BigEndian</span>.encode(shard_id, buf.to_slice[<span class="n">0</span>, <span class="n">2</span>])
+<span class="t">IO</span><span class="t">::</span><span class="t">ByteFormat</span><span class="t">::</span><span class="t">BigEndian</span>.encode(seq, buf.to_slice[<span class="n">2</span>, <span class="n">4</span>])
+<span class="c"># bytes 6 and 8 will have 6 bits overwritten; leave them as padding</span>
+uuid <span class="o">=</span> <span class="t">UUID</span>.v8(buf)</code></pre>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/uuid.cr#L424" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8471,7 +8657,7 @@ The <code>namespace</code> specifies the type of the name, usually one of <code>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/uuid/json.cr#L47" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/uuid/json.cr#L47" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8494,7 +8680,7 @@ format, returning <code>nil</code> if the string does not match any of these for
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/uuid.cr#L155" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/uuid.cr#L159" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8518,7 +8704,7 @@ format, returning <code>nil</code> if the string does not match any of these for
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/uuid.cr#L312" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/uuid.cr#L316" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8542,7 +8728,7 @@ format, returning <code>nil</code> if the string does not match any of these for
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/uuid.cr#L312" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/uuid.cr#L316" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8566,7 +8752,7 @@ format, returning <code>nil</code> if the string does not match any of these for
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/uuid.cr#L312" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/uuid.cr#L316" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8590,7 +8776,7 @@ format, returning <code>nil</code> if the string does not match any of these for
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/uuid.cr#L312" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/uuid.cr#L316" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8614,7 +8800,7 @@ format, returning <code>nil</code> if the string does not match any of these for
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/uuid.cr#L312" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/uuid.cr#L316" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8638,7 +8824,7 @@ format, returning <code>nil</code> if the string does not match any of these for
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/uuid.cr#L312" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/uuid.cr#L316" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8662,7 +8848,7 @@ format, returning <code>nil</code> if the string does not match any of these for
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/uuid.cr#L312" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/uuid.cr#L316" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8686,7 +8872,7 @@ format, returning <code>nil</code> if the string does not match any of these for
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/uuid.cr#L312" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/uuid.cr#L316" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8709,7 +8895,7 @@ representation.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/uuid.cr#L331" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/uuid.cr#L375" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8758,7 +8944,7 @@ or <code>nil</code> if the two objects are not comparable.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/uuid.cr#L467" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/uuid.cr#L545" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8793,7 +8979,7 @@ or <code>nil</code> if the two objects are not comparable.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/uuid.cr#L412" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/uuid.cr#L490" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8832,7 +9018,7 @@ or <code>nil</code> if the two objects are not comparable.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/uuid.cr#L446" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/uuid.cr#L524" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8853,7 +9039,7 @@ or <code>nil</code> if the two objects are not comparable.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/uuid.cr#L424" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/uuid.cr#L502" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8877,7 +9063,7 @@ uuid.to_json <span class="c"># =&gt; &quot;\&quot;87b3042b-9b9a-41b7-8b15-a93d3f
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/uuid/json.cr#L35" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/uuid/json.cr#L35" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8902,7 +9088,7 @@ uuid.to_json <span class="c"># =&gt; &quot;\&quot;87b3042b-9b9a-41b7-8b15-a93d3f
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/uuid.cr#L430" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/uuid.cr#L508" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8923,7 +9109,7 @@ uuid.to_json <span class="c"># =&gt; &quot;\&quot;87b3042b-9b9a-41b7-8b15-a93d3f
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/uuid.cr#L417" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/uuid.cr#L495" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8947,7 +9133,7 @@ uuid.to_yaml <span class="c"># =&gt; &quot;--- 50a11da6-377b-4bdf-b9f0-076f9db61
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/uuid/yaml.cr#L45" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/uuid/yaml.cr#L45" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8974,7 +9160,7 @@ uuid2.urn <span class="c"># =&gt; &quot;urn:uuid:c49fc136-9362-4414-81a5-9a7e0fc
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/uuid.cr#L460" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/uuid.cr#L538" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8995,7 +9181,7 @@ uuid2.urn <span class="c"># =&gt; &quot;urn:uuid:c49fc136-9362-4414-81a5-9a7e0fc
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/uuid.cr#L474" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/uuid.cr#L552" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -9016,7 +9202,7 @@ uuid2.urn <span class="c"># =&gt; &quot;urn:uuid:c49fc136-9362-4414-81a5-9a7e0fc
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/uuid.cr#L474" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/uuid.cr#L552" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -9037,7 +9223,7 @@ uuid2.urn <span class="c"># =&gt; &quot;urn:uuid:c49fc136-9362-4414-81a5-9a7e0fc
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/uuid.cr#L474" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/uuid.cr#L552" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -9058,7 +9244,7 @@ uuid2.urn <span class="c"># =&gt; &quot;urn:uuid:c49fc136-9362-4414-81a5-9a7e0fc
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/uuid.cr#L474" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/uuid.cr#L552" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -9079,7 +9265,7 @@ uuid2.urn <span class="c"># =&gt; &quot;urn:uuid:c49fc136-9362-4414-81a5-9a7e0fc
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/uuid.cr#L474" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/uuid.cr#L552" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -9100,7 +9286,7 @@ uuid2.urn <span class="c"># =&gt; &quot;urn:uuid:c49fc136-9362-4414-81a5-9a7e0fc
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/uuid.cr#L474" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/uuid.cr#L552" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -9121,7 +9307,7 @@ uuid2.urn <span class="c"># =&gt; &quot;urn:uuid:c49fc136-9362-4414-81a5-9a7e0fc
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/uuid.cr#L474" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/uuid.cr#L552" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -9142,7 +9328,7 @@ uuid2.urn <span class="c"># =&gt; &quot;urn:uuid:c49fc136-9362-4414-81a5-9a7e0fc
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/uuid.cr#L474" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/uuid.cr#L552" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -9163,7 +9349,7 @@ uuid2.urn <span class="c"># =&gt; &quot;urn:uuid:c49fc136-9362-4414-81a5-9a7e0fc
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/uuid.cr#L474" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/uuid.cr#L552" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -9184,7 +9370,49 @@ uuid2.urn <span class="c"># =&gt; &quot;urn:uuid:c49fc136-9362-4414-81a5-9a7e0fc
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/uuid.cr#L474" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/uuid.cr#L552" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="v6!-instance-method">
+      <div class="signature">
+        
+        def <strong>v6!</strong>
+
+        <a class="method-permalink" href="#v6%21-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns <code>true</code> if UUID is a V6, raises <code><a href="UUID/Error.html">Error</a></code> otherwise.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/uuid.cr#L552" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="v6?-instance-method">
+      <div class="signature">
+        
+        def <strong>v6?</strong>
+
+        <a class="method-permalink" href="#v6%3F-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns <code>true</code> if UUID is a V6, <code>false</code> otherwise.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/uuid.cr#L552" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -9205,7 +9433,7 @@ uuid2.urn <span class="c"># =&gt; &quot;urn:uuid:c49fc136-9362-4414-81a5-9a7e0fc
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/uuid.cr#L474" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/uuid.cr#L552" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -9226,7 +9454,49 @@ uuid2.urn <span class="c"># =&gt; &quot;urn:uuid:c49fc136-9362-4414-81a5-9a7e0fc
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/uuid.cr#L474" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/uuid.cr#L552" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="v8!-instance-method">
+      <div class="signature">
+        
+        def <strong>v8!</strong>
+
+        <a class="method-permalink" href="#v8%21-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns <code>true</code> if UUID is a V8, raises <code><a href="UUID/Error.html">Error</a></code> otherwise.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/uuid.cr#L552" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="v8?-instance-method">
+      <div class="signature">
+        
+        def <strong>v8?</strong>
+
+        <a class="method-permalink" href="#v8%3F-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns <code>true</code> if UUID is a V8, <code>false</code> otherwise.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/uuid.cr#L552" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -9254,7 +9524,7 @@ See also <code><a href="UUID.html#version%3AUUID%3A%3AVersion-instance-method">#
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/uuid.cr#L372" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/uuid.cr#L448" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -9283,7 +9553,7 @@ See also <code><a href="UUID.html#variant%3AUUID%3A%3AVariant-instance-method">#
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/uuid.cr#L399" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/uuid.cr#L475" target="_blank">View source</a>]
         
       </div>
     </div>

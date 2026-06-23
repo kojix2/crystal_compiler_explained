@@ -4,8 +4,8 @@
   <meta charset="utf-8" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Crystal Docs 1.18.2">
-<meta name="crystal_docs.project_version" content="1.20.0-dev">
+<meta name="generator" content="Crystal Docs 1.19.1">
+<meta name="crystal_docs.project_version" content="1.21.0-dev">
 <meta name="crystal_docs.project_name" content="Crystal">
 
 
@@ -14,7 +14,7 @@
 <script type="text/javascript" src="../js/doc.js"></script>
 
   <meta name="repository-name" content="Crystal">
-  <title>HTTP::Headers - Crystal 1.20.0-dev</title>
+  <title>HTTP::Headers - Crystal 1.21.0-dev</title>
   <script type="text/javascript">
     CrystalDocs.base_path = "../";
   </script>
@@ -45,7 +45,7 @@
       </h1>
 
       <span class="project-version">
-        1.20.0-dev
+        1.21.0-dev
       </span>
     </div>
   </div>
@@ -917,6 +917,11 @@
       
     </li>
   
+  <li class=" " data-id="Crystal/Crystal/Command/Exit" data-name="crystal::command::exit">
+      <a href="../Crystal/Command/Exit.html">Exit</a>
+      
+    </li>
+  
   <li class=" " data-id="Crystal/Crystal/Command/FlagsVisitor" data-name="crystal::command::flagsvisitor">
       <a href="../Crystal/Command/FlagsVisitor.html">FlagsVisitor</a>
       
@@ -964,6 +969,11 @@
   
 </ul>
 
+      
+    </li>
+  
+  <li class=" " data-id="Crystal/Crystal/CompilerError" data-name="crystal::compilererror">
+      <a href="../Crystal/CompilerError.html">CompilerError</a>
       
     </li>
   
@@ -4852,6 +4862,11 @@
       
     </li>
   
+  <li class=" " data-id="Crystal/IO/PrefixSuffixBuffer" data-name="io::prefixsuffixbuffer">
+      <a href="../IO/PrefixSuffixBuffer.html">PrefixSuffixBuffer</a>
+      
+    </li>
+  
   <li class=" " data-id="Crystal/IO/Seek" data-name="io::seek">
       <a href="../IO/Seek.html">Seek</a>
       
@@ -5682,18 +5697,8 @@
       
     </li>
   
-  <li class="parent " data-id="Crystal/Mutex" data-name="mutex">
+  <li class=" " data-id="Crystal/Mutex" data-name="mutex">
       <a href="../Mutex.html">Mutex</a>
-      
-        <ul>
-  
-  <li class=" " data-id="Crystal/Mutex/Protection" data-name="mutex::protection">
-      <a href="../Mutex/Protection.html">Protection</a>
-      
-    </li>
-  
-</ul>
-
       
     </li>
   
@@ -6082,6 +6087,11 @@
       
     </li>
   
+  <li class=" " data-id="Crystal/Process/ExitError" data-name="process::exiterror">
+      <a href="../Process/ExitError.html">ExitError</a>
+      
+    </li>
+  
   <li class=" " data-id="Crystal/Process/ExitReason" data-name="process::exitreason">
       <a href="../Process/ExitReason.html">ExitReason</a>
       
@@ -6089,6 +6099,11 @@
   
   <li class=" " data-id="Crystal/Process/Redirect" data-name="process::redirect">
       <a href="../Process/Redirect.html">Redirect</a>
+      
+    </li>
+  
+  <li class=" " data-id="Crystal/Process/Result" data-name="process::result">
+      <a href="../Process/Result.html">Result</a>
       
     </li>
   
@@ -6472,8 +6487,18 @@
       
     </li>
   
-  <li class=" " data-id="Crystal/Sync/Mutex" data-name="sync::mutex">
+  <li class="parent " data-id="Crystal/Sync/Mutex" data-name="sync::mutex">
       <a href="../Sync/Mutex.html">Mutex</a>
+      
+        <ul>
+  
+  <li class=" " data-id="Crystal/Sync/Mutex/Protection" data-name="sync::mutex::protection">
+      <a href="../Sync/Mutex/Protection.html">Protection</a>
+      
+    </li>
+  
+</ul>
+
       
     </li>
   
@@ -6554,6 +6579,11 @@
   
 </ul>
 
+      
+    </li>
+  
+  <li class=" " data-id="Crystal/TargetFeature" data-name="targetfeature">
+      <a href="../TargetFeature.html">TargetFeature</a>
       
     </li>
   
@@ -7291,7 +7321,7 @@
   </h2>
   
     
-      <a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/http/headers.cr#L7" target="_blank">
+      <a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/http/headers.cr#L7" target="_blank">
         http/headers.cr
       </a>
     
@@ -7502,9 +7532,19 @@
       </li>
     
       <li class="entry-summary">
+        <a href="#to_json%28builder%3AJSON%3A%3ABuilder%29%3ANil-instance-method" class="signature"><strong>#to_json</strong>(builder : JSON::Builder) : Nil</a>
+        
+      </li>
+    
+      <li class="entry-summary">
         <a href="#to_s%28io%3AIO%29%3ANil-instance-method" class="signature"><strong>#to_s</strong>(io : IO) : Nil</a>
         
           <div class="summary"><p>Same as <code><a href="../HTTP/Headers.html#inspect%28io%3AIO%29%3ANil-instance-method">#inspect(io)</a></code>.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#to_yaml%28builder%3AYAML%3A%3ANodes%3A%3ABuilder%29%3ANil-instance-method" class="signature"><strong>#to_yaml</strong>(builder : YAML::Nodes::Builder) : Nil</a>
         
       </li>
     
@@ -8271,7 +8311,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/http/headers.cr#L51" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/http/headers.cr#L59" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8316,7 +8356,7 @@ single element.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/http/headers.cr#L200" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/http/headers.cr#L208" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8332,7 +8372,7 @@ single element.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/http/headers.cr#L70" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/http/headers.cr#L78" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8348,7 +8388,7 @@ single element.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/http/headers.cr#L58" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/http/headers.cr#L66" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8364,7 +8404,7 @@ single element.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/http/headers.cr#L64" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/http/headers.cr#L72" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8380,7 +8420,7 @@ single element.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/http/headers.cr#L75" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/http/headers.cr#L83" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8409,7 +8449,7 @@ headers[<span class="s">&quot;Connection&quot;</span>] <span class="c"># =&gt; &
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/http/headers.cr#L133" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/http/headers.cr#L141" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8425,7 +8465,7 @@ headers[<span class="s">&quot;Connection&quot;</span>] <span class="c"># =&gt; &
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/http/headers.cr#L139" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/http/headers.cr#L147" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8441,7 +8481,7 @@ headers[<span class="s">&quot;Connection&quot;</span>] <span class="c"># =&gt; &
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/http/headers.cr#L145" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/http/headers.cr#L153" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8457,7 +8497,7 @@ headers[<span class="s">&quot;Connection&quot;</span>] <span class="c"># =&gt; &
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/http/headers.cr#L151" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/http/headers.cr#L159" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8473,7 +8513,7 @@ headers[<span class="s">&quot;Connection&quot;</span>] <span class="c"># =&gt; &
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/http/headers.cr#L349" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/http/headers.cr#L365" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8489,7 +8529,7 @@ headers[<span class="s">&quot;Connection&quot;</span>] <span class="c"># =&gt; &
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/http/headers.cr#L269" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/http/headers.cr#L277" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8505,7 +8545,7 @@ headers[<span class="s">&quot;Connection&quot;</span>] <span class="c"># =&gt; &
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/http/headers.cr#L174" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/http/headers.cr#L182" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8533,7 +8573,7 @@ value types are passed by value.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/http/headers.cr#L261" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/http/headers.cr#L269" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8558,7 +8598,7 @@ value types are passed by value.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/http/headers.cr#L242" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/http/headers.cr#L250" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8589,7 +8629,7 @@ value types are passed by value.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/http/headers.cr#L170" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/http/headers.cr#L178" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8605,7 +8645,7 @@ value types are passed by value.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/http/headers.cr#L157" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/http/headers.cr#L165" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8621,7 +8661,7 @@ value types are passed by value.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/http/headers.cr#L161" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/http/headers.cr#L169" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8637,7 +8677,7 @@ value types are passed by value.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/http/headers.cr#L248" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/http/headers.cr#L256" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8653,7 +8693,7 @@ value types are passed by value.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/http/headers.cr#L257" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/http/headers.cr#L265" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8669,7 +8709,7 @@ value types are passed by value.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/http/headers.cr#L166" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/http/headers.cr#L174" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8690,7 +8730,7 @@ value types are passed by value.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/http/headers.cr#L220" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/http/headers.cr#L228" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8716,7 +8756,7 @@ headers.includes_word?(<span class="s">&quot;Connection&quot;</span>, <span clas
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/http/headers.cr#L88" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/http/headers.cr#L96" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8750,7 +8790,7 @@ p1.inspect <span class="c"># &quot;Point(@x=1, @y=2)&quot;</span></code></pre>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/http/headers.cr#L297" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/http/headers.cr#L305" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8766,7 +8806,7 @@ p1.inspect <span class="c"># &quot;Point(@x=1, @y=2)&quot;</span></code></pre>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/http/headers.cr#L179" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/http/headers.cr#L187" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8782,7 +8822,7 @@ p1.inspect <span class="c"># &quot;Point(@x=1, @y=2)&quot;</span></code></pre>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/http/headers.cr#L353" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/http/headers.cr#L369" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8798,7 +8838,7 @@ p1.inspect <span class="c"># &quot;Point(@x=1, @y=2)&quot;</span></code></pre>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/http/headers.cr#L301" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/http/headers.cr#L309" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8814,7 +8854,7 @@ p1.inspect <span class="c"># &quot;Point(@x=1, @y=2)&quot;</span></code></pre>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/http/headers.cr#L273" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/http/headers.cr#L281" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8840,7 +8880,7 @@ headers.serialize <span class="c"># =&gt; &quot;foo: bar\r\nbaz: qux\r\nbaz: qox
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/http/headers.cr#L337" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/http/headers.cr#L345" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8866,7 +8906,23 @@ headers.serialize <span class="c"># =&gt; &quot;foo: bar\r\nbaz: qux\r\nbaz: qox
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/http/headers.cr#L330" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/http/headers.cr#L338" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="to_json(builder:JSON::Builder):Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>to_json</strong>(builder : <a href="../JSON/Builder.html">JSON::Builder</a>) : <a href="../Nil.html">Nil</a>
+
+        <a class="method-permalink" href="#to_json%28builder%3AJSON%3A%3ABuilder%29%3ANil-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/http/headers.cr#L353" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8891,7 +8947,23 @@ headers.serialize <span class="c"># =&gt; &quot;foo: bar\r\nbaz: qux\r\nbaz: qox
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/http/headers.cr#L277" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/http/headers.cr#L285" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="to_yaml(builder:YAML::Nodes::Builder):Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>to_yaml</strong>(builder : <a href="../YAML/Nodes/Builder.html">YAML::Nodes::Builder</a>) : <a href="../Nil.html">Nil</a>
+
+        <a class="method-permalink" href="#to_yaml%28builder%3AYAML%3A%3ANodes%3A%3ABuilder%29%3ANil-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/http/headers.cr#L357" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8907,7 +8979,7 @@ headers.serialize <span class="c"># =&gt; &quot;foo: bar\r\nbaz: qux\r\nbaz: qox
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/http/headers.cr#L345" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/http/headers.cr#L361" target="_blank">View source</a>]
         
       </div>
     </div>

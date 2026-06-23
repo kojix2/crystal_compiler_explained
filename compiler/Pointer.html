@@ -4,8 +4,8 @@
   <meta charset="utf-8" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Crystal Docs 1.18.2">
-<meta name="crystal_docs.project_version" content="1.20.0-dev">
+<meta name="generator" content="Crystal Docs 1.19.1">
+<meta name="crystal_docs.project_version" content="1.21.0-dev">
 <meta name="crystal_docs.project_name" content="Crystal">
 
 
@@ -14,7 +14,7 @@
 <script type="text/javascript" src="js/doc.js"></script>
 
   <meta name="repository-name" content="Crystal">
-  <title>Pointer(T) - Crystal 1.20.0-dev</title>
+  <title>Pointer(T) - Crystal 1.21.0-dev</title>
   <script type="text/javascript">
     CrystalDocs.base_path = "";
   </script>
@@ -45,7 +45,7 @@
       </h1>
 
       <span class="project-version">
-        1.20.0-dev
+        1.21.0-dev
       </span>
     </div>
   </div>
@@ -917,6 +917,11 @@
       
     </li>
   
+  <li class=" " data-id="Crystal/Crystal/Command/Exit" data-name="crystal::command::exit">
+      <a href="Crystal/Command/Exit.html">Exit</a>
+      
+    </li>
+  
   <li class=" " data-id="Crystal/Crystal/Command/FlagsVisitor" data-name="crystal::command::flagsvisitor">
       <a href="Crystal/Command/FlagsVisitor.html">FlagsVisitor</a>
       
@@ -964,6 +969,11 @@
   
 </ul>
 
+      
+    </li>
+  
+  <li class=" " data-id="Crystal/Crystal/CompilerError" data-name="crystal::compilererror">
+      <a href="Crystal/CompilerError.html">CompilerError</a>
       
     </li>
   
@@ -4852,6 +4862,11 @@
       
     </li>
   
+  <li class=" " data-id="Crystal/IO/PrefixSuffixBuffer" data-name="io::prefixsuffixbuffer">
+      <a href="IO/PrefixSuffixBuffer.html">PrefixSuffixBuffer</a>
+      
+    </li>
+  
   <li class=" " data-id="Crystal/IO/Seek" data-name="io::seek">
       <a href="IO/Seek.html">Seek</a>
       
@@ -5682,18 +5697,8 @@
       
     </li>
   
-  <li class="parent " data-id="Crystal/Mutex" data-name="mutex">
+  <li class=" " data-id="Crystal/Mutex" data-name="mutex">
       <a href="Mutex.html">Mutex</a>
-      
-        <ul>
-  
-  <li class=" " data-id="Crystal/Mutex/Protection" data-name="mutex::protection">
-      <a href="Mutex/Protection.html">Protection</a>
-      
-    </li>
-  
-</ul>
-
       
     </li>
   
@@ -6082,6 +6087,11 @@
       
     </li>
   
+  <li class=" " data-id="Crystal/Process/ExitError" data-name="process::exiterror">
+      <a href="Process/ExitError.html">ExitError</a>
+      
+    </li>
+  
   <li class=" " data-id="Crystal/Process/ExitReason" data-name="process::exitreason">
       <a href="Process/ExitReason.html">ExitReason</a>
       
@@ -6089,6 +6099,11 @@
   
   <li class=" " data-id="Crystal/Process/Redirect" data-name="process::redirect">
       <a href="Process/Redirect.html">Redirect</a>
+      
+    </li>
+  
+  <li class=" " data-id="Crystal/Process/Result" data-name="process::result">
+      <a href="Process/Result.html">Result</a>
       
     </li>
   
@@ -6472,8 +6487,18 @@
       
     </li>
   
-  <li class=" " data-id="Crystal/Sync/Mutex" data-name="sync::mutex">
+  <li class="parent " data-id="Crystal/Sync/Mutex" data-name="sync::mutex">
       <a href="Sync/Mutex.html">Mutex</a>
+      
+        <ul>
+  
+  <li class=" " data-id="Crystal/Sync/Mutex/Protection" data-name="sync::mutex::protection">
+      <a href="Sync/Mutex/Protection.html">Protection</a>
+      
+    </li>
+  
+</ul>
+
       
     </li>
   
@@ -6554,6 +6579,11 @@
   
 </ul>
 
+      
+    </li>
+  
+  <li class=" " data-id="Crystal/TargetFeature" data-name="targetfeature">
+      <a href="TargetFeature.html">TargetFeature</a>
       
     </li>
   
@@ -7253,7 +7283,7 @@ unsafe code because a pointer doesn't know where it's pointing to nor how much m
 starting from it is valid. However, pointers make it possible to interface with C and
 to implement efficient data structures. For example, both <code><a href="Array.html">Array</a></code> and <code><a href="Hash.html">Hash</a></code> are
 implemented using pointers.</p>
-<p>You can obtain pointers in four ways: <code><a href="Pointer.html#new-class-method">#new</a></code>, <code><a href="Pointer.html#malloc%28size%3AInt%2Cvalue%3AT%29%3APointer%28T%29-class-method">#malloc</a></code>, <code>pointerof</code>, or by calling a C
+<p>You can obtain pointers in four ways: <code><a href="Pointer.html#new%28address%3AUInt64%29-class-method">#new</a></code>, <code><a href="Pointer.html#malloc%28size%3AInt%2Cvalue%3AT%29%3APointer%28T%29-class-method">#malloc</a></code>, <code>pointerof</code>, or by calling a C
 function that returns a pointer.</p>
 <p><code>pointerof(x)</code>, where <em>x</em> is a variable or an instance variable, returns a pointer to
 that variable:</p>
@@ -7306,14 +7336,14 @@ x <span class="c"># =&gt; 2</span></code></pre>
   </h2>
   
     
-      <a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/pointer.cr#L32" target="_blank">
+      <a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/pointer.cr#L32" target="_blank">
         pointer.cr
       </a>
     
     <br/>
   
     
-      <a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/primitives.cr#L235" target="_blank">
+      <a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/primitives.cr#L235" target="_blank">
         primitives.cr
       </a>
     
@@ -7347,11 +7377,6 @@ x <span class="c"># =&gt; 2</span></code></pre>
         
           <div class="summary"><p>Returns a pointer that points to the given memory address.</p>
 <p><span class="flag red">DEPRECATED</span>  Call <code><a href="Pointer.html#new%28address%3AUInt64%29-class-method">.new(UInt64)</a></code> directly instead</p></div>
-        
-      </li>
-    
-      <li class="entry-summary">
-        <a href="#new-class-method" class="signature"><strong>.new</strong></a>
         
       </li>
     
@@ -7541,11 +7566,6 @@ x <span class="c"># =&gt; 2</span></code></pre>
         <a href="#hash%28hasher%29-instance-method" class="signature"><strong>#hash</strong>(hasher)</a>
         
           <div class="summary"><p>Returns the address of this pointer.</p></div>
-        
-      </li>
-    
-      <li class="entry-summary">
-        <a href="#initialize-instance-method" class="signature"><strong>#initialize</strong></a>
         
       </li>
     
@@ -8033,7 +8053,7 @@ ptr.address <span class="c"># =&gt; 5678</span></code></pre>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/primitives.cr#L271" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/primitives.cr#L271" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8057,23 +8077,7 @@ ptr.address <span class="c"># =&gt; 5678</span></code></pre>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/pointer.cr#L521" target="_blank">View source</a>]
-        
-      </div>
-    </div>
-  
-    <div class="entry-detail" id="new-class-method">
-      <div class="signature">
-        
-        def self.<strong>new</strong>
-
-        <a class="method-permalink" href="#new-class-method">#</a>
-      </div>
-      
-      <br/>
-      <div>
-        
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/primitives.cr#L235" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/pointer.cr#L529" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8114,7 +8118,7 @@ ptr[<span class="n">1</span>] <span class="c"># =&gt; 42</span></code></pre>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/pointer.cr#L561" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/pointer.cr#L569" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8152,7 +8156,7 @@ can be used directly instead.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/primitives.cr#L260" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/primitives.cr#L260" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8185,7 +8189,7 @@ ptr[<span class="n">9</span>] <span class="c"># =&gt; 0</span></code></pre>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/pointer.cr#L541" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/pointer.cr#L549" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8217,7 +8221,7 @@ ptr[<span class="n">3</span>] <span class="c"># =&gt; 13</span></code></pre>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/pointer.cr#L588" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/pointer.cr#L596" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8242,7 +8246,7 @@ ptr.address <span class="c"># =&gt; 0</span></code></pre>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/pointer.cr#L510" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/pointer.cr#L518" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8284,7 +8288,7 @@ ptr2.address <span class="c"># =&gt; 1238</span></code></pre>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/primitives.cr#L365" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/primitives.cr#L365" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8311,7 +8315,7 @@ ptr2.address <span class="c"># =&gt; 1238</span></code></pre>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/pointer.cr#L96" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/pointer.cr#L96" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8336,7 +8340,7 @@ ptr2 <span class="o">-</span> ptr1 <span class="c"># =&gt; 2</span></code></pre>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/primitives.cr#L377" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/primitives.cr#L377" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8363,7 +8367,7 @@ ptr2.address <span class="c"># =&gt; 1230</span></code></pre>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/pointer.cr#L110" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/pointer.cr#L110" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8385,7 +8389,7 @@ respectively.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/pointer.cr#L119" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/pointer.cr#L119" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8411,7 +8415,7 @@ ptr[<span class="n">3</span>] <span class="c"># =&gt; 13</span></code></pre>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/pointer.cr#L132" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/pointer.cr#L132" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8439,7 +8443,7 @@ ptr1.to_slice(<span class="n">4</span>) <span class="c"># =&gt; Slice[0, 42, 0, 
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/pointer.cr#L147" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/pointer.cr#L147" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8462,7 +8466,7 @@ ptr.address <span class="c"># =&gt; 1234</span></code></pre>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/primitives.cr#L331" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/primitives.cr#L331" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8489,7 +8493,7 @@ ptr.align_down(<span class="n">32</span>) <span class="c"># =&gt; Pointer(Void)@
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/pointer.cr#L480" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/pointer.cr#L480" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8516,7 +8520,7 @@ ptr.align_up(<span class="n">32</span>) <span class="c"># =&gt; Pointer(Void)@0x
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/pointer.cr#L497" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/pointer.cr#L497" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8537,7 +8541,7 @@ ptr.align_up(<span class="n">32</span>) <span class="c"># =&gt; Pointer(Void)@0x
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/pointer.cr#L594" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/pointer.cr#L602" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8561,7 +8565,7 @@ ptr.to_slice(<span class="n">6</span>) <span class="c"># =&gt; Slice[0, 0, 0, 13
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/pointer.cr#L616" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/pointer.cr#L624" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8577,7 +8581,7 @@ ptr.to_slice(<span class="n">6</span>) <span class="c"># =&gt; Slice[0, 0, 0, 13
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/pointer.cr#L620" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/pointer.cr#L628" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8612,7 +8616,7 @@ ptr1.to_slice(<span class="n">4</span>) <span class="c"># =&gt; Slice[1, 12, 3, 
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/pointer.cr#L169" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/pointer.cr#L169" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8647,7 +8651,7 @@ ptr2.to_slice(<span class="n">4</span>) <span class="c"># =&gt; Slice[1, 2, 13, 
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/pointer.cr#L200" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/pointer.cr#L200" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8672,7 +8676,7 @@ ptr.to_slice(<span class="n">5</span>) <span class="c"># =&gt; Slice[0, 0, 0, 0,
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/pointer.cr#L431" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/pointer.cr#L431" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8702,7 +8706,7 @@ ptr.to_slice(<span class="n">5</span>) <span class="c"># =&gt; Slice[0, 9, 16, 2
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/pointer.cr#L460" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/pointer.cr#L460" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8725,23 +8729,7 @@ ptr.hash <span class="c"># =&gt; 1234</span></code></pre>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/pointer.cr#L331" target="_blank">View source</a>]
-        
-      </div>
-    </div>
-  
-    <div class="entry-detail" id="initialize-instance-method">
-      <div class="signature">
-        
-        def <strong>initialize</strong>
-
-        <a class="method-permalink" href="#initialize-instance-method">#</a>
-      </div>
-      
-      <br/>
-      <div>
-        
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/primitives.cr#L235" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/pointer.cr#L331" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8767,7 +8755,7 @@ ptr.to_slice(<span class="n">4</span>) <span class="c"># =&gt; Slice[2, 4, 6, 8]
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/pointer.cr#L407" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/pointer.cr#L407" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8790,7 +8778,7 @@ from there.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/pointer.cr#L417" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/pointer.cr#L417" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8824,7 +8812,7 @@ ptr1.memcmp(ptr1, <span class="n">4</span>) <span class="o">==</span> <span clas
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/pointer.cr#L307" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/pointer.cr#L307" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8857,7 +8845,7 @@ ptr1.to_slice(<span class="n">4</span>) <span class="c"># =&gt; Slice[1, 1, 2, 3
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/pointer.cr#L220" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/pointer.cr#L220" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8890,7 +8878,7 @@ ptr1.to_slice(<span class="n">4</span>) <span class="c"># =&gt; Slice[1, 1, 2, 3
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/pointer.cr#L249" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/pointer.cr#L249" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8916,7 +8904,7 @@ b.null? <span class="c"># =&gt; true</span></code></pre>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/pointer.cr#L82" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/pointer.cr#L82" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8946,7 +8934,7 @@ ptr <span class="c"># [1, 2, 3, 4, 0, 0, 0, 0]</span></code></pre>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/primitives.cr#L350" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/primitives.cr#L350" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8980,7 +8968,7 @@ reallocated using <code><a href="GC.html#realloc%28pointer%3APointer%28T%29%2Csi
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/pointer.cr#L373" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/pointer.cr#L373" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -9005,7 +8993,7 @@ ptr.to_slice(<span class="n">4</span>) <span class="c"># =&gt; Slice[3, 4, 1, 2]
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/pointer.cr#L389" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/pointer.cr#L389" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -9032,7 +9020,7 @@ ptr[<span class="n">3</span>] <span class="c"># =&gt; 3</span></code></pre>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/pointer.cr#L321" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/pointer.cr#L321" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -9059,7 +9047,7 @@ ptr2.to_s <span class="c"># =&gt; &quot;Pointer(Int32).null&quot;</span></code><
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/pointer.cr#L343" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/pointer.cr#L343" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -9083,7 +9071,7 @@ slice.<span class="k">class</span>                            <span class="c"># 
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/pointer.cr#L605" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/pointer.cr#L613" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -9117,7 +9105,7 @@ ptr.<span class="k">as</span>(<span class="t">UInt8</span><span class="o">*</spa
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/primitives.cr#L296" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/primitives.cr#L296" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -9151,7 +9139,7 @@ ptr.<span class="k">as</span>(<span class="t">UInt8</span><span class="o">*</spa
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/primitives.cr#L321" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/primitives.cr#L321" target="_blank">View source</a>]
         
       </div>
     </div>

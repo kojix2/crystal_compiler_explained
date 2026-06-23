@@ -4,8 +4,8 @@
   <meta charset="utf-8" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Crystal Docs 1.18.2">
-<meta name="crystal_docs.project_version" content="1.20.0-dev">
+<meta name="generator" content="Crystal Docs 1.19.1">
+<meta name="crystal_docs.project_version" content="1.21.0-dev">
 <meta name="crystal_docs.project_name" content="Crystal">
 
 
@@ -14,7 +14,7 @@
 <script type="text/javascript" src="../js/doc.js"></script>
 
   <meta name="repository-name" content="Crystal">
-  <title>Crystal::NamedArgumentType - Crystal 1.20.0-dev</title>
+  <title>Crystal::NamedArgumentType - Crystal 1.21.0-dev</title>
   <script type="text/javascript">
     CrystalDocs.base_path = "../";
   </script>
@@ -45,7 +45,7 @@
       </h1>
 
       <span class="project-version">
-        1.20.0-dev
+        1.21.0-dev
       </span>
     </div>
   </div>
@@ -917,6 +917,11 @@
       
     </li>
   
+  <li class=" " data-id="Crystal/Crystal/Command/Exit" data-name="crystal::command::exit">
+      <a href="../Crystal/Command/Exit.html">Exit</a>
+      
+    </li>
+  
   <li class=" " data-id="Crystal/Crystal/Command/FlagsVisitor" data-name="crystal::command::flagsvisitor">
       <a href="../Crystal/Command/FlagsVisitor.html">FlagsVisitor</a>
       
@@ -964,6 +969,11 @@
   
 </ul>
 
+      
+    </li>
+  
+  <li class=" " data-id="Crystal/Crystal/CompilerError" data-name="crystal::compilererror">
+      <a href="../Crystal/CompilerError.html">CompilerError</a>
       
     </li>
   
@@ -4852,6 +4862,11 @@
       
     </li>
   
+  <li class=" " data-id="Crystal/IO/PrefixSuffixBuffer" data-name="io::prefixsuffixbuffer">
+      <a href="../IO/PrefixSuffixBuffer.html">PrefixSuffixBuffer</a>
+      
+    </li>
+  
   <li class=" " data-id="Crystal/IO/Seek" data-name="io::seek">
       <a href="../IO/Seek.html">Seek</a>
       
@@ -5682,18 +5697,8 @@
       
     </li>
   
-  <li class="parent " data-id="Crystal/Mutex" data-name="mutex">
+  <li class=" " data-id="Crystal/Mutex" data-name="mutex">
       <a href="../Mutex.html">Mutex</a>
-      
-        <ul>
-  
-  <li class=" " data-id="Crystal/Mutex/Protection" data-name="mutex::protection">
-      <a href="../Mutex/Protection.html">Protection</a>
-      
-    </li>
-  
-</ul>
-
       
     </li>
   
@@ -6082,6 +6087,11 @@
       
     </li>
   
+  <li class=" " data-id="Crystal/Process/ExitError" data-name="process::exiterror">
+      <a href="../Process/ExitError.html">ExitError</a>
+      
+    </li>
+  
   <li class=" " data-id="Crystal/Process/ExitReason" data-name="process::exitreason">
       <a href="../Process/ExitReason.html">ExitReason</a>
       
@@ -6089,6 +6099,11 @@
   
   <li class=" " data-id="Crystal/Process/Redirect" data-name="process::redirect">
       <a href="../Process/Redirect.html">Redirect</a>
+      
+    </li>
+  
+  <li class=" " data-id="Crystal/Process/Result" data-name="process::result">
+      <a href="../Process/Result.html">Result</a>
       
     </li>
   
@@ -6472,8 +6487,18 @@
       
     </li>
   
-  <li class=" " data-id="Crystal/Sync/Mutex" data-name="sync::mutex">
+  <li class="parent " data-id="Crystal/Sync/Mutex" data-name="sync::mutex">
       <a href="../Sync/Mutex.html">Mutex</a>
+      
+        <ul>
+  
+  <li class=" " data-id="Crystal/Sync/Mutex/Protection" data-name="sync::mutex::protection">
+      <a href="../Sync/Mutex/Protection.html">Protection</a>
+      
+    </li>
+  
+</ul>
+
       
     </li>
   
@@ -6554,6 +6579,11 @@
   
 </ul>
 
+      
+    </li>
+  
+  <li class=" " data-id="Crystal/TargetFeature" data-name="targetfeature">
+      <a href="../TargetFeature.html">TargetFeature</a>
       
     </li>
   
@@ -7263,7 +7293,7 @@
   </h2>
   
     
-      <a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/compiler/crystal/semantic/method_lookup.cr#L54" target="_blank">
+      <a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/compiler/crystal/semantic/method_lookup.cr#L54" target="_blank">
         compiler/crystal/semantic/method_lookup.cr
       </a>
     
@@ -7286,7 +7316,7 @@
   <ul class="list-summary">
     
       <li class="entry-summary">
-        <a href="#new%28name%3AString%2Ctype%3AType%29-class-method" class="signature"><strong>.new</strong>(name : String, type : Type)</a>
+        <a href="#new%28name%3AString%2Ctype%3AType%2Cloc%3ALocation%7CNil%3Dnil%29-class-method" class="signature"><strong>.new</strong>(name : String, type : Type, loc : Location | Nil = <span class="n">nil</span>)</a>
         
       </li>
     
@@ -7326,12 +7356,29 @@
   <ul class="list-summary">
     
       <li class="entry-summary">
+        <a href="#%3D%3D%28other%3Aself%29-instance-method" class="signature"><strong>#==</strong>(other : <span class="k">self</span>)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
         <a href="#clone-instance-method" class="signature"><strong>#clone</strong></a>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#copy_with%28name_name%3D%40name%2Ctype_type%3D%40type%29-instance-method" class="signature"><strong>#copy_with</strong>(name _name = @name, type _type = @type)</a>
+        <a href="#copy_with%28name_name%3D%40name%2Ctype_type%3D%40type%2Cloc_loc%3D%40loc%29-instance-method" class="signature"><strong>#copy_with</strong>(name _name = @name, type _type = @type, loc _loc = @loc)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#hash%28hasher%29-instance-method" class="signature"><strong>#hash</strong>(hasher)</a>
+        
+          <div class="summary"><p>See <code><a href="../Object.html#hash%28hasher%29-instance-method">Object#hash(hasher)</a></code></p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#loc%3ALocation%7CNil-instance-method" class="signature"><strong>#loc</strong> : Location | Nil</a>
         
       </li>
     
@@ -7711,18 +7758,18 @@
     Constructor Detail
   </h2>
   
-    <div class="entry-detail" id="new(name:String,type:Type)-class-method">
+    <div class="entry-detail" id="new(name:String,type:Type,loc:Location|Nil=nil)-class-method">
       <div class="signature">
         
-        def self.<strong>new</strong>(name : <a href="../String.html">String</a>, type : <a href="../Crystal/Type.html">Type</a>)
+        def self.<strong>new</strong>(name : <a href="../String.html">String</a>, type : <a href="../Crystal/Type.html">Type</a>, loc : <a href="../Crystal/Location.html">Location</a> | <a href="../Nil.html">Nil</a> = <span class="n">nil</span>)
 
-        <a class="method-permalink" href="#new%28name%3AString%2Ctype%3AType%29-class-method">#</a>
+        <a class="method-permalink" href="#new%28name%3AString%2Ctype%3AType%2Cloc%3ALocation%7CNil%3Dnil%29-class-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/compiler/crystal/semantic/method_lookup.cr#L54" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/compiler/crystal/semantic/method_lookup.cr#L54" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -7750,7 +7797,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/compiler/crystal/semantic/method_lookup.cr#L55" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/compiler/crystal/semantic/method_lookup.cr#L55" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -7769,6 +7816,20 @@
     Instance Method Detail
   </h2>
   
+    <div class="entry-detail" id="==(other:self)-instance-method">
+      <div class="signature">
+        
+        def <strong>==</strong>(other : <span class="k">self</span>)
+
+        <a class="method-permalink" href="#%3D%3D%28other%3Aself%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
     <div class="entry-detail" id="clone-instance-method">
       <div class="signature">
         
@@ -7780,23 +7841,60 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/compiler/crystal/semantic/method_lookup.cr#L54" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/compiler/crystal/semantic/method_lookup.cr#L54" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="copy_with(name_name=@name,type_type=@type)-instance-method">
+    <div class="entry-detail" id="copy_with(name_name=@name,type_type=@type,loc_loc=@loc)-instance-method">
       <div class="signature">
         
-        def <strong>copy_with</strong>(name _name = @name, type _type = @type)
+        def <strong>copy_with</strong>(name _name = @name, type _type = @type, loc _loc = @loc)
 
-        <a class="method-permalink" href="#copy_with%28name_name%3D%40name%2Ctype_type%3D%40type%29-instance-method">#</a>
+        <a class="method-permalink" href="#copy_with%28name_name%3D%40name%2Ctype_type%3D%40type%2Cloc_loc%3D%40loc%29-instance-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/compiler/crystal/semantic/method_lookup.cr#L54" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/compiler/crystal/semantic/method_lookup.cr#L54" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="hash(hasher)-instance-method">
+      <div class="signature">
+        
+        def <strong>hash</strong>(hasher)
+
+        <a class="method-permalink" href="#hash%28hasher%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+            <div class="doc-inherited">
+              Description copied from struct <a href="../Struct.html">Struct</a>
+            </div>
+          
+          <p>See <code><a href="../Object.html#hash%28hasher%29-instance-method">Object#hash(hasher)</a></code></p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="loc:Location|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>loc</strong> : <a href="../Crystal/Location.html">Location</a> | <a href="../Nil.html">Nil</a>
+
+        <a class="method-permalink" href="#loc%3ALocation%7CNil-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
         
       </div>
     </div>

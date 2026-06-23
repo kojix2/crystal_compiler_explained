@@ -4,8 +4,8 @@
   <meta charset="utf-8" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Crystal Docs 1.18.2">
-<meta name="crystal_docs.project_version" content="1.20.0-dev">
+<meta name="generator" content="Crystal Docs 1.19.1">
+<meta name="crystal_docs.project_version" content="1.21.0-dev">
 <meta name="crystal_docs.project_name" content="Crystal">
 
 
@@ -14,7 +14,7 @@
 <script type="text/javascript" src="../../js/doc.js"></script>
 
   <meta name="repository-name" content="Crystal">
-  <title>Crystal::Macros::TypeNode - Crystal 1.20.0-dev</title>
+  <title>Crystal::Macros::TypeNode - Crystal 1.21.0-dev</title>
   <script type="text/javascript">
     CrystalDocs.base_path = "../../";
   </script>
@@ -45,7 +45,7 @@
       </h1>
 
       <span class="project-version">
-        1.20.0-dev
+        1.21.0-dev
       </span>
     </div>
   </div>
@@ -917,6 +917,11 @@
       
     </li>
   
+  <li class=" " data-id="Crystal/Crystal/Command/Exit" data-name="crystal::command::exit">
+      <a href="../../Crystal/Command/Exit.html">Exit</a>
+      
+    </li>
+  
   <li class=" " data-id="Crystal/Crystal/Command/FlagsVisitor" data-name="crystal::command::flagsvisitor">
       <a href="../../Crystal/Command/FlagsVisitor.html">FlagsVisitor</a>
       
@@ -964,6 +969,11 @@
   
 </ul>
 
+      
+    </li>
+  
+  <li class=" " data-id="Crystal/Crystal/CompilerError" data-name="crystal::compilererror">
+      <a href="../../Crystal/CompilerError.html">CompilerError</a>
       
     </li>
   
@@ -4852,6 +4862,11 @@
       
     </li>
   
+  <li class=" " data-id="Crystal/IO/PrefixSuffixBuffer" data-name="io::prefixsuffixbuffer">
+      <a href="../../IO/PrefixSuffixBuffer.html">PrefixSuffixBuffer</a>
+      
+    </li>
+  
   <li class=" " data-id="Crystal/IO/Seek" data-name="io::seek">
       <a href="../../IO/Seek.html">Seek</a>
       
@@ -5682,18 +5697,8 @@
       
     </li>
   
-  <li class="parent " data-id="Crystal/Mutex" data-name="mutex">
+  <li class=" " data-id="Crystal/Mutex" data-name="mutex">
       <a href="../../Mutex.html">Mutex</a>
-      
-        <ul>
-  
-  <li class=" " data-id="Crystal/Mutex/Protection" data-name="mutex::protection">
-      <a href="../../Mutex/Protection.html">Protection</a>
-      
-    </li>
-  
-</ul>
-
       
     </li>
   
@@ -6082,6 +6087,11 @@
       
     </li>
   
+  <li class=" " data-id="Crystal/Process/ExitError" data-name="process::exiterror">
+      <a href="../../Process/ExitError.html">ExitError</a>
+      
+    </li>
+  
   <li class=" " data-id="Crystal/Process/ExitReason" data-name="process::exitreason">
       <a href="../../Process/ExitReason.html">ExitReason</a>
       
@@ -6089,6 +6099,11 @@
   
   <li class=" " data-id="Crystal/Process/Redirect" data-name="process::redirect">
       <a href="../../Process/Redirect.html">Redirect</a>
+      
+    </li>
+  
+  <li class=" " data-id="Crystal/Process/Result" data-name="process::result">
+      <a href="../../Process/Result.html">Result</a>
       
     </li>
   
@@ -6472,8 +6487,18 @@
       
     </li>
   
-  <li class=" " data-id="Crystal/Sync/Mutex" data-name="sync::mutex">
+  <li class="parent " data-id="Crystal/Sync/Mutex" data-name="sync::mutex">
       <a href="../../Sync/Mutex.html">Mutex</a>
+      
+        <ul>
+  
+  <li class=" " data-id="Crystal/Sync/Mutex/Protection" data-name="sync::mutex::protection">
+      <a href="../../Sync/Mutex/Protection.html">Protection</a>
+      
+    </li>
+  
+</ul>
+
       
     </li>
   
@@ -6554,6 +6579,11 @@
   
 </ul>
 
+      
+    </li>
+  
+  <li class=" " data-id="Crystal/TargetFeature" data-name="targetfeature">
+      <a href="../../TargetFeature.html">TargetFeature</a>
       
     </li>
   
@@ -7274,7 +7304,7 @@
   </h2>
   
     
-      <a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/compiler/crystal/macros.cr#L2736" target="_blank">
+      <a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/compiler/crystal/macros.cr#L2736" target="_blank">
         compiler/crystal/macros.cr
       </a>
     
@@ -7341,6 +7371,13 @@
         <a href="#abstract%3F%3ABoolLiteral-instance-method" class="signature"><strong>#abstract?</strong> : BoolLiteral</a>
         
           <div class="summary"><p>Returns <code>true</code> if <code>self</code> is abstract, otherwise <code>false</code>.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#all_methods%3AArrayLiteral%28Def%29-instance-method" class="signature"><strong>#all_methods</strong> : ArrayLiteral(Def)</a>
+        
+          <div class="summary"><p>Returns the instance methods defined by this type, including those inherited from ancestors and base types (<code><a href="../../Reference.html">Reference</a></code>, <code><a href="../../Value.html">Value</a></code>, and <code><a href="../../Object.html">Object</a></code>).</p></div>
         
       </li>
     
@@ -7724,7 +7761,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/compiler/crystal/macros.cr#L2998" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/compiler/crystal/macros.cr#L3002" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -7746,7 +7783,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/compiler/crystal/macros.cr#L3003" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/compiler/crystal/macros.cr#L3007" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -7767,7 +7804,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/compiler/crystal/macros.cr#L3007" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/compiler/crystal/macros.cr#L3011" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -7789,7 +7826,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/compiler/crystal/macros.cr#L3012" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/compiler/crystal/macros.cr#L3016" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -7811,7 +7848,7 @@ Gives a compile error if this is not a named tuple type.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/compiler/crystal/macros.cr#L2939" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/compiler/crystal/macros.cr#L2943" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -7844,7 +7881,28 @@ Gives a compile error if this is not a named tuple type.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/compiler/crystal/macros.cr#L2753" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/compiler/crystal/macros.cr#L2753" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="all_methods:ArrayLiteral(Def)-instance-method">
+      <div class="signature">
+        
+        def <strong>all_methods</strong> : <a href="../../Crystal/Macros/ArrayLiteral.html">ArrayLiteral</a>(<a href="../../Crystal/Macros/Def.html">Def</a>)
+
+        <a class="method-permalink" href="#all_methods%3AArrayLiteral%28Def%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns the instance methods defined by this type, including those inherited from ancestors and base types (<code><a href="../../Reference.html">Reference</a></code>, <code><a href="../../Value.html">Value</a></code>, and <code><a href="../../Object.html">Object</a></code>).</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/compiler/crystal/macros.cr#L2907" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -7865,7 +7923,7 @@ Gives a compile error if this is not a named tuple type.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/compiler/crystal/macros.cr#L2880" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/compiler/crystal/macros.cr#L2880" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -7886,7 +7944,7 @@ Gives a compile error if this is not a named tuple type.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/compiler/crystal/macros.cr#L2864" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/compiler/crystal/macros.cr#L2864" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -7908,7 +7966,7 @@ attached to this type or <code><a href="../../Crystal/Macros/NilLiteral.html">Ni
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/compiler/crystal/macros.cr#L2914" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/compiler/crystal/macros.cr#L2918" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -7930,7 +7988,7 @@ attached to this type, or an empty <code><a href="../../Crystal/Macros/ArrayLite
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/compiler/crystal/macros.cr#L2919" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/compiler/crystal/macros.cr#L2923" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -7952,7 +8010,7 @@ type, or an empty <code><a href="../../Crystal/Macros/ArrayLiteral.html">ArrayLi
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/compiler/crystal/macros.cr#L2924" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/compiler/crystal/macros.cr#L2928" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -7974,7 +8032,7 @@ methods by invoking <code>type.class.methods</code>.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/compiler/crystal/macros.cr#L2944" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/compiler/crystal/macros.cr#L2948" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8004,7 +8062,7 @@ methods by invoking <code>type.class.methods</code>.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/compiler/crystal/macros.cr#L2809" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/compiler/crystal/macros.cr#L2809" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8025,7 +8083,7 @@ methods by invoking <code>type.class.methods</code>.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/compiler/crystal/macros.cr#L2860" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/compiler/crystal/macros.cr#L2860" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8049,7 +8107,7 @@ type is returned as a <code><a href="../../Crystal/Macros/TypeNode.html">TypeNod
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/compiler/crystal/macros.cr#L2892" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/compiler/crystal/macros.cr#L2892" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8070,7 +8128,7 @@ type is returned as a <code><a href="../../Crystal/Macros/TypeNode.html">TypeNod
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/compiler/crystal/macros.cr#L2884" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/compiler/crystal/macros.cr#L2884" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8093,7 +8151,7 @@ in this cases).</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/compiler/crystal/macros.cr#L2898" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/compiler/crystal/macros.cr#L2898" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8128,7 +8186,7 @@ that, for any type <code>T</code>:</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/compiler/crystal/macros.cr#L3031" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/compiler/crystal/macros.cr#L3035" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8151,7 +8209,7 @@ in this cases).</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/compiler/crystal/macros.cr#L2909" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/compiler/crystal/macros.cr#L2913" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8172,7 +8230,7 @@ in this cases).</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/compiler/crystal/macros.cr#L2876" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/compiler/crystal/macros.cr#L2876" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8194,7 +8252,7 @@ or <code>self</code> otherwise. This is the opposite of <code><a href="../../Cry
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/compiler/crystal/macros.cr#L2949" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/compiler/crystal/macros.cr#L2953" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8216,7 +8274,7 @@ Can only be called from within methods (not top-level code), otherwise will retu
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/compiler/crystal/macros.cr#L2856" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/compiler/crystal/macros.cr#L2856" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8238,7 +8296,7 @@ Gives a compile error if this is not a named tuple type.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/compiler/crystal/macros.cr#L2934" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/compiler/crystal/macros.cr#L2938" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8260,7 +8318,7 @@ inherited methods.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/compiler/crystal/macros.cr#L2903" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/compiler/crystal/macros.cr#L2903" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8290,7 +8348,7 @@ inherited methods.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/compiler/crystal/macros.cr#L2793" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/compiler/crystal/macros.cr#L2793" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8318,7 +8376,7 @@ inherited methods.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/compiler/crystal/macros.cr#L2846" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/compiler/crystal/macros.cr#L2846" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8344,7 +8402,7 @@ inherited methods.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/compiler/crystal/macros.cr#L2777" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/compiler/crystal/macros.cr#L2777" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8383,7 +8441,7 @@ inherited methods.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/compiler/crystal/macros.cr#L2974" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/compiler/crystal/macros.cr#L2978" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8404,7 +8462,7 @@ inherited methods.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/compiler/crystal/macros.cr#L2986" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/compiler/crystal/macros.cr#L2990" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8425,7 +8483,7 @@ inherited methods.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/compiler/crystal/macros.cr#L2990" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/compiler/crystal/macros.cr#L2994" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8446,7 +8504,7 @@ inherited methods.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/compiler/crystal/macros.cr#L2978" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/compiler/crystal/macros.cr#L2982" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8467,7 +8525,7 @@ inherited methods.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/compiler/crystal/macros.cr#L2982" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/compiler/crystal/macros.cr#L2986" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8489,7 +8547,7 @@ Gives a compile error if this is not one of those types.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/compiler/crystal/macros.cr#L2929" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/compiler/crystal/macros.cr#L2933" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8519,7 +8577,7 @@ Gives a compile error if this is not one of those types.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/compiler/crystal/macros.cr#L2825" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/compiler/crystal/macros.cr#L2825" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8540,7 +8598,7 @@ Gives a compile error if this is not one of those types.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/compiler/crystal/macros.cr#L2872" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/compiler/crystal/macros.cr#L2872" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8561,7 +8619,7 @@ Gives a compile error if this is not one of those types.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/compiler/crystal/macros.cr#L2868" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/compiler/crystal/macros.cr#L2868" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8583,7 +8641,7 @@ generic, an empty array is returned.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/compiler/crystal/macros.cr#L2851" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/compiler/crystal/macros.cr#L2851" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8608,7 +8666,7 @@ generic, an empty array is returned.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/compiler/crystal/macros.cr#L2765" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/compiler/crystal/macros.cr#L2765" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8631,7 +8689,7 @@ Otherwise returns this single type inside an array literal (so you can safely ca
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/compiler/crystal/macros.cr#L2832" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/compiler/crystal/macros.cr#L2832" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8652,7 +8710,7 @@ Otherwise returns this single type inside an array literal (so you can safely ca
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/compiler/crystal/macros.cr#L2994" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/compiler/crystal/macros.cr#L2998" target="_blank">View source</a>]
         
       </div>
     </div>

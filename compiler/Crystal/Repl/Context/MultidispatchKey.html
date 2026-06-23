@@ -4,8 +4,8 @@
   <meta charset="utf-8" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Crystal Docs 1.18.2">
-<meta name="crystal_docs.project_version" content="1.20.0-dev">
+<meta name="generator" content="Crystal Docs 1.19.1">
+<meta name="crystal_docs.project_version" content="1.21.0-dev">
 <meta name="crystal_docs.project_name" content="Crystal">
 
 
@@ -14,7 +14,7 @@
 <script type="text/javascript" src="../../../js/doc.js"></script>
 
   <meta name="repository-name" content="Crystal">
-  <title>Crystal::Repl::Context::MultidispatchKey - Crystal 1.20.0-dev</title>
+  <title>Crystal::Repl::Context::MultidispatchKey - Crystal 1.21.0-dev</title>
   <script type="text/javascript">
     CrystalDocs.base_path = "../../../";
   </script>
@@ -45,7 +45,7 @@
       </h1>
 
       <span class="project-version">
-        1.20.0-dev
+        1.21.0-dev
       </span>
     </div>
   </div>
@@ -917,6 +917,11 @@
       
     </li>
   
+  <li class=" " data-id="Crystal/Crystal/Command/Exit" data-name="crystal::command::exit">
+      <a href="../../../Crystal/Command/Exit.html">Exit</a>
+      
+    </li>
+  
   <li class=" " data-id="Crystal/Crystal/Command/FlagsVisitor" data-name="crystal::command::flagsvisitor">
       <a href="../../../Crystal/Command/FlagsVisitor.html">FlagsVisitor</a>
       
@@ -964,6 +969,11 @@
   
 </ul>
 
+      
+    </li>
+  
+  <li class=" " data-id="Crystal/Crystal/CompilerError" data-name="crystal::compilererror">
+      <a href="../../../Crystal/CompilerError.html">CompilerError</a>
       
     </li>
   
@@ -4852,6 +4862,11 @@
       
     </li>
   
+  <li class=" " data-id="Crystal/IO/PrefixSuffixBuffer" data-name="io::prefixsuffixbuffer">
+      <a href="../../../IO/PrefixSuffixBuffer.html">PrefixSuffixBuffer</a>
+      
+    </li>
+  
   <li class=" " data-id="Crystal/IO/Seek" data-name="io::seek">
       <a href="../../../IO/Seek.html">Seek</a>
       
@@ -5682,18 +5697,8 @@
       
     </li>
   
-  <li class="parent " data-id="Crystal/Mutex" data-name="mutex">
+  <li class=" " data-id="Crystal/Mutex" data-name="mutex">
       <a href="../../../Mutex.html">Mutex</a>
-      
-        <ul>
-  
-  <li class=" " data-id="Crystal/Mutex/Protection" data-name="mutex::protection">
-      <a href="../../../Mutex/Protection.html">Protection</a>
-      
-    </li>
-  
-</ul>
-
       
     </li>
   
@@ -6082,6 +6087,11 @@
       
     </li>
   
+  <li class=" " data-id="Crystal/Process/ExitError" data-name="process::exiterror">
+      <a href="../../../Process/ExitError.html">ExitError</a>
+      
+    </li>
+  
   <li class=" " data-id="Crystal/Process/ExitReason" data-name="process::exitreason">
       <a href="../../../Process/ExitReason.html">ExitReason</a>
       
@@ -6089,6 +6099,11 @@
   
   <li class=" " data-id="Crystal/Process/Redirect" data-name="process::redirect">
       <a href="../../../Process/Redirect.html">Redirect</a>
+      
+    </li>
+  
+  <li class=" " data-id="Crystal/Process/Result" data-name="process::result">
+      <a href="../../../Process/Result.html">Result</a>
       
     </li>
   
@@ -6472,8 +6487,18 @@
       
     </li>
   
-  <li class=" " data-id="Crystal/Sync/Mutex" data-name="sync::mutex">
+  <li class="parent " data-id="Crystal/Sync/Mutex" data-name="sync::mutex">
       <a href="../../../Sync/Mutex.html">Mutex</a>
+      
+        <ul>
+  
+  <li class=" " data-id="Crystal/Sync/Mutex/Protection" data-name="sync::mutex::protection">
+      <a href="../../../Sync/Mutex/Protection.html">Protection</a>
+      
+    </li>
+  
+</ul>
+
       
     </li>
   
@@ -6554,6 +6579,11 @@
   
 </ul>
 
+      
+    </li>
+  
+  <li class=" " data-id="Crystal/TargetFeature" data-name="targetfeature">
+      <a href="../../../TargetFeature.html">TargetFeature</a>
       
     </li>
   
@@ -7238,6 +7268,23 @@
 
 
 
+  <h2>
+    <a id="overview" class="anchor" href="#overview">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Overview
+  </h2>
+
+  <p>The cache key for synthetic dispatch methods. <code><a href="../../../Crystal/Repl/Context/MultidispatchKey.html#target_def_ids%3AArray%28UInt64%29-instance-method">#target_def_ids</a></code> must be
+part of the key because two call sites with the same <code><a href="../../../Crystal/Repl/Context/MultidispatchKey.html#obj_type%3AType-instance-method">#obj_type</a></code> and
+signature can resolve to different <code>target_defs</code> when intervening code
+instantiates new types that fall under the union — without it, the
+second site reuses the first's dispatch chain and any newly resolved
+type falls through the <code>else</code> branch into &quot;Reached the unreachable&quot;
+(#16810).</p>
+
 
 
 
@@ -7263,7 +7310,7 @@
   </h2>
   
     
-      <a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/compiler/crystal/interpreter/context.cr#L7" target="_blank">
+      <a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/compiler/crystal/interpreter/context.cr#L14" target="_blank">
         compiler/crystal/interpreter/context.cr
       </a>
     
@@ -7286,7 +7333,7 @@
   <ul class="list-summary">
     
       <li class="entry-summary">
-        <a href="#new%28obj_type%3AType%2Ccall_signature%3ACallSignature%29-class-method" class="signature"><strong>.new</strong>(obj_type : Type, call_signature : CallSignature)</a>
+        <a href="#new%28obj_type%3AType%2Ccall_signature%3ACallSignature%2Ctarget_def_ids%3AArray%28UInt64%29%29-class-method" class="signature"><strong>.new</strong>(obj_type : Type, call_signature : CallSignature, target_def_ids : Array(UInt64))</a>
         
       </li>
     
@@ -7319,12 +7366,17 @@
       </li>
     
       <li class="entry-summary">
-        <a href="#copy_with%28obj_type_obj_type%3D%40obj_type%2Ccall_signature_call_signature%3D%40call_signature%29-instance-method" class="signature"><strong>#copy_with</strong>(obj_type _obj_type = @obj_type, call_signature _call_signature = @call_signature)</a>
+        <a href="#copy_with%28obj_type_obj_type%3D%40obj_type%2Ccall_signature_call_signature%3D%40call_signature%2Ctarget_def_ids_target_def_ids%3D%40target_def_ids%29-instance-method" class="signature"><strong>#copy_with</strong>(obj_type _obj_type = @obj_type, call_signature _call_signature = @call_signature, target_def_ids _target_def_ids = @target_def_ids)</a>
         
       </li>
     
       <li class="entry-summary">
         <a href="#obj_type%3AType-instance-method" class="signature"><strong>#obj_type</strong> : Type</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#target_def_ids%3AArray%28UInt64%29-instance-method" class="signature"><strong>#target_def_ids</strong> : Array(UInt64)</a>
         
       </li>
     
@@ -7694,18 +7746,18 @@
     Constructor Detail
   </h2>
   
-    <div class="entry-detail" id="new(obj_type:Type,call_signature:CallSignature)-class-method">
+    <div class="entry-detail" id="new(obj_type:Type,call_signature:CallSignature,target_def_ids:Array(UInt64))-class-method">
       <div class="signature">
         
-        def self.<strong>new</strong>(obj_type : <a href="../../../Crystal/Type.html">Type</a>, call_signature : <a href="../../../Crystal/CallSignature.html">CallSignature</a>)
+        def self.<strong>new</strong>(obj_type : <a href="../../../Crystal/Type.html">Type</a>, call_signature : <a href="../../../Crystal/CallSignature.html">CallSignature</a>, target_def_ids : <a href="../../../Array.html">Array</a>(<a href="../../../UInt64.html">UInt64</a>))
 
-        <a class="method-permalink" href="#new%28obj_type%3AType%2Ccall_signature%3ACallSignature%29-class-method">#</a>
+        <a class="method-permalink" href="#new%28obj_type%3AType%2Ccall_signature%3ACallSignature%2Ctarget_def_ids%3AArray%28UInt64%29%29-class-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/compiler/crystal/interpreter/context.cr#L7" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/compiler/crystal/interpreter/context.cr#L14" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -7751,23 +7803,23 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/compiler/crystal/interpreter/context.cr#L7" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/compiler/crystal/interpreter/context.cr#L14" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="copy_with(obj_type_obj_type=@obj_type,call_signature_call_signature=@call_signature)-instance-method">
+    <div class="entry-detail" id="copy_with(obj_type_obj_type=@obj_type,call_signature_call_signature=@call_signature,target_def_ids_target_def_ids=@target_def_ids)-instance-method">
       <div class="signature">
         
-        def <strong>copy_with</strong>(obj_type _obj_type = @obj_type, call_signature _call_signature = @call_signature)
+        def <strong>copy_with</strong>(obj_type _obj_type = @obj_type, call_signature _call_signature = @call_signature, target_def_ids _target_def_ids = @target_def_ids)
 
-        <a class="method-permalink" href="#copy_with%28obj_type_obj_type%3D%40obj_type%2Ccall_signature_call_signature%3D%40call_signature%29-instance-method">#</a>
+        <a class="method-permalink" href="#copy_with%28obj_type_obj_type%3D%40obj_type%2Ccall_signature_call_signature%3D%40call_signature%2Ctarget_def_ids_target_def_ids%3D%40target_def_ids%29-instance-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/compiler/crystal/interpreter/context.cr#L7" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/compiler/crystal/interpreter/context.cr#L14" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -7778,6 +7830,20 @@
         def <strong>obj_type</strong> : <a href="../../../Crystal/Type.html">Type</a>
 
         <a class="method-permalink" href="#obj_type%3AType-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="target_def_ids:Array(UInt64)-instance-method">
+      <div class="signature">
+        
+        def <strong>target_def_ids</strong> : <a href="../../../Array.html">Array</a>(<a href="../../../UInt64.html">UInt64</a>)
+
+        <a class="method-permalink" href="#target_def_ids%3AArray%28UInt64%29-instance-method">#</a>
       </div>
       
       <br/>

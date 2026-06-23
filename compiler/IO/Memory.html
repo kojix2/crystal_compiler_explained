@@ -4,8 +4,8 @@
   <meta charset="utf-8" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Crystal Docs 1.18.2">
-<meta name="crystal_docs.project_version" content="1.20.0-dev">
+<meta name="generator" content="Crystal Docs 1.19.1">
+<meta name="crystal_docs.project_version" content="1.21.0-dev">
 <meta name="crystal_docs.project_name" content="Crystal">
 
 
@@ -14,7 +14,7 @@
 <script type="text/javascript" src="../js/doc.js"></script>
 
   <meta name="repository-name" content="Crystal">
-  <title>IO::Memory - Crystal 1.20.0-dev</title>
+  <title>IO::Memory - Crystal 1.21.0-dev</title>
   <script type="text/javascript">
     CrystalDocs.base_path = "../";
   </script>
@@ -45,7 +45,7 @@
       </h1>
 
       <span class="project-version">
-        1.20.0-dev
+        1.21.0-dev
       </span>
     </div>
   </div>
@@ -917,6 +917,11 @@
       
     </li>
   
+  <li class=" " data-id="Crystal/Crystal/Command/Exit" data-name="crystal::command::exit">
+      <a href="../Crystal/Command/Exit.html">Exit</a>
+      
+    </li>
+  
   <li class=" " data-id="Crystal/Crystal/Command/FlagsVisitor" data-name="crystal::command::flagsvisitor">
       <a href="../Crystal/Command/FlagsVisitor.html">FlagsVisitor</a>
       
@@ -964,6 +969,11 @@
   
 </ul>
 
+      
+    </li>
+  
+  <li class=" " data-id="Crystal/Crystal/CompilerError" data-name="crystal::compilererror">
+      <a href="../Crystal/CompilerError.html">CompilerError</a>
       
     </li>
   
@@ -4852,6 +4862,11 @@
       
     </li>
   
+  <li class=" " data-id="Crystal/IO/PrefixSuffixBuffer" data-name="io::prefixsuffixbuffer">
+      <a href="../IO/PrefixSuffixBuffer.html">PrefixSuffixBuffer</a>
+      
+    </li>
+  
   <li class=" " data-id="Crystal/IO/Seek" data-name="io::seek">
       <a href="../IO/Seek.html">Seek</a>
       
@@ -5682,18 +5697,8 @@
       
     </li>
   
-  <li class="parent " data-id="Crystal/Mutex" data-name="mutex">
+  <li class=" " data-id="Crystal/Mutex" data-name="mutex">
       <a href="../Mutex.html">Mutex</a>
-      
-        <ul>
-  
-  <li class=" " data-id="Crystal/Mutex/Protection" data-name="mutex::protection">
-      <a href="../Mutex/Protection.html">Protection</a>
-      
-    </li>
-  
-</ul>
-
       
     </li>
   
@@ -6082,6 +6087,11 @@
       
     </li>
   
+  <li class=" " data-id="Crystal/Process/ExitError" data-name="process::exiterror">
+      <a href="../Process/ExitError.html">ExitError</a>
+      
+    </li>
+  
   <li class=" " data-id="Crystal/Process/ExitReason" data-name="process::exitreason">
       <a href="../Process/ExitReason.html">ExitReason</a>
       
@@ -6089,6 +6099,11 @@
   
   <li class=" " data-id="Crystal/Process/Redirect" data-name="process::redirect">
       <a href="../Process/Redirect.html">Redirect</a>
+      
+    </li>
+  
+  <li class=" " data-id="Crystal/Process/Result" data-name="process::result">
+      <a href="../Process/Result.html">Result</a>
       
     </li>
   
@@ -6472,8 +6487,18 @@
       
     </li>
   
-  <li class=" " data-id="Crystal/Sync/Mutex" data-name="sync::mutex">
+  <li class="parent " data-id="Crystal/Sync/Mutex" data-name="sync::mutex">
       <a href="../Sync/Mutex.html">Mutex</a>
+      
+        <ul>
+  
+  <li class=" " data-id="Crystal/Sync/Mutex/Protection" data-name="sync::mutex::protection">
+      <a href="../Sync/Mutex/Protection.html">Protection</a>
+      
+    </li>
+  
+</ul>
+
       
     </li>
   
@@ -6554,6 +6579,11 @@
   
 </ul>
 
+      
+    </li>
+  
+  <li class=" " data-id="Crystal/TargetFeature" data-name="targetfeature">
+      <a href="../TargetFeature.html">TargetFeature</a>
       
     </li>
   
@@ -7248,7 +7278,7 @@
   </h2>
 
   <p>An <code><a href="../IO.html">IO</a></code> that reads and writes from a buffer in memory.</p>
-<p>The internal buffer can be resizeable and/or writeable depending
+<p>The internal buffer can be resizeable and/or writable depending
 on how an <code><a href="../IO/Memory.html">IO::Memory</a></code> is constructed.</p>
 
 
@@ -7276,7 +7306,7 @@ on how an <code><a href="../IO/Memory.html">IO::Memory</a></code> is constructed
   </h2>
   
     
-      <a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/io/memory.cr#L5" target="_blank">
+      <a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/io/memory.cr#L5" target="_blank">
         io/memory.cr
       </a>
     
@@ -7301,7 +7331,7 @@ on how an <code><a href="../IO/Memory.html">IO::Memory</a></code> is constructed
       <li class="entry-summary">
         <a href="#new%28capacity%3AInt%3D64%29-class-method" class="signature"><strong>.new</strong>(capacity : Int = <span class="n">64</span>)</a>
         
-          <div class="summary"><p>Creates an empty, resizeable and writeable <code><a href="../IO/Memory.html">IO::Memory</a></code> with the given initial <em>capacity</em> for the internal buffer.</p></div>
+          <div class="summary"><p>Creates an empty, resizeable and writable <code><a href="../IO/Memory.html">IO::Memory</a></code> with the given initial <em>capacity</em> for the internal buffer.</p></div>
         
       </li>
     
@@ -7313,9 +7343,17 @@ on how an <code><a href="../IO/Memory.html">IO::Memory</a></code> is constructed
       </li>
     
       <li class="entry-summary">
-        <a href="#new%28slice%3ABytes%2Cwriteable%3Dtrue%29-class-method" class="signature"><strong>.new</strong>(slice : Bytes, writeable = <span class="n">true</span>)</a>
+        <a href="#new%28slice%3ABytes%2Cwritable%3Dtrue%29-class-method" class="signature"><strong>.new</strong>(slice : Bytes, writable = <span class="n">true</span>)</a>
         
           <div class="summary"><p>Creates an <code><a href="../IO/Memory.html">IO::Memory</a></code> that will read, and optionally write, from/to the given slice.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#new%28slice%3ABytes%2C%2A%2Cwriteablewritable%29%3Aself-class-method" class="signature"><strong>.new</strong>(slice : Bytes, *, writeable writable) : <span class="k">self</span></a>
+        
+          <div class="summary"><p>Creates an <code><a href="../IO/Memory.html">IO::Memory</a></code> that will read, and optionally write, from/to the given slice.</p>
+<p><span class="flag red">DEPRECATED</span>  Use <code><a href="../IO/Memory.html#new%28slice%3ABytes%2Cwritable%3Dtrue%29-class-method">IO::Memory.new(Bytes, writable)</a></code> instead</p></div>
         
       </li>
     
@@ -8122,7 +8160,7 @@ on how an <code><a href="../IO/Memory.html">IO::Memory</a></code> is constructed
       
         <div class="doc">
           
-          <p>Creates an empty, resizeable and writeable <code><a href="../IO/Memory.html">IO::Memory</a></code> with the given
+          <p>Creates an empty, resizeable and writable <code><a href="../IO/Memory.html">IO::Memory</a></code> with the given
 initial <em>capacity</em> for the internal buffer.</p>
 <pre><code class="language-crystal">io <span class="o">=</span> <span class="t">IO</span><span class="t">::</span><span class="t">Memory</span>.new
 slice <span class="o">=</span> <span class="t">Bytes</span>.new(<span class="n">1</span>)
@@ -8134,7 +8172,7 @@ slice          <span class="c"># =&gt; Bytes[0]</span></code></pre>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/io/memory.cr#L24" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/io/memory.cr#L24" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8150,7 +8188,7 @@ slice          <span class="c"># =&gt; Bytes[0]</span></code></pre>
         <div class="doc">
           
           <p>Creates an <code><a href="../IO/Memory.html">IO::Memory</a></code> whose contents are the exact contents of <em>string</em>.
-The created <code><a href="../IO/Memory.html">IO::Memory</a></code> is non-resizeable and non-writeable.</p>
+The created <code><a href="../IO/Memory.html">IO::Memory</a></code> is non-resizeable and non-writable.</p>
 <p>The <code><a href="../IO.html">IO</a></code> starts at position zero for reading.</p>
 <pre><code class="language-crystal">io <span class="o">=</span> <span class="t">IO</span><span class="t">::</span><span class="t">Memory</span>.new <span class="s">&quot;hello&quot;</span>
 io.pos        <span class="c"># =&gt; 0</span>
@@ -8161,17 +8199,17 @@ io.print <span class="s">&quot;hi&quot;</span> <span class="c"># raises IO::Erro
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/io/memory.cr#L68" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/io/memory.cr#L74" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="new(slice:Bytes,writeable=true)-class-method">
+    <div class="entry-detail" id="new(slice:Bytes,writable=true)-class-method">
       <div class="signature">
         
-        def self.<strong>new</strong>(slice : <a href="../Bytes.html">Bytes</a>, writeable = <span class="n">true</span>)
+        def self.<strong>new</strong>(slice : <a href="../Bytes.html">Bytes</a>, writable = <span class="n">true</span>)
 
-        <a class="method-permalink" href="#new%28slice%3ABytes%2Cwriteable%3Dtrue%29-class-method">#</a>
+        <a class="method-permalink" href="#new%28slice%3ABytes%2Cwritable%3Dtrue%29-class-method">#</a>
       </div>
       
         <div class="doc">
@@ -8180,7 +8218,7 @@ io.print <span class="s">&quot;hi&quot;</span> <span class="c"># raises IO::Erro
 the given slice. The created <code><a href="../IO/Memory.html">IO::Memory</a></code> is non-resizeable.</p>
 <p>The IO starts at position zero for reading.</p>
 <pre><code class="language-crystal">slice <span class="o">=</span> <span class="t">Slice</span>.new(<span class="n">6</span>) { <span class="o">|</span>i<span class="o">|</span> (<span class="s">&#39;a&#39;</span>.ord <span class="o">+</span> i).to_u8 }
-io <span class="o">=</span> <span class="t">IO</span><span class="t">::</span><span class="t">Memory</span>.new slice, writeable: <span class="n">false</span>
+io <span class="o">=</span> <span class="t">IO</span><span class="t">::</span><span class="t">Memory</span>.new slice, writable: <span class="n">false</span>
 io.pos            <span class="c"># =&gt; 0</span>
 io.read(slice)    <span class="c"># =&gt; 6</span>
 <span class="t">String</span>.new(slice) <span class="c"># =&gt; &quot;abcdef&quot;</span></code></pre>
@@ -8189,7 +8227,36 @@ io.read(slice)    <span class="c"># =&gt; 6</span>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/io/memory.cr#L48" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/io/memory.cr#L48" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="new(slice:Bytes,*,writeablewritable):self-class-method">
+      <div class="signature">
+        
+        def self.<strong>new</strong>(slice : <a href="../Bytes.html">Bytes</a>, *, writeable writable) : <span class="k">self</span>
+
+        <a class="method-permalink" href="#new%28slice%3ABytes%2C%2A%2Cwriteablewritable%29%3Aself-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Creates an <code><a href="../IO/Memory.html">IO::Memory</a></code> that will read, and optionally write, from/to
+the given slice. The created <code><a href="../IO/Memory.html">IO::Memory</a></code> is non-resizeable.</p>
+<p>The IO starts at position zero for reading.</p>
+<pre><code class="language-crystal">slice <span class="o">=</span> <span class="t">Slice</span>.new(<span class="n">6</span>) { <span class="o">|</span>i<span class="o">|</span> (<span class="s">&#39;a&#39;</span>.ord <span class="o">+</span> i).to_u8 }
+io <span class="o">=</span> <span class="t">IO</span><span class="t">::</span><span class="t">Memory</span>.new slice, writable: <span class="n">false</span>
+io.pos            <span class="c"># =&gt; 0</span>
+io.read(slice)    <span class="c"># =&gt; 6</span>
+<span class="t">String</span>.new(slice) <span class="c"># =&gt; &quot;abcdef&quot;</span></code></pre>
+<p><span class="flag red">DEPRECATED</span>  Use <code><a href="../IO/Memory.html#new%28slice%3ABytes%2Cwritable%3Dtrue%29-class-method">IO::Memory.new(Bytes, writable)</a></code> instead</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/io/memory.cr#L59" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8226,7 +8293,7 @@ io.read(slice)    <span class="c"># =&gt; 6</span>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/io/memory.cr#L7" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/io/memory.cr#L7" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8247,7 +8314,7 @@ io.read(slice)    <span class="c"># =&gt; 6</span>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/io/memory.cr#L10" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/io/memory.cr#L10" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8279,7 +8346,7 @@ io.clear <span class="c"># raises IO::Error</span></code></pre>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/io/memory.cr#L245" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/io/memory.cr#L251" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8303,7 +8370,7 @@ io.gets_to_end <span class="c"># raises IO::Error (closed stream)</span></code><
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/io/memory.cr#L375" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/io/memory.cr#L381" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8328,7 +8395,7 @@ io.closed? <span class="c"># =&gt; true</span></code></pre>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/io/memory.cr#L387" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/io/memory.cr#L393" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8353,7 +8420,7 @@ io.empty? <span class="c"># =&gt; false</span></code></pre>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/io/memory.cr#L260" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/io/memory.cr#L266" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8377,7 +8444,7 @@ io.getb_to_end <span class="c"># =&gt; Bytes[]</span></code></pre>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/io/memory.cr#L218" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/io/memory.cr#L224" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8401,7 +8468,7 @@ io.gets_to_end <span class="c"># =&gt; &quot;&quot;</span></code></pre>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/io/memory.cr#L203" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/io/memory.cr#L209" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8437,7 +8504,7 @@ this method.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/io/memory.cr#L178" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/io/memory.cr#L184" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8462,7 +8529,7 @@ io.pos     <span class="c"># =&gt; 2</span></code></pre>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/io/memory.cr#L320" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/io/memory.cr#L326" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8486,7 +8553,7 @@ io.gets <span class="c"># =&gt; &quot;lo&quot;</span></code></pre>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/io/memory.cr#L331" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/io/memory.cr#L337" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8507,7 +8574,7 @@ io.gets <span class="c"># =&gt; &quot;lo&quot;</span></code></pre>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/io/memory.cr#L73" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/io/memory.cr#L79" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8530,7 +8597,7 @@ so multiple concurrent open are allowed.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/io/memory.cr#L341" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/io/memory.cr#L347" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8559,7 +8626,7 @@ io.read_byte <span class="c"># =&gt; nil</span></code></pre>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/io/memory.cr#L164" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/io/memory.cr#L170" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8584,7 +8651,7 @@ io.gets(<span class="n">2</span>) <span class="c"># =&gt; &quot;he&quot;</span><
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/io/memory.cr#L272" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/io/memory.cr#L278" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8611,7 +8678,7 @@ io.gets(<span class="n">1</span>) <span class="c"># =&gt; &quot;c&quot;</span></
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/io/memory.cr#L297" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/io/memory.cr#L303" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8634,7 +8701,7 @@ io.size <span class="c"># =&gt; 5</span></code></pre>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/io/memory.cr#L283" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/io/memory.cr#L289" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8660,7 +8727,7 @@ are no more bytes.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/io/memory.cr#L196" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/io/memory.cr#L202" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8681,7 +8748,7 @@ are no more bytes.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/io/memory.cr#L423" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/io/memory.cr#L429" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8705,7 +8772,7 @@ io.to_s <span class="c"># =&gt; &quot;123&quot;</span></code></pre>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/io/memory.cr#L398" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/io/memory.cr#L404" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8730,7 +8797,7 @@ io.to_slice <span class="c"># =&gt; Bytes[104, 101, 108, 108, 111]</span></code>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/io/memory.cr#L418" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/io/memory.cr#L424" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8745,14 +8812,14 @@ io.to_slice <span class="c"># =&gt; Bytes[104, 101, 108, 108, 111]</span></code>
       
         <div class="doc">
           
-          <p>See <code><a href="../IO.html#write%28slice%3ABytes%29%3ANil-instance-method">IO#write(slice)</a></code>. Raises if this <code><a href="../IO/Memory.html">IO::Memory</a></code> is non-writeable,
+          <p>See <code><a href="../IO.html#write%28slice%3ABytes%29%3ANil-instance-method">IO#write(slice)</a></code>. Raises if this <code><a href="../IO/Memory.html">IO::Memory</a></code> is non-writable,
 or if it's non-resizeable and a resize is needed.</p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/io/memory.cr#L85" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/io/memory.cr#L91" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8767,14 +8834,14 @@ or if it's non-resizeable and a resize is needed.</p>
       
         <div class="doc">
           
-          <p>See <code><a href="../IO.html#write_byte%28byte%3AUInt8%29%3ANil-instance-method">IO#write_byte</a></code>. Raises if this <code><a href="../IO/Memory.html">IO::Memory</a></code> is non-writeable,
+          <p>See <code><a href="../IO.html#write_byte%28byte%3AUInt8%29%3ANil-instance-method">IO#write_byte</a></code>. Raises if this <code><a href="../IO/Memory.html">IO::Memory</a></code> is non-writable,
 or if it's non-resizeable and a resize is needed.</p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/io/memory.cr#L107" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/io/memory.cr#L113" target="_blank">View source</a>]
         
       </div>
     </div>

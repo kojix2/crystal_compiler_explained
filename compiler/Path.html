@@ -4,8 +4,8 @@
   <meta charset="utf-8" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Crystal Docs 1.18.2">
-<meta name="crystal_docs.project_version" content="1.20.0-dev">
+<meta name="generator" content="Crystal Docs 1.19.1">
+<meta name="crystal_docs.project_version" content="1.21.0-dev">
 <meta name="crystal_docs.project_name" content="Crystal">
 
 
@@ -14,7 +14,7 @@
 <script type="text/javascript" src="js/doc.js"></script>
 
   <meta name="repository-name" content="Crystal">
-  <title>Path - Crystal 1.20.0-dev</title>
+  <title>Path - Crystal 1.21.0-dev</title>
   <script type="text/javascript">
     CrystalDocs.base_path = "";
   </script>
@@ -45,7 +45,7 @@
       </h1>
 
       <span class="project-version">
-        1.20.0-dev
+        1.21.0-dev
       </span>
     </div>
   </div>
@@ -917,6 +917,11 @@
       
     </li>
   
+  <li class=" " data-id="Crystal/Crystal/Command/Exit" data-name="crystal::command::exit">
+      <a href="Crystal/Command/Exit.html">Exit</a>
+      
+    </li>
+  
   <li class=" " data-id="Crystal/Crystal/Command/FlagsVisitor" data-name="crystal::command::flagsvisitor">
       <a href="Crystal/Command/FlagsVisitor.html">FlagsVisitor</a>
       
@@ -964,6 +969,11 @@
   
 </ul>
 
+      
+    </li>
+  
+  <li class=" " data-id="Crystal/Crystal/CompilerError" data-name="crystal::compilererror">
+      <a href="Crystal/CompilerError.html">CompilerError</a>
       
     </li>
   
@@ -4852,6 +4862,11 @@
       
     </li>
   
+  <li class=" " data-id="Crystal/IO/PrefixSuffixBuffer" data-name="io::prefixsuffixbuffer">
+      <a href="IO/PrefixSuffixBuffer.html">PrefixSuffixBuffer</a>
+      
+    </li>
+  
   <li class=" " data-id="Crystal/IO/Seek" data-name="io::seek">
       <a href="IO/Seek.html">Seek</a>
       
@@ -5682,18 +5697,8 @@
       
     </li>
   
-  <li class="parent " data-id="Crystal/Mutex" data-name="mutex">
+  <li class=" " data-id="Crystal/Mutex" data-name="mutex">
       <a href="Mutex.html">Mutex</a>
-      
-        <ul>
-  
-  <li class=" " data-id="Crystal/Mutex/Protection" data-name="mutex::protection">
-      <a href="Mutex/Protection.html">Protection</a>
-      
-    </li>
-  
-</ul>
-
       
     </li>
   
@@ -6082,6 +6087,11 @@
       
     </li>
   
+  <li class=" " data-id="Crystal/Process/ExitError" data-name="process::exiterror">
+      <a href="Process/ExitError.html">ExitError</a>
+      
+    </li>
+  
   <li class=" " data-id="Crystal/Process/ExitReason" data-name="process::exitreason">
       <a href="Process/ExitReason.html">ExitReason</a>
       
@@ -6089,6 +6099,11 @@
   
   <li class=" " data-id="Crystal/Process/Redirect" data-name="process::redirect">
       <a href="Process/Redirect.html">Redirect</a>
+      
+    </li>
+  
+  <li class=" " data-id="Crystal/Process/Result" data-name="process::result">
+      <a href="Process/Result.html">Result</a>
       
     </li>
   
@@ -6472,8 +6487,18 @@
       
     </li>
   
-  <li class=" " data-id="Crystal/Sync/Mutex" data-name="sync::mutex">
+  <li class="parent " data-id="Crystal/Sync/Mutex" data-name="sync::mutex">
       <a href="Sync/Mutex.html">Mutex</a>
+      
+        <ul>
+  
+  <li class=" " data-id="Crystal/Sync/Mutex/Protection" data-name="sync::mutex::protection">
+      <a href="Sync/Mutex/Protection.html">Protection</a>
+      
+    </li>
+  
+</ul>
+
       
     </li>
   
@@ -6554,6 +6579,11 @@
   
 </ul>
 
+      
+    </li>
+  
+  <li class=" " data-id="Crystal/TargetFeature" data-name="targetfeature">
+      <a href="TargetFeature.html">TargetFeature</a>
       
     </li>
   
@@ -7337,21 +7367,21 @@ is absolute if it starts with both a drive and a root (see <code><a href="Path.h
   </h2>
   
     
-      <a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/json/to_json.cr#L73" target="_blank">
+      <a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/json/to_json.cr#L73" target="_blank">
         json/to_json.cr
       </a>
     
     <br/>
   
     
-      <a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/path.cr#L60" target="_blank">
+      <a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/path.cr#L60" target="_blank">
         path.cr
       </a>
     
     <br/>
   
     
-      <a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/yaml/to_yaml.cr#L83" target="_blank">
+      <a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/yaml/to_yaml.cr#L83" target="_blank">
         yaml/to_yaml.cr
       </a>
     
@@ -7670,6 +7700,11 @@ is absolute if it starts with both a drive and a root (see <code><a href="Path.h
         <a href="#join%28%2Aparts%29%3APath-instance-method" class="signature"><strong>#join</strong>(*parts) : Path</a>
         
           <div class="summary"><p>Appends the given <em>parts</em> to this path and returns the joined path.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#kind%3AKind-instance-method" class="signature"><strong>#kind</strong> : Kind</a>
         
       </li>
     
@@ -8271,7 +8306,7 @@ otherwise <code><a href="Path.html#posix%28name%3AString%3D%22%22%29%3APath-clas
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/path.cr#L123" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/path.cr#L123" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8294,7 +8329,7 @@ otherwise <code><a href="Path.html#posix%28name%3AString%3D%22%22%29%3APath-clas
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/path.cr#L113" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/path.cr#L113" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8310,7 +8345,7 @@ otherwise <code><a href="Path.html#posix%28name%3AString%3D%22%22%29%3APath-clas
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/json/from_json.cr#L202" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/json/from_json.cr#L202" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8331,7 +8366,7 @@ otherwise <code><a href="Path.html#posix%28name%3AString%3D%22%22%29%3APath-clas
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/path.cr#L1426" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/path.cr#L1427" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8347,7 +8382,7 @@ otherwise <code><a href="Path.html#posix%28name%3AString%3D%22%22%29%3APath-clas
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/yaml/from_yaml.cr#L90" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/yaml/from_yaml.cr#L90" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8370,7 +8405,7 @@ otherwise <code><a href="Path.html#posix%28name%3AString%3D%22%22%29%3APath-clas
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/path.cr#L98" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/path.cr#L98" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8393,7 +8428,7 @@ otherwise <code><a href="Path.html#posix%28name%3AString%3D%22%22%29%3APath-clas
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/path.cr#L103" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/path.cr#L103" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8416,7 +8451,7 @@ otherwise <code><a href="Path.html#posix%28name%3AString%3D%22%22%29%3APath-clas
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/path.cr#L118" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/path.cr#L118" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8432,7 +8467,7 @@ otherwise <code><a href="Path.html#posix%28name%3AString%3D%22%22%29%3APath-clas
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/json/from_json.cr#L194" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/json/from_json.cr#L194" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8455,7 +8490,7 @@ otherwise <code><a href="Path.html#posix%28name%3AString%3D%22%22%29%3APath-clas
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/path.cr#L108" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/path.cr#L108" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8476,7 +8511,7 @@ otherwise <code><a href="Path.html#posix%28name%3AString%3D%22%22%29%3APath-clas
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/path.cr#L128" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/path.cr#L128" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8497,7 +8532,7 @@ otherwise <code><a href="Path.html#posix%28name%3AString%3D%22%22%29%3APath-clas
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/path.cr#L133" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/path.cr#L133" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8518,7 +8553,7 @@ otherwise <code><a href="Path.html#posix%28name%3AString%3D%22%22%29%3APath-clas
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/path.cr#L143" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/path.cr#L143" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8539,7 +8574,7 @@ otherwise <code><a href="Path.html#posix%28name%3AString%3D%22%22%29%3APath-clas
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/path.cr#L138" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/path.cr#L138" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8560,7 +8595,7 @@ otherwise <code><a href="Path.html#posix%28name%3AString%3D%22%22%29%3APath-clas
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/path.cr#L148" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/path.cr#L148" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8581,7 +8616,7 @@ otherwise <code><a href="Path.html#posix%28name%3AString%3D%22%22%29%3APath-clas
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/path.cr#L153" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/path.cr#L153" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8602,7 +8637,7 @@ otherwise <code><a href="Path.html#posix%28name%3AString%3D%22%22%29%3APath-clas
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/path.cr#L163" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/path.cr#L163" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8623,7 +8658,7 @@ otherwise <code><a href="Path.html#posix%28name%3AString%3D%22%22%29%3APath-clas
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/path.cr#L158" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/path.cr#L158" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8663,7 +8698,7 @@ otherwise <code><a href="Path.html#posix%28name%3AString%3D%22%22%29%3APath-clas
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/path.cr#L946" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/path.cr#L947" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8680,7 +8715,7 @@ otherwise <code><a href="Path.html#posix%28name%3AString%3D%22%22%29%3APath-clas
           
           <p>Compares this path to <em>other</em>.</p>
 <p>The comparison is performed strictly lexically: <code>foo</code> and <code>./foo</code> are <em>not</em>
-treated as equal. Nor are paths of different <code>kind</code>.
+treated as equal. Nor are paths of different <code><a href="Path.html#kind%3AKind-instance-method">#kind</a></code>.
 To compare paths semantically, they need to be normalized and converted to
 the same kind.</p>
 <pre><code class="language-crystal"><span class="t">Path</span>[<span class="s">&quot;foo&quot;</span>] <span class="o">&lt;=&gt;</span> <span class="t">Path</span>[<span class="s">&quot;foo&quot;</span>]               <span class="c"># =&gt; 0</span>
@@ -8696,7 +8731,7 @@ Windows paths.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/path.cr#L1080" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/path.cr#L1081" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8713,7 +8748,7 @@ Windows paths.</p>
           
           <p>Returns <code>true</code> if this path is considered equivalent to <em>other</em>.</p>
 <p>The comparison is performed strictly lexically: <code>foo</code> and <code>./foo</code> are <em>not</em>
-treated as equal. Nor are paths of different <code>kind</code>.
+treated as equal. Nor are paths of different <code><a href="Path.html#kind%3AKind-instance-method">#kind</a></code>.
 To compare paths semantically, they need to be normalized and converted to
 the same kind.</p>
 <pre><code class="language-crystal"><span class="t">Path</span>[<span class="s">&quot;foo&quot;</span>] <span class="o">==</span> <span class="t">Path</span>[<span class="s">&quot;foo&quot;</span>]               <span class="c"># =&gt; true</span>
@@ -8729,7 +8764,7 @@ Windows paths.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/path.cr#L1108" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/path.cr#L1109" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8755,7 +8790,7 @@ rooted paths (<code>\foo</code>), and root local device paths (<code>\\.</code>)
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/path.cr#L1319" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/path.cr#L1320" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8782,7 +8817,7 @@ rooted paths (<code>\foo</code>), and root local device paths (<code>\\.</code>)
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/path.cr#L1178" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/path.cr#L1179" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8813,7 +8848,7 @@ is equivalent to the full path.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/path.cr#L309" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/path.cr#L311" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8835,7 +8870,7 @@ is equivalent to the full path.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/path.cr#L196" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/path.cr#L198" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8864,7 +8899,7 @@ is equivalent to the full path.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/path.cr#L1137" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/path.cr#L1138" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8885,7 +8920,7 @@ is equivalent to the full path.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/path.cr#L1188" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/path.cr#L1189" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8910,7 +8945,7 @@ is equivalent to the full path.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/path.cr#L273" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/path.cr#L275" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8933,7 +8968,7 @@ is equivalent to the full path.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/path.cr#L499" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/path.cr#L501" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8959,7 +8994,7 @@ parts.<span class="k">next</span> <span class="c"># =&gt; Iterator::Stop::INSTAN
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/path.cr#L531" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/path.cr#L533" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8975,7 +9010,7 @@ parts.<span class="k">next</span> <span class="c"># =&gt; Iterator::Stop::INSTAN
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/path.cr#L1379" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/path.cr#L1380" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -9008,7 +9043,7 @@ path (assuming that <code><a href="Dir.html#current%3AString-class-method">Dir.c
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/path.cr#L747" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/path.cr#L748" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -9032,7 +9067,7 @@ path (assuming that <code><a href="Dir.html#current%3AString-class-method">Dir.c
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/path.cr#L357" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/path.cr#L359" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -9057,7 +9092,7 @@ path (assuming that <code><a href="Dir.html#current%3AString-class-method">Dir.c
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/path.cr#L1114" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/path.cr#L1115" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -9078,7 +9113,7 @@ path (assuming that <code><a href="Dir.html#current%3AString-class-method">Dir.c
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/path.cr#L1402" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/path.cr#L1403" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -9106,7 +9141,7 @@ path (assuming that <code><a href="Dir.html#current%3AString-class-method">Dir.c
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/path.cr#L934" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/path.cr#L935" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -9136,7 +9171,7 @@ separator is added.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/path.cr#L843" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/path.cr#L844" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -9161,7 +9196,23 @@ separator is added.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/path.cr#L914" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/path.cr#L915" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="kind:Kind-instance-method">
+      <div class="signature">
+        
+        def <strong>kind</strong> : <a href="Path/Kind.html">Kind</a>
+
+        <a class="method-permalink" href="#kind%3AKind-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/path.cr#L167" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -9182,7 +9233,7 @@ separator is added.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/path.cr#L187" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/path.cr#L189" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -9219,7 +9270,7 @@ which most I/O functions fail, whereas <code>\\.\C:\</code> refers to the root
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/path.cr#L417" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/path.cr#L419" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -9248,7 +9299,7 @@ and in the top-most hierarchy, the root path is returned.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/path.cr#L248" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/path.cr#L250" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -9270,7 +9321,7 @@ and in the top-most hierarchy, the root path is returned.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/path.cr#L257" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/path.cr#L259" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -9295,7 +9346,7 @@ and in the top-most hierarchy, the root path is returned.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/path.cr#L513" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/path.cr#L515" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -9316,7 +9367,7 @@ and in the top-most hierarchy, the root path is returned.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/path.cr#L182" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/path.cr#L184" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -9338,7 +9389,7 @@ and in the top-most hierarchy, the root path is returned.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/path.cr#L1370" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/path.cr#L1371" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -9360,7 +9411,7 @@ relative path to <em>base</em>.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/path.cr#L1055" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/path.cr#L1056" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -9392,7 +9443,7 @@ are <code>\\?\UNC\server\share\foo</code> and <code>\\server\share\foo</code>).<
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/path.cr#L981" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/path.cr#L982" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -9424,7 +9475,7 @@ are <code>\\?\UNC\server\share\foo</code> and <code>\\server\share\foo</code>).<
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/path.cr#L1049" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/path.cr#L1050" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -9452,7 +9503,7 @@ are <code>\\?\UNC\server\share\foo</code> and <code>\\server\share\foo</code>).<
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/path.cr#L1158" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/path.cr#L1159" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -9474,7 +9525,7 @@ are <code>\\?\UNC\server\share\foo</code> and <code>\\server\share\foo</code>).<
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/path.cr#L953" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/path.cr#L954" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -9499,7 +9550,7 @@ are <code>\\?\UNC\server\share\foo</code> and <code>\\server\share\foo</code>).<
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/path.cr#L394" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/path.cr#L396" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -9515,7 +9566,7 @@ are <code>\\?\UNC\server\share\foo</code> and <code>\\server\share\foo</code>).<
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/json/to_json.cr#L74" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/json/to_json.cr#L74" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -9531,7 +9582,7 @@ are <code>\\?\UNC\server\share\foo</code> and <code>\\server\share\foo</code>).<
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/json/to_json.cr#L78" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/json/to_json.cr#L78" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -9556,7 +9607,7 @@ are <code>\\?\UNC\server\share\foo</code> and <code>\\server\share\foo</code>).<
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/path.cr#L721" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/path.cr#L722" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -9580,7 +9631,7 @@ are <code>\\?\UNC\server\share\foo</code> and <code>\\server\share\foo</code>).<
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/path.cr#L643" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/path.cr#L644" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -9616,7 +9667,7 @@ For example, the <code>U+F05C</code> becomes <code>U+005C</code>, the backslash 
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/path.cr#L705" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/path.cr#L706" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -9637,7 +9688,7 @@ For example, the <code>U+F05C</code> becomes <code>U+005C</code>, the backslash 
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/path.cr#L1397" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/path.cr#L1398" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -9658,7 +9709,7 @@ For example, the <code>U+F05C</code> becomes <code>U+005C</code>, the backslash 
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/path.cr#L1392" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/path.cr#L1393" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -9681,7 +9732,7 @@ this path is not absolute.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/path.cr#L1420" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/path.cr#L1421" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -9716,7 +9767,7 @@ For example, the backslash character <code>U+005C</code> becomes <code>U+F05C</c
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/path.cr#L669" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/path.cr#L670" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -9732,7 +9783,7 @@ For example, the backslash character <code>U+005C</code> becomes <code>U+F05C</c
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/yaml/to_yaml.cr#L84" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/yaml/to_yaml.cr#L84" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -9753,7 +9804,7 @@ For example, the backslash character <code>U+005C</code> becomes <code>U+F05C</c
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/path.cr#L177" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/path.cr#L179" target="_blank">View source</a>]
         
       </div>
     </div>

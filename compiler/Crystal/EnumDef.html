@@ -4,8 +4,8 @@
   <meta charset="utf-8" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Crystal Docs 1.18.2">
-<meta name="crystal_docs.project_version" content="1.20.0-dev">
+<meta name="generator" content="Crystal Docs 1.19.1">
+<meta name="crystal_docs.project_version" content="1.21.0-dev">
 <meta name="crystal_docs.project_name" content="Crystal">
 
 
@@ -14,7 +14,7 @@
 <script type="text/javascript" src="../js/doc.js"></script>
 
   <meta name="repository-name" content="Crystal">
-  <title>Crystal::EnumDef - Crystal 1.20.0-dev</title>
+  <title>Crystal::EnumDef - Crystal 1.21.0-dev</title>
   <script type="text/javascript">
     CrystalDocs.base_path = "../";
   </script>
@@ -45,7 +45,7 @@
       </h1>
 
       <span class="project-version">
-        1.20.0-dev
+        1.21.0-dev
       </span>
     </div>
   </div>
@@ -917,6 +917,11 @@
       
     </li>
   
+  <li class=" " data-id="Crystal/Crystal/Command/Exit" data-name="crystal::command::exit">
+      <a href="../Crystal/Command/Exit.html">Exit</a>
+      
+    </li>
+  
   <li class=" " data-id="Crystal/Crystal/Command/FlagsVisitor" data-name="crystal::command::flagsvisitor">
       <a href="../Crystal/Command/FlagsVisitor.html">FlagsVisitor</a>
       
@@ -964,6 +969,11 @@
   
 </ul>
 
+      
+    </li>
+  
+  <li class=" " data-id="Crystal/Crystal/CompilerError" data-name="crystal::compilererror">
+      <a href="../Crystal/CompilerError.html">CompilerError</a>
       
     </li>
   
@@ -4852,6 +4862,11 @@
       
     </li>
   
+  <li class=" " data-id="Crystal/IO/PrefixSuffixBuffer" data-name="io::prefixsuffixbuffer">
+      <a href="../IO/PrefixSuffixBuffer.html">PrefixSuffixBuffer</a>
+      
+    </li>
+  
   <li class=" " data-id="Crystal/IO/Seek" data-name="io::seek">
       <a href="../IO/Seek.html">Seek</a>
       
@@ -5682,18 +5697,8 @@
       
     </li>
   
-  <li class="parent " data-id="Crystal/Mutex" data-name="mutex">
+  <li class=" " data-id="Crystal/Mutex" data-name="mutex">
       <a href="../Mutex.html">Mutex</a>
-      
-        <ul>
-  
-  <li class=" " data-id="Crystal/Mutex/Protection" data-name="mutex::protection">
-      <a href="../Mutex/Protection.html">Protection</a>
-      
-    </li>
-  
-</ul>
-
       
     </li>
   
@@ -6082,6 +6087,11 @@
       
     </li>
   
+  <li class=" " data-id="Crystal/Process/ExitError" data-name="process::exiterror">
+      <a href="../Process/ExitError.html">ExitError</a>
+      
+    </li>
+  
   <li class=" " data-id="Crystal/Process/ExitReason" data-name="process::exitreason">
       <a href="../Process/ExitReason.html">ExitReason</a>
       
@@ -6089,6 +6099,11 @@
   
   <li class=" " data-id="Crystal/Process/Redirect" data-name="process::redirect">
       <a href="../Process/Redirect.html">Redirect</a>
+      
+    </li>
+  
+  <li class=" " data-id="Crystal/Process/Result" data-name="process::result">
+      <a href="../Process/Result.html">Result</a>
       
     </li>
   
@@ -6472,8 +6487,18 @@
       
     </li>
   
-  <li class=" " data-id="Crystal/Sync/Mutex" data-name="sync::mutex">
+  <li class="parent " data-id="Crystal/Sync/Mutex" data-name="sync::mutex">
       <a href="../Sync/Mutex.html">Mutex</a>
+      
+        <ul>
+  
+  <li class=" " data-id="Crystal/Sync/Mutex/Protection" data-name="sync::mutex::protection">
+      <a href="../Sync/Mutex/Protection.html">Protection</a>
+      
+    </li>
+  
+</ul>
+
       
     </li>
   
@@ -6554,6 +6579,11 @@
   
 </ul>
 
+      
+    </li>
+  
+  <li class=" " data-id="Crystal/TargetFeature" data-name="targetfeature">
+      <a href="../TargetFeature.html">TargetFeature</a>
       
     </li>
   
@@ -7263,21 +7293,21 @@
   </h2>
   
     
-      <a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/compiler/crystal/macros/methods.cr#L2919" target="_blank">
+      <a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/compiler/crystal/macros/methods.cr#L2934" target="_blank">
         compiler/crystal/macros/methods.cr
       </a>
     
     <br/>
   
     
-      <a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/compiler/crystal/semantic/ast.cr#L736" target="_blank">
+      <a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/compiler/crystal/semantic/ast.cr#L744" target="_blank">
         compiler/crystal/semantic/ast.cr
       </a>
     
     <br/>
   
     
-      <a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/compiler/crystal/syntax/ast.cr#L2081" target="_blank">
+      <a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/compiler/crystal/syntax/ast.cr#L2739" target="_blank">
         compiler/crystal/syntax/ast.cr
       </a>
     
@@ -7390,6 +7420,11 @@
     
       <li class="entry-summary">
         <a href="#name%3D%28name%3APath%29-instance-method" class="signature"><strong>#name=</strong>(name : Path)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#pretty_print%28pp%29%3ANil-instance-method" class="signature"><strong>#pretty_print</strong>(pp) : Nil</a>
         
       </li>
     
@@ -8173,7 +8208,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/compiler/crystal/syntax/ast.cr#L2088" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/compiler/crystal/syntax/ast.cr#L2746" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8228,7 +8263,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/compiler/crystal/syntax/ast.cr#L2091" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/compiler/crystal/syntax/ast.cr#L2749" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8244,7 +8279,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/compiler/crystal/syntax/ast.cr#L2084" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/compiler/crystal/syntax/ast.cr#L2742" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8260,7 +8295,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/compiler/crystal/syntax/ast.cr#L2084" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/compiler/crystal/syntax/ast.cr#L2742" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8276,7 +8311,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/compiler/crystal/syntax/ast.cr#L2096" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/compiler/crystal/syntax/ast.cr#L2754" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8302,7 +8337,7 @@ supports having doc comments, so by default this returns <code>nil</code>.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/compiler/crystal/syntax/ast.cr#L2085" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/compiler/crystal/syntax/ast.cr#L2743" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8318,7 +8353,7 @@ supports having doc comments, so by default this returns <code>nil</code>.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/compiler/crystal/syntax/ast.cr#L2085" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/compiler/crystal/syntax/ast.cr#L2743" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8357,7 +8392,7 @@ supports having doc comments, so by default this returns <code>nil</code>.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/compiler/crystal/macros/methods.cr#L2920" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/compiler/crystal/macros/methods.cr#L2935" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8373,7 +8408,7 @@ supports having doc comments, so by default this returns <code>nil</code>.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/compiler/crystal/syntax/ast.cr#L2083" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/compiler/crystal/syntax/ast.cr#L2741" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8389,7 +8424,7 @@ supports having doc comments, so by default this returns <code>nil</code>.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/compiler/crystal/syntax/ast.cr#L2083" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/compiler/crystal/syntax/ast.cr#L2741" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8405,7 +8440,7 @@ supports having doc comments, so by default this returns <code>nil</code>.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/compiler/crystal/syntax/ast.cr#L2082" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/compiler/crystal/syntax/ast.cr#L2740" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8421,7 +8456,23 @@ supports having doc comments, so by default this returns <code>nil</code>.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/compiler/crystal/syntax/ast.cr#L2082" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/compiler/crystal/syntax/ast.cr#L2740" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="pretty_print(pp):Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>pretty_print</strong>(pp) : <a href="../Nil.html">Nil</a>
+
+        <a class="method-permalink" href="#pretty_print%28pp%29%3ANil-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/compiler/crystal/syntax/ast.cr#L2760" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8437,7 +8488,7 @@ supports having doc comments, so by default this returns <code>nil</code>.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/compiler/crystal/semantic/ast.cr#L737" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/compiler/crystal/semantic/ast.cr#L745" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8453,7 +8504,7 @@ supports having doc comments, so by default this returns <code>nil</code>.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/compiler/crystal/semantic/ast.cr#L737" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/compiler/crystal/semantic/ast.cr#L745" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8469,7 +8520,7 @@ supports having doc comments, so by default this returns <code>nil</code>.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/compiler/crystal/semantic/ast.cr#L737" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/compiler/crystal/semantic/ast.cr#L745" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8485,7 +8536,7 @@ supports having doc comments, so by default this returns <code>nil</code>.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/compiler/crystal/syntax/ast.cr#L2086" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/compiler/crystal/syntax/ast.cr#L2744" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -8501,7 +8552,7 @@ supports having doc comments, so by default this returns <code>nil</code>.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/bdb10a4/src/compiler/crystal/syntax/ast.cr#L2086" target="_blank">View source</a>]
+          [<a href="https://github.com/kojix2/crystal_compiler_explained/blob/5bc5f83/src/compiler/crystal/syntax/ast.cr#L2744" target="_blank">View source</a>]
         
       </div>
     </div>
